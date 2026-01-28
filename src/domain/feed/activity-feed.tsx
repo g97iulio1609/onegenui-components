@@ -49,94 +49,92 @@ export const ActivityFeed = memo(function ActivityFeed({
   }
 
   return (
-    <div className="flex flex-col gap-4 max-w-xl mx-auto">
+    <div className="flex flex-col gap-3 sm:gap-4 max-w-xl mx-auto">
       {items.map((item, index) => (
         <div
           key={item.id}
-          className="group relative pl-8 pb-8 last:pb-0"
+          className="group relative pl-6 sm:pl-8 pb-6 sm:pb-8 last:pb-0"
           data-selectable-item
           data-element-key={element.key}
           data-item-id={item.id}
         >
           {/* Timeline Line */}
-          <div className="absolute left-[15px] top-10 bottom-0 w-px bg-white/10 group-last:hidden" />
+          <div className="absolute left-[11px] sm:left-[15px] top-8 sm:top-10 bottom-0 w-px bg-white/10 group-last:hidden" />
 
           {/* Avatar Node */}
-          <div className="absolute left-0 top-0 w-8 h-8 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden ring-4 ring-zinc-950 z-10 transition-transform group-hover:scale-110">
+          <div className="absolute left-0 top-0 w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden ring-2 sm:ring-4 ring-zinc-950 z-10 transition-transform group-hover:scale-110">
             {item.user.avatar ? (
               <img
                 src={item.user.avatar}
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-zinc-800 text-[10px] font-bold text-zinc-500 uppercase">
+              <div className="w-full h-full flex items-center justify-center bg-zinc-800 text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase">
                 {item.user.name[0]}
               </div>
             )}
           </div>
 
           {/* Card Content */}
-          <div className="bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-zinc-900/80 hover:border-white/20 transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1">
+          <div className="bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 hover:bg-zinc-900/80 hover:border-white/20 transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1">
             {/* Decorative corner accent */}
-            <div className="absolute top-0 right-0 p-2 opacity-50">
-              <div className="w-2 h-2 rounded-full border border-white/20" />
+            <div className="absolute top-0 right-0 p-1.5 sm:p-2 opacity-50">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full border border-white/20" />
             </div>
 
-            <div className="flex justify-between items-start mb-3">
+            <div className="flex justify-between items-start mb-2 sm:mb-3 gap-2">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-white tracking-tight">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span className="text-xs sm:text-sm font-bold text-white tracking-tight">
                     {item.user.name}
                   </span>
-                  <span className="text-xs text-zinc-500 font-mono">
+                  <span className="text-[0.625rem] sm:text-xs text-zinc-500 font-mono">
                     @
                     {item.user.handle ||
                       item.user.name.toLowerCase().replace(" ", "")}
                   </span>
                 </div>
-                <div className="text-[10px] font-mono text-zinc-600 mt-1 uppercase tracking-wide flex items-center gap-1.5">
+                <div className="text-[0.5rem] sm:text-[0.625rem] font-mono text-zinc-600 mt-0.5 sm:mt-1 uppercase tracking-wide flex items-center gap-1 sm:gap-1.5">
                   <span>Logged</span>
                   <span className="w-1 h-1 rounded-full bg-zinc-700" />
                   {item.timestamp}
                 </div>
               </div>
-              <button className="text-zinc-600 hover:text-white transition-colors p-1 rounded hover:bg-white/5">
-                <MoreHorizontal size={14} />
+              <button className="text-zinc-600 hover:text-white transition-colors p-0.5 sm:p-1 rounded hover:bg-white/5 touch-manipulation">
+                <MoreHorizontal className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="text-sm text-zinc-300 leading-relaxed mb-4">
+            <div className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-3 sm:mb-4">
               {render(item.content, { inline: true })}
             </div>
 
             {item.image && (
-              <div className="rounded-xl overflow-hidden border border-white/10 mb-4 bg-zinc-950 min-h-[150px] relative group/image">
+              <div className="rounded-lg sm:rounded-xl overflow-hidden border border-white/10 mb-3 sm:mb-4 bg-zinc-950 min-h-[100px] sm:min-h-[150px] relative group/image">
                 <img
                   src={item.image}
-                  className="w-full h-auto object-cover max-h-[300px] transition-transform duration-700 group-hover/image:scale-105"
+                  className="w-full h-auto object-cover max-h-[200px] sm:max-h-[300px] transition-transform duration-700 group-hover/image:scale-105"
                 />
-                <div className="absolute inset-0 ring-1 ring-inset ring-white/5 rounded-xl pointer-events-none" />
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/5 rounded-lg sm:rounded-xl pointer-events-none" />
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex items-center gap-6 border-t border-dashed border-white/10 pt-3 mt-2">
-              <button className="flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-rose-400 transition-colors group/action py-1 px-2 rounded hover:bg-white/5 -ml-2">
+            <div className="flex items-center gap-4 sm:gap-6 border-t border-dashed border-white/10 pt-2 sm:pt-3 mt-1.5 sm:mt-2">
+              <button className="flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-rose-400 transition-colors group/action py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 -ml-1.5 sm:-ml-2 touch-manipulation">
                 <Heart
-                  size={14}
-                  className="group-hover/action:scale-110 transition-transform"
+                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/action:scale-110 transition-transform"
                 />
                 {item.likes || 0}
               </button>
-              <button className="flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-sky-400 transition-colors group/action py-1 px-2 rounded hover:bg-white/5">
+              <button className="flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-sky-400 transition-colors group/action py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 touch-manipulation">
                 <MessageSquare
-                  size={14}
-                  className="group-hover/action:scale-110 transition-transform"
+                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/action:scale-110 transition-transform"
                 />
                 {item.comments || 0}
               </button>
-              <button className="flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-emerald-400 transition-colors ml-auto py-1 px-2 rounded hover:bg-white/5 -mr-2">
-                <Share2 size={14} />
+              <button className="flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-emerald-400 transition-colors ml-auto py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 -mr-1.5 sm:-mr-2 touch-manipulation">
+                <Share2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span className="hidden sm:inline">Share</span>
               </button>
             </div>

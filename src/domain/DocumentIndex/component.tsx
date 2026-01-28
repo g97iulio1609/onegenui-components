@@ -59,11 +59,11 @@ const TreeNodeItem = memo(function TreeNodeItem({
       <div
         onClick={toggle}
         className={cn(
-          "flex items-start gap-2 py-1.5 px-2 rounded-md transition-colors group",
+          "flex items-start gap-1.5 sm:gap-2 py-1.5 px-1.5 sm:px-2 rounded-md transition-colors group touch-manipulation",
           hasChildren && "cursor-pointer hover:bg-white/5",
           depth === 0 && "font-semibold",
         )}
-        style={{ paddingLeft: `${depth * 16 + 8}px` }}
+        style={{ paddingLeft: `${depth * 12 + 8}px` }}
       >
         {hasChildren ? (
           <span className="mt-0.5 shrink-0 text-muted-foreground">
@@ -77,17 +77,17 @@ const TreeNodeItem = memo(function TreeNodeItem({
           <span className="mt-0.5 shrink-0 w-4" />
         )}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <span
               className={cn(
-                "text-sm truncate",
+                "text-xs sm:text-sm truncate",
                 depth === 0 ? "text-foreground" : "text-foreground/80",
               )}
             >
               {node.title}
             </span>
             <span
-              className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-muted-foreground shrink-0"
+              className="text-[0.5rem] sm:text-[0.625rem] px-1 sm:px-1.5 py-0.5 rounded bg-white/10 text-muted-foreground shrink-0"
               style={accentColor ? { backgroundColor: `${accentColor}20` } : {}}
             >
               {pageRange}
@@ -191,41 +191,41 @@ export const DocumentIndex = memo(function DocumentIndex({
   );
 
   return (
-    <div className="rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden">
+    <div className="rounded-lg sm:rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors"
+        className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors gap-2 sm:gap-3 touch-manipulation"
         onClick={() => setCollapsed((prev) => !prev)}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0"
             style={{ backgroundColor: `${accentColor}20` }}
           >
-            <FileText className="h-5 w-5" style={{ color: accentColor }} />
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: accentColor }} />
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <div className="min-w-0">
+            <h3 className="text-xs sm:text-sm font-semibold text-foreground truncate">{title}</h3>
             {description && (
-              <p className="text-xs text-muted-foreground line-clamp-1 max-w-md">
+              <p className="text-[0.625rem] sm:text-xs text-muted-foreground line-clamp-1 max-w-md">
                 {description}
               </p>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <BookOpen className="h-3.5 w-3.5" />
+        <div className="flex items-center gap-2 sm:gap-3 pl-10 sm:pl-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground">
+            <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             <span>{pageCount} pages</span>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Hash className="h-3.5 w-3.5" />
+          <div className="flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground">
+            <Hash className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             <span>{nodes?.length || 0} sections</span>
           </div>
           {collapsed ? (
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" />
           )}
         </div>
       </div>
@@ -240,7 +240,7 @@ export const DocumentIndex = memo(function DocumentIndex({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="p-3">
+            <div className="p-2 sm:p-3">
               {nodes && nodes.length > 0 ? (
                 nodes.map((node, index) => (
                   <TreeNodeItem
@@ -252,7 +252,7 @@ export const DocumentIndex = memo(function DocumentIndex({
                   />
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-4">
+                <p className="text-xs sm:text-sm text-muted-foreground text-center py-3 sm:py-4">
                   No sections found
                 </p>
               )}

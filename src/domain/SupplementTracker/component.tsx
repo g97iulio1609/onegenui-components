@@ -56,23 +56,23 @@ export const SupplementTracker = memo(function SupplementTracker({
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold tracking-tight flex items-center gap-3">
-          <Pill className="w-5 h-5 text-violet-500" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
+          <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
           {title || "Supplements"}
         </h3>
-        <div className="text-xs font-mono text-white/40">{formattedDate}</div>
+        <div className="text-[0.625rem] sm:text-xs font-mono text-white/40">{formattedDate}</div>
       </div>
 
       <ProgressDashboard stats={stats} />
 
       {/* Supplement Groups */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
         {supplements.length === 0 ? (
           <EmptyState
-            icon={<Package className="w-10 h-10" />}
+            icon={<Package className="w-8 h-8 sm:w-10 sm:h-10" />}
             message="No supplements configured"
           />
         ) : (

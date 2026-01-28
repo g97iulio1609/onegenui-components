@@ -10,14 +10,25 @@ export interface EntityExplorerProps {
 }
 
 const typeColors: Record<string, string> = {
-  person: "#4caf50",
-  organization: "#2196f3",
-  place: "#ff9800",
-  date: "#9c27b0",
-  concept: "#f44336",
-  event: "#00bcd4",
-  number: "#795548",
-  term: "#607d8b",
+  person: "emerald",
+  organization: "sky",
+  place: "amber",
+  date: "purple",
+  concept: "rose",
+  event: "cyan",
+  number: "stone",
+  term: "slate",
+};
+
+const typeColorClasses: Record<string, { bg: string; text: string; dot: string }> = {
+  person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
+  organization: { bg: "bg-sky-500", text: "text-sky-400", dot: "bg-sky-500" },
+  place: { bg: "bg-amber-500", text: "text-amber-400", dot: "bg-amber-500" },
+  date: { bg: "bg-purple-500", text: "text-purple-400", dot: "bg-purple-500" },
+  concept: { bg: "bg-rose-500", text: "text-rose-400", dot: "bg-rose-500" },
+  event: { bg: "bg-cyan-500", text: "text-cyan-400", dot: "bg-cyan-500" },
+  number: { bg: "bg-stone-500", text: "text-stone-400", dot: "bg-stone-500" },
+  term: { bg: "bg-slate-500", text: "text-slate-400", dot: "bg-slate-500" },
 };
 
 export const EntityExplorer = memo(function EntityExplorer({
@@ -70,58 +81,24 @@ export const EntityExplorer = memo(function EntityExplorer({
   }, [filteredEntities]);
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #e0e0e0",
-          fontWeight: 600,
-        }}
-      >
+    <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm">
+      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white">
         Entities ({filteredEntities.length})
       </div>
 
       {/* Search & Filter */}
-      <div
-        style={{
-          padding: "12px 16px",
-          borderBottom: "1px solid #e0e0e0",
-          display: "flex",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <input
           type="text"
           placeholder="Search entities..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            flex: 1,
-            minWidth: 150,
-            padding: "6px 12px",
-            border: "1px solid #ddd",
-            borderRadius: 4,
-            fontSize: 14,
-          }}
+          className="flex-1 min-w-0 px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0"
         />
         <select
           value={selectedType || ""}
           onChange={(e) => setSelectedType(e.target.value || null)}
-          style={{
-            padding: "6px 12px",
-            border: "1px solid #ddd",
-            borderRadius: 4,
-            fontSize: 14,
-          }}
+          className="px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0"
         >
           <option value="">All types</option>
           {types.map((type) => (
@@ -133,45 +110,23 @@ export const EntityExplorer = memo(function EntityExplorer({
       </div>
 
       {/* Type badges */}
-      <div
-        style={{
-          padding: "8px 16px",
-          borderBottom: "1px solid #e0e0e0",
-          display: "flex",
-          gap: 8,
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap">
         {types.map((type) => {
           const count = entities.filter((e) => e.type === type).length;
+          const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
           return (
             <button
               key={type}
               onClick={() =>
                 setSelectedType((prev) => (prev === type ? null : type))
               }
-              style={{
-                padding: "4px 8px",
-                borderRadius: 12,
-                border: "none",
-                backgroundColor:
-                  selectedType === type ? typeColors[type] : "#e0e0e0",
-                color: selectedType === type ? "white" : "#333",
-                fontSize: 12,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
+              className={`px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border-none text-[0.625rem] sm:text-xs cursor-pointer flex items-center gap-1 sm:gap-1.5 transition-colors touch-manipulation min-h-[1.75rem] ${
+                selectedType === type
+                  ? `${colors.bg} text-white`
+                  : "bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700"
+              }`}
             >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: typeColors[type] || "#999",
-                }}
-              />
+              <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}`} />
               {type} ({count})
             </button>
           );
@@ -179,53 +134,40 @@ export const EntityExplorer = memo(function EntityExplorer({
       </div>
 
       {/* Entity list */}
-      <div style={{ maxHeight: 400, overflowY: "auto" }}>
-        {Object.entries(groupedEntities).map(([type, typeEntities]) => (
-          <div key={type}>
-            <div
-              style={{
-                padding: "6px 16px",
-                backgroundColor: "#fafafa",
-                fontSize: 12,
-                fontWeight: 500,
-                textTransform: "uppercase",
-                color: typeColors[type] || "#666",
-                position: "sticky",
-                top: 0,
-              }}
-            >
-              {type}
-            </div>
-            {typeEntities.map((entity) => (
-              <div
-                key={entity.id}
-                onClick={() => onEntityClick?.(entity)}
-                style={{
-                  padding: "10px 16px",
-                  borderBottom: "1px solid #f0f0f0",
-                  cursor: onEntityClick ? "pointer" : "default",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 500, fontSize: 14 }}>
-                    {entity.value}
-                  </div>
-                  {entity.normalized && entity.normalized !== entity.value && (
-                    <div style={{ fontSize: 12, color: "#666" }}>
-                      {entity.normalized}
-                    </div>
-                  )}
-                </div>
-                <div style={{ fontSize: 12, color: "#999" }}>
-                  {entity.occurrences.length} occurrences
-                </div>
+      <div className="max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y">
+        {Object.entries(groupedEntities).map(([type, typeEntities]) => {
+          const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
+          return (
+            <div key={type}>
+              <div className={`px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`}>
+                {type}
               </div>
-            ))}
-          </div>
-        ))}
+              {typeEntities.map((entity) => (
+                <div
+                  key={entity.id}
+                  onClick={() => onEntityClick?.(entity)}
+                  className={`px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 flex justify-between items-center gap-2 ${
+                    onEntityClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-xs sm:text-sm text-white truncate">
+                      {entity.value}
+                    </div>
+                    {entity.normalized && entity.normalized !== entity.value && (
+                      <div className="text-[0.625rem] sm:text-xs text-zinc-500 truncate">
+                        {entity.normalized}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[0.625rem] sm:text-xs text-zinc-600 shrink-0">
+                    {entity.occurrences.length} occ
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

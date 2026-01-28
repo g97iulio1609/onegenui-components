@@ -17,45 +17,25 @@ export const DeepAnalysisPanel = memo(function DeepAnalysisPanel({
   const nodeQuotes = quotes.filter((q) => q.nodeId === node.id);
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
+    <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm">
       {/* Header */}
-      <div
-        style={{
-          padding: "16px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #e0e0e0",
-        }}
-      >
-        <h3 style={{ margin: 0, fontSize: 18 }}>{node.title}</h3>
-        <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
+      <div className="p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10">
+        <h3 className="m-0 text-base sm:text-lg font-semibold text-white">{node.title}</h3>
+        <div className="text-[0.625rem] sm:text-xs text-zinc-500 mt-1">
           Pages {node.pageStart}-{node.pageEnd}
         </div>
       </div>
 
       {/* Summary */}
-      <div style={{ padding: 16, borderBottom: "1px solid #e0e0e0" }}>
-        <h4 style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }}>
+      <div className="p-3 sm:p-4 border-b border-white/10">
+        <h4 className="m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400">
           Summary
         </h4>
-        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6 }}>
+        <p className="m-0 text-xs sm:text-sm leading-relaxed text-zinc-300">
           {node.summary || "No summary available"}
         </p>
         {node.detailedSummary && (
-          <p
-            style={{
-              margin: "12px 0 0 0",
-              fontSize: 14,
-              lineHeight: 1.6,
-              color: "#555",
-            }}
-          >
+          <p className="mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400">
             {node.detailedSummary}
           </p>
         )}
@@ -63,13 +43,13 @@ export const DeepAnalysisPanel = memo(function DeepAnalysisPanel({
 
       {/* Key Points */}
       {node.keyPoints.length > 0 && (
-        <div style={{ padding: 16, borderBottom: "1px solid #e0e0e0" }}>
-          <h4 style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }}>
+        <div className="p-3 sm:p-4 border-b border-white/10">
+          <h4 className="m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400">
             Key Points
           </h4>
-          <ul style={{ margin: 0, paddingLeft: 20 }}>
+          <ul className="m-0 pl-4 sm:pl-5 space-y-1">
             {node.keyPoints.map((point, i) => (
-              <li key={i} style={{ fontSize: 14, marginBottom: 4 }}>
+              <li key={i} className="text-xs sm:text-sm text-zinc-300">
                 {point}
               </li>
             ))}
@@ -79,20 +59,15 @@ export const DeepAnalysisPanel = memo(function DeepAnalysisPanel({
 
       {/* Keywords */}
       {node.keywords.length > 0 && (
-        <div style={{ padding: 16, borderBottom: "1px solid #e0e0e0" }}>
-          <h4 style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }}>
+        <div className="p-3 sm:p-4 border-b border-white/10">
+          <h4 className="m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400">
             Keywords
           </h4>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div className="flex gap-1.5 sm:gap-2 flex-wrap">
             {node.keywords.map((keyword, i) => (
               <span
                 key={i}
-                style={{
-                  padding: "4px 8px",
-                  backgroundColor: "#e3f2fd",
-                  borderRadius: 4,
-                  fontSize: 12,
-                }}
+                className="px-2 py-0.5 sm:py-1 bg-sky-500/10 rounded text-[0.625rem] sm:text-xs text-sky-300 border border-sky-500/20"
               >
                 {keyword}
               </span>
@@ -103,69 +78,53 @@ export const DeepAnalysisPanel = memo(function DeepAnalysisPanel({
 
       {/* Quotes */}
       {nodeQuotes.length > 0 && (
-        <div style={{ padding: 16, borderBottom: "1px solid #e0e0e0" }}>
-          <h4 style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }}>
+        <div className="p-3 sm:p-4 border-b border-white/10">
+          <h4 className="m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400">
             Notable Quotes
           </h4>
-          {nodeQuotes.map((quote) => (
-            <div
-              key={quote.id}
-              onClick={() => onQuoteClick?.(quote)}
-              style={{
-                padding: 12,
-                backgroundColor: "#fafafa",
-                borderLeft: "3px solid #1976d2",
-                marginBottom: 8,
-                cursor: onQuoteClick ? "pointer" : "default",
-              }}
-            >
-              <p style={{ margin: 0, fontSize: 14, fontStyle: "italic" }}>
-                "{quote.text}"
-              </p>
-              <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
-                Page {quote.pageNumber} - {quote.significance}
+          <div className="space-y-2">
+            {nodeQuotes.map((quote) => (
+              <div
+                key={quote.id}
+                onClick={() => onQuoteClick?.(quote)}
+                className={`p-2.5 sm:p-3 bg-zinc-800/30 border-l-2 sm:border-l-3 border-sky-500 rounded-r ${onQuoteClick ? "cursor-pointer hover:bg-zinc-800/50 touch-manipulation" : ""}`}
+              >
+                <p className="m-0 text-xs sm:text-sm italic text-zinc-300">
+                  "{quote.text}"
+                </p>
+                <div className="text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5">
+                  Page {quote.pageNumber} - {quote.significance}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
       {/* Metrics */}
       {node.metrics && (
-        <div style={{ padding: 16 }}>
-          <h4 style={{ margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }}>
+        <div className="p-3 sm:p-4">
+          <h4 className="m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400">
             Metrics
           </h4>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 12,
-            }}
-          >
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 600 }}>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg">
+              <div className="text-base sm:text-xl font-semibold text-white">
                 {node.metrics.wordCount}
               </div>
-              <div style={{ fontSize: 11, color: "#666" }}>Words</div>
+              <div className="text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase">Words</div>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 600 }}>
+            <div className="text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg">
+              <div className="text-base sm:text-xl font-semibold text-white">
                 {node.metrics.readingTimeMinutes}m
               </div>
-              <div style={{ fontSize: 11, color: "#666" }}>Reading Time</div>
+              <div className="text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase">Reading Time</div>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 600,
-                  textTransform: "capitalize",
-                }}
-              >
+            <div className="text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg">
+              <div className="text-base sm:text-xl font-semibold capitalize text-white">
                 {node.metrics.complexity}
               </div>
-              <div style={{ fontSize: 11, color: "#666" }}>Complexity</div>
+              <div className="text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase">Complexity</div>
             </div>
           </div>
         </div>

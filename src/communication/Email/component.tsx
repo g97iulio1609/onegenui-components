@@ -118,36 +118,36 @@ export const Email = memo(function Email({
   // ==========================================================================
 
   return (
-    <div className="glass-panel w-full min-h-[400px] h-full flex flex-col rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl">
+    <div className="glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl">
       {/* Header */}
-      <div className="flex justify-between items-center px-5 py-4 border-b border-border/40 bg-black/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white">
-            <Mail size={20} />
+      <div className="flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0">
+            <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <h3 className="m-0 text-base font-bold leading-tight">
+          <div className="min-w-0">
+            <h3 className="m-0 text-sm sm:text-base font-bold leading-tight truncate">
               {title || "Gmail"}
             </h3>
             {description && (
-              <div className="text-xs text-muted-foreground mt-0.5">
+              <div className="text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate">
                 {description}
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:block px-3 py-1 rounded-full bg-muted/30 text-xs font-medium text-muted-foreground border border-white/5">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5">
             {emails.filter((e) => !e.read).length} non lett
             {emails.filter((e) => !e.read).length === 1 ? "a" : "e"}
           </div>
 
           <button
             onClick={() => setComposeMode("new")}
-            className="flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20"
+            className="flex items-center gap-1.5 sm:gap-2 pl-2 sm:pl-3 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-medium transition-all shadow-lg shadow-blue-500/20 touch-manipulation min-h-[2.5rem]"
           >
-            <PenSquare size={16} />
+            <PenSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">Scrivi</span>
           </button>
         </div>

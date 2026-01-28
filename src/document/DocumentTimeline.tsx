@@ -43,16 +43,7 @@ export const DocumentTimeline = memo(function DocumentTimeline({
 
   if (events.length === 0) {
     return (
-      <div
-        style={{
-          fontFamily: "system-ui, sans-serif",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          padding: 16,
-          textAlign: "center",
-          color: "#666",
-        }}
-      >
+      <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm">
         No date entities found for timeline
       </div>
     );
@@ -65,46 +56,37 @@ export const DocumentTimeline = memo(function DocumentTimeline({
   const yearRange = Math.max(1, maxYear - minYear);
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #e0e0e0",
-          fontWeight: 600,
-        }}
-      >
+    <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm">
+      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white">
         Document Timeline
       </div>
-      <div style={{ padding: 16, position: "relative", minHeight: 100 }}>
+      
+      {/* Mobile: Vertical timeline */}
+      <div className="block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y">
+        <div className="relative pl-6 border-l-2 border-sky-500/30">
+          {events.slice(0, 10).map((event) => (
+            <div
+              key={event.entity.id}
+              className="relative mb-4 last:mb-0 cursor-pointer touch-manipulation"
+              onClick={() => onEntityClick?.(event.entity)}
+            >
+              <div className="absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" />
+              <div className="text-xs font-semibold text-white">{event.year}</div>
+              <div className="text-[0.625rem] text-zinc-400 truncate max-w-[12rem]">
+                {event.entity.value.slice(0, 30)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop: Horizontal timeline */}
+      <div className="hidden sm:block p-4 relative min-h-[6.25rem]">
         {/* Timeline line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 50,
-            left: 20,
-            right: 20,
-            height: 4,
-            backgroundColor: "#e0e0e0",
-            borderRadius: 2,
-          }}
-        />
+        <div className="absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" />
         {/* Events */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            paddingTop: 60,
-          }}
-        >
-          {events.slice(0, 10).map((event, i) => {
+        <div className="flex justify-between pt-[3.75rem]">
+          {events.slice(0, 10).map((event) => {
             const position =
               yearRange > 0 ? ((event.year - minYear) / yearRange) * 100 : 50;
             return (
@@ -112,38 +94,18 @@ export const DocumentTimeline = memo(function DocumentTimeline({
                 key={event.entity.id}
                 style={{
                   position: "absolute",
-                  left: `calc(${position}% + 10px)`,
-                  top: 40,
+                  left: `calc(${position}% + 0.625rem)`,
+                  top: "2.5rem",
                   transform: "translateX(-50%)",
-                  textAlign: "center",
-                  cursor: "pointer",
                 }}
+                className="text-center cursor-pointer touch-manipulation"
                 onClick={() => onEntityClick?.(event.entity)}
               >
-                <div
-                  style={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: "50%",
-                    backgroundColor: "#1976d2",
-                    margin: "0 auto 8px",
-                    border: "3px solid white",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                  }}
-                />
-                <div style={{ fontSize: 12, fontWeight: 600 }}>
+                <div className="w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" />
+                <div className="text-[0.625rem] sm:text-xs font-semibold text-white">
                   {event.year}
                 </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#666",
-                    maxWidth: 80,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <div className="text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {event.entity.value.slice(0, 15)}
                 </div>
               </div>
@@ -151,14 +113,8 @@ export const DocumentTimeline = memo(function DocumentTimeline({
           })}
         </div>
       </div>
-      <div
-        style={{
-          padding: "8px 16px",
-          borderTop: "1px solid #e0e0e0",
-          fontSize: 12,
-          color: "#666",
-        }}
-      >
+      
+      <div className="px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500">
         {events.length} date/event entities found
       </div>
     </div>

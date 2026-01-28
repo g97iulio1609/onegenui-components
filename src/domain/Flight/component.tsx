@@ -13,6 +13,17 @@ import {
 import { getFlightAdapter, getFlightStateAdapter } from "./adapters";
 import { useFlightLogic } from "./hooks";
 
+/** Animation variants */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const headerVariants = {
+  hidden: { opacity: 0, y: "-0.625rem" },
+  visible: { opacity: 1, y: 0 },
+};
+
 export const Flight = memo(function Flight({
   element,
   children,
@@ -38,7 +49,6 @@ export const Flight = memo(function Flight({
     { trips, flights, lock },
   );
 
-  // Calculate total price from all trips
   const totalPrice = useMemo(() => {
     return displayTrips.reduce((sum, trip) => {
       const outPrice = trip.outbound?.price?.amount || 0;
@@ -58,14 +68,18 @@ export const Flight = memo(function Flight({
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col gap-4 sm:gap-6 w-full"
+    >
       {title && (
         <motion.h3
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="m-0 text-xl font-bold text-foreground tracking-tight flex items-center gap-2"
+          variants={headerVariants}
+          className="m-0 text-lg sm:text-xl font-bold text-foreground tracking-tight flex items-center gap-2"
         >
-          <Plane className="w-5 h-5 text-sky-500" />
+          <Plane className="w-4 h-4 sm:w-5 sm:h-5 text-sky-500" />
           {title}
         </motion.h3>
       )}
@@ -99,6 +113,6 @@ export const Flight = memo(function Flight({
       </AnimatePresence>
 
       {children}
-    </div>
+    </motion.div>
   );
 });

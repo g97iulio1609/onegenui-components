@@ -39,29 +39,29 @@ export const ResearchReport = memo(function ResearchReport({
 
   if (!title && !summary && sections.length === 0) {
     return (
-      <div className="p-8 text-center text-zinc-500">
-        <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <p>No report content</p>
+      <div className="p-4 sm:p-8 text-center text-zinc-500">
+        <FileText className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50" />
+        <p className="text-sm">No report content</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Report Card */}
-      <div className="rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden">
+      <div className="rounded-xl sm:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-white/5">
-          <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
+        <div className="p-4 sm:p-6 border-b border-white/5">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4">{title}</h2>
 
           {/* Summary with citations */}
-          <div className="text-zinc-300 leading-relaxed text-[15px]">
+          <div className="text-zinc-300 leading-relaxed text-xs sm:text-sm lg:text-[15px]">
             {renderContentWithCitations(summary, sources, render)}
           </div>
         </div>
 
         {/* Sections */}
-        <div className="p-6 space-y-8">
+        <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
           {sections.map((section, i) => (
             <ReportSectionComponent
               key={i}
@@ -74,12 +74,12 @@ export const ResearchReport = memo(function ResearchReport({
 
         {/* Related Queries */}
         {relatedQueries.length > 0 && (
-          <div className="px-6 pb-6">
-            <div className="flex flex-wrap gap-2">
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {relatedQueries.map((query, i) => (
                 <button
                   key={i}
-                  className="px-3 py-1.5 text-sm text-zinc-400 bg-zinc-800/50 rounded-full border border-white/5 hover:border-sky-500/30 hover:text-sky-300 transition-all"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-zinc-400 bg-zinc-800/50 rounded-full border border-white/5 hover:border-sky-500/30 hover:text-sky-300 transition-all touch-manipulation min-h-[2rem] sm:min-h-0"
                 >
                   {query}
                 </button>
@@ -91,18 +91,18 @@ export const ResearchReport = memo(function ResearchReport({
 
       {/* Sources Panel */}
       {sources.length > 0 && (
-        <div className="rounded-2xl bg-zinc-900/40 border border-white/5 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">
+        <div className="rounded-xl sm:rounded-2xl bg-zinc-900/40 border border-white/5 p-3 sm:p-4">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h4 className="text-xs sm:text-sm font-semibold text-zinc-400 uppercase tracking-wider">
               {sources.length} Sources
             </h4>
             {totalResults && totalResults > sources.length && (
-              <span className="text-xs text-zinc-500">
+              <span className="text-[0.625rem] sm:text-xs text-zinc-500">
                 da {totalResults} risultati totali
               </span>
             )}
           </div>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
             {sources.map((source) => (
               <SourceCard key={source.id} source={source} />
             ))}

@@ -643,9 +643,9 @@ var CalendarAgenda = (0, import_react4.memo)(function CalendarAgenda2({
   const events = initialEvents || [];
   const groupedEvents = (0, import_react4.useMemo)(() => groupEventsByDate(events), [events]);
   const currentDate = selectedDate ? new Date(selectedDate) : /* @__PURE__ */ new Date();
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex flex-col h-[600px] w-full bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl relative overflow-hidden isolate", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/5 rounded-full blur-[100px] pointer-events-none -z-10" }),
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute bottom-0 left-0 w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[90px] pointer-events-none -z-10" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex flex-col h-[400px] sm:h-[500px] lg:h-[600px] w-full bg-zinc-950 border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl relative overflow-hidden isolate", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute top-0 right-0 w-[250px] sm:w-[300px] lg:w-[400px] h-[250px] sm:h-[300px] lg:h-[400px] bg-indigo-600/5 rounded-full blur-[60px] sm:blur-[80px] lg:blur-[100px] pointer-events-none -z-10" }),
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute bottom-0 left-0 w-[200px] sm:w-[250px] lg:w-[300px] h-[200px] sm:h-[250px] lg:h-[300px] bg-purple-600/5 rounded-full blur-[50px] sm:blur-[70px] lg:blur-[90px] pointer-events-none -z-10" }),
     /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_framer_motion4.AnimatePresence, { mode: "wait", children: selectedEvent ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       EventDetailView,
       {
@@ -661,34 +661,34 @@ var CalendarAgenda = (0, import_react4.memo)(function CalendarAgenda2({
         exit: { opacity: 0 },
         className: "flex flex-col h-full",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "p-6 pb-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center justify-between mb-6", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("h2", { className: "text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50", children: title || "Agenda" }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_lucide_react3.Calendar, { className: "text-white/60", size: 20 }) })
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "p-4 sm:p-5 lg:p-6 pb-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center justify-between mb-4 sm:mb-5 lg:mb-6", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("h2", { className: "text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50", children: title || "Agenda" }),
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_lucide_react3.Calendar, { className: "text-white/60 w-4 h-4 sm:w-5 sm:h-5" }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "text-sm font-bold text-indigo-400 uppercase tracking-widest pl-1 mb-2", children: currentDate.toLocaleDateString(void 0, {
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "text-xs sm:text-sm font-bold text-indigo-400 uppercase tracking-widest pl-1 mb-1.5 sm:mb-2", children: currentDate.toLocaleDateString(void 0, {
               month: "long",
               year: "numeric"
             }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 overflow-y-auto px-4 pb-6 custom-scrollbar", children: events.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 overflow-y-auto px-3 sm:px-4 pb-4 sm:pb-6 custom-scrollbar touch-pan-y", children: events.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
             EmptyState,
             {
-              icon: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_lucide_react3.Calendar, { className: "w-10 h-10" }),
+              icon: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_lucide_react3.Calendar, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
               message: "No upcoming events"
             }
-          ) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "space-y-8", children: Array.from(groupedEvents.entries()).map(
+          ) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "space-y-6 sm:space-y-8", children: Array.from(groupedEvents.entries()).map(
             ([dateStr, dayEvents]) => {
               const { label, sub } = formatDateHeader(
                 new Date(dateStr)
               );
-              return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "relative pl-4", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-baseline gap-3 mb-4 sticky top-0 bg-zinc-950/80 backdrop-blur-xl py-2 z-10 -ml-4 pl-4 border-b border-white/5 w-[calc(100%+32px)]", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-xl font-bold text-white", children: label }),
-                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-sm font-medium text-white/40", children: sub })
+              return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "relative pl-3 sm:pl-4", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-baseline gap-2 sm:gap-3 mb-3 sm:mb-4 sticky top-0 bg-zinc-950/80 backdrop-blur-xl py-1.5 sm:py-2 z-10 -ml-3 sm:-ml-4 pl-3 sm:pl-4 border-b border-white/5 w-[calc(100%+1.5rem)] sm:w-[calc(100%+2rem)]", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-lg sm:text-xl font-bold text-white", children: label }),
+                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-xs sm:text-sm font-medium text-white/40", children: sub })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute left-0 top-10 bottom-0 w-px bg-white/10" }),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "space-y-3", children: dayEvents.map((event) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "absolute left-0 top-8 sm:top-10 bottom-0 w-px bg-white/10" }),
+                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "space-y-2 sm:space-y-3", children: dayEvents.map((event) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
                   EventCard,
                   {
                     event,
@@ -1684,31 +1684,31 @@ var Workout = (0, import_react11.memo)(function Workout2({
     items: displayItems,
     status: "active"
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex items-center justify-between", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("h3", { className: "m-0 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Activity, { className: "w-5 h-5 text-emerald-500" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
+      title && /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("h3", { className: "m-0 text-base sm:text-lg lg:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Activity, { className: "w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" }),
         title
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3", children: [
         /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(SessionTimer, {}),
         /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
           "button",
           {
             onClick: toggleLock,
             className: (0, import_utils.cn)(
-              "h-8 w-8 flex items-center justify-center rounded-lg border transition-colors",
+              "h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-lg border transition-colors touch-manipulation",
               isLocked ? "bg-red-500/10 border-red-500/20 text-red-500" : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:text-white"
             ),
-            children: isLocked ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Lock, { size: 12 }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Unlock, { size: 12 })
+            children: isLocked ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Lock, { className: "w-3 h-3" }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.Unlock, { className: "w-3 h-3" })
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "flex flex-col gap-4", children: displayItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4", children: displayItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       EmptyState,
       {
-        icon: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.BicepsFlexed, { className: "w-12 h-12" }),
+        icon: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react9.BicepsFlexed, { className: "w-10 h-10 sm:w-12 sm:h-12" }),
         message: "No exercises programmed"
       }
     ) : displayItems.map(
@@ -2017,9 +2017,9 @@ var Nutrition = (0, import_react15.memo)(function Nutrition2({
     );
     return { p, c, f, cal };
   }, [displayMeals]);
-  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("h3", { className: "m-0 text-xl font-bold font-sans tracking-tight flex items-center gap-3", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Flame, { className: "w-5 h-5 text-orange-500" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("h3", { className: "m-0 text-base sm:text-lg lg:text-xl font-bold font-sans tracking-tight flex items-center gap-2 sm:gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Flame, { className: "w-4 h-4 sm:w-5 sm:h-5 text-orange-500" }),
       title
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
@@ -2027,21 +2027,21 @@ var Nutrition = (0, import_react15.memo)(function Nutrition2({
       {
         initial: { opacity: 0, y: 10 },
         animate: { opacity: 1, y: 0 },
-        className: "p-5 rounded-2xl bg-zinc-900 border border-white/10 shadow-lg relative overflow-hidden",
+        className: "p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900 border border-white/10 shadow-lg relative overflow-hidden",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "absolute top-0 right-0 p-3 opacity-10", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Target, { size: 80, strokeWidth: 1 }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "flex justify-between items-end mb-6 relative z-10", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1", children: "Daily Target" }),
-            /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "text-3xl font-black text-white leading-none", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "absolute top-0 right-0 p-2 sm:p-3 opacity-10", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Target, { className: "w-16 h-16 sm:w-20 sm:h-20", strokeWidth: 1 }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "flex flex-col sm:flex-row sm:justify-between sm:items-end mb-4 sm:mb-6 relative z-10 gap-2", children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "text-[0.625rem] font-bold text-muted-foreground uppercase tracking-widest mb-1", children: "Daily Target" }),
+            /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "text-2xl sm:text-3xl font-black text-white leading-none", children: [
               Math.round(stats.cal),
-              /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("span", { className: "text-sm font-medium text-white/40 ml-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("span", { className: "text-xs sm:text-sm font-medium text-white/40 ml-1", children: [
                 "/ ",
                 MACRO_TARGETS.cal,
                 " kcal"
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "grid grid-cols-3 gap-4 relative z-10", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "grid grid-cols-3 gap-2 sm:gap-4 relative z-10", children: [
             /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
               MacroMetric,
               {
@@ -2073,10 +2073,10 @@ var Nutrition = (0, import_react15.memo)(function Nutrition2({
         ]
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "flex flex-col gap-4", children: displayMeals.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4", children: displayMeals.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
       EmptyState,
       {
-        icon: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Utensils, { className: "w-10 h-10" }),
+        icon: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_lucide_react11.Utensils, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
         message: "Empty Plan"
       }
     ) : displayMeals.map((meal, i) => /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
@@ -2568,6 +2568,14 @@ function useFlightLogic(flightAdapter, stateAdapter, options) {
 
 // src/domain/Flight/component.tsx
 var import_jsx_runtime16 = require("react/jsx-runtime");
+var containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+var headerVariants = {
+  hidden: { opacity: 0, y: "-0.625rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var Flight = (0, import_react21.memo)(function Flight2({
   element,
   children
@@ -2600,46 +2608,54 @@ var Flight = (0, import_react21.memo)(function Flight2({
     totalPrice: totalPrice > 0 ? totalPrice : null,
     currency
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
-      import_framer_motion11.motion.h3,
-      {
-        initial: { opacity: 0, y: -10 },
-        animate: { opacity: 1, y: 0 },
-        className: "m-0 text-xl font-bold text-foreground tracking-tight flex items-center gap-2",
-        children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_lucide_react14.Plane, { className: "w-5 h-5 text-sky-500" }),
-          title
-        ]
-      }
-    ),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_framer_motion11.AnimatePresence, { mode: "popLayout", children: displayTrips.map((trip, i) => {
-      const itemKey = getTripKey(trip, i);
-      if (isRoundTrip(trip)) {
-        return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-          RoundTripCard,
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
+    import_framer_motion11.motion.div,
+    {
+      variants: containerVariants,
+      initial: "hidden",
+      animate: "visible",
+      className: "flex flex-col gap-4 sm:gap-6 w-full",
+      children: [
+        title && /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
+          import_framer_motion11.motion.h3,
           {
-            trip,
-            index: i,
-            elementKey: element.key,
-            lock
-          },
-          itemKey
-        );
-      }
-      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-        SingleFlightCard,
-        {
-          flight: trip.outbound,
-          index: i,
-          elementKey: element.key,
-          lock
-        },
-        itemKey
-      );
-    }) }),
-    children
-  ] });
+            variants: headerVariants,
+            className: "m-0 text-lg sm:text-xl font-bold text-foreground tracking-tight flex items-center gap-2",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_lucide_react14.Plane, { className: "w-4 h-4 sm:w-5 sm:h-5 text-sky-500" }),
+              title
+            ]
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_framer_motion11.AnimatePresence, { mode: "popLayout", children: displayTrips.map((trip, i) => {
+          const itemKey = getTripKey(trip, i);
+          if (isRoundTrip(trip)) {
+            return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+              RoundTripCard,
+              {
+                trip,
+                index: i,
+                elementKey: element.key,
+                lock
+              },
+              itemKey
+            );
+          }
+          return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+            SingleFlightCard,
+            {
+              flight: trip.outbound,
+              index: i,
+              elementKey: element.key,
+              lock
+            },
+            itemKey
+          );
+        }) }),
+        children
+      ]
+    }
+  );
 });
 
 // src/domain/Flight/schema.ts
@@ -2741,6 +2757,14 @@ function getHotelAdapter() {
 // src/domain/Hotel/component.tsx
 var import_jsx_runtime17 = require("react/jsx-runtime");
 var hotelAdapter = getHotelAdapter();
+var containerVariants2 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+var cardVariants = {
+  hidden: { opacity: 0, y: "1.25rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var HotelStatusBadge = ({ status }) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
   StatusBadge,
   {
@@ -2757,7 +2781,6 @@ var Hotel = (0, import_react23.memo)(function Hotel2({
     title,
     hotels,
     layout = "list"
-    // 'list' | 'card'
   } = element.props;
   const { checkIn, checkOut, totalPrice, currency } = (0, import_react23.useMemo)(() => {
     const hotelList = hotels || [];
@@ -2795,162 +2818,172 @@ var Hotel = (0, import_react23.memo)(function Hotel2({
     totalPrice,
     currency
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("h3", { className: "m-0 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Hotel, { size: 24, className: "text-amber-400 hidden" }),
-      title
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-      "div",
-      {
-        className: (0, import_utils.cn)(
-          "grid gap-6",
-          layout === "card" ? "grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" : "grid-cols-1"
-        ),
-        children: (hotels || []).map((hotel, i) => {
-          return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-            import_framer_motion12.motion.div,
-            {
-              initial: { opacity: 0, y: 20 },
-              animate: { opacity: 1, y: 0 },
-              transition: { duration: 0.5, delay: i * 0.1 },
-              children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
-                import_react24.SelectableItem,
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+    import_framer_motion12.motion.div,
+    {
+      variants: containerVariants2,
+      initial: "hidden",
+      animate: "visible",
+      className: "flex flex-col gap-4 sm:gap-6 w-full",
+      children: [
+        title && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("h3", { className: "m-0 text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Hotel, { className: "w-5 h-5 sm:w-6 sm:h-6 text-amber-400 hidden" }),
+          title
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          "div",
+          {
+            className: (0, import_utils.cn)(
+              "grid gap-4 sm:gap-6",
+              // Mobile-first: single column, then responsive
+              layout === "card" ? "grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(16rem,1fr))]" : "grid-cols-1"
+            ),
+            children: (hotels || []).map((hotel, i) => {
+              return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                import_framer_motion12.motion.div,
                 {
-                  elementKey: element.key,
-                  itemId: hotel.id,
-                  className: (0, import_utils.cn)(
-                    "group relative bg-zinc-900/40 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-black/50 hover:border-white/20 hover:-translate-y-1 flex isolate",
-                    layout === "card" ? "flex-col" : "flex-row min-h-[200px]"
-                  ),
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
-                      "div",
-                      {
-                        className: (0, import_utils.cn)(
-                          "relative overflow-hidden z-0",
-                          layout === "card" ? "h-48 w-full" : "w-[240px] min-w-[240px] h-full absolute inset-y-0 left-0"
-                        ),
-                        children: [
-                          hotel.image ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 transition-transform duration-700 group-hover:scale-110", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-                            "img",
-                            {
-                              src: hotel.image,
-                              alt: hotel.name,
-                              className: "w-full h-full object-cover"
-                            }
-                          ) }) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Hotel, { size: 48, className: "text-white/10" }) }),
-                          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" }),
-                          layout !== "card" && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 bg-gradient-to-r from-transparent via-black/60 to-zinc-950" }),
-                          hotel.status && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute top-4 left-4", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(HotelStatusBadge, { status: hotel.status }) })
-                        ]
-                      }
-                    ),
-                    /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
-                      "div",
-                      {
-                        className: (0, import_utils.cn)(
-                          "relative z-10 flex flex-col p-6 flex-1",
-                          layout !== "card" && "pl-[220px]"
-                        ),
-                        children: [
-                          /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex justify-between items-start gap-4 mb-2", children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-1", children: [
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("h4", { className: "text-xl font-bold text-white group-hover:text-amber-400 transition-colors leading-tight", children: hotel.name }),
-                              hotel.address && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex items-center gap-1.5 text-xs font-medium text-white/60", children: [
-                                /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.MapPin, { size: 12, className: "text-white/40" }),
-                                hotel.address
-                              ] })
-                            ] }),
-                            hotel.rating && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shrink-0", children: [
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-                                import_lucide_react15.Star,
+                  variants: cardVariants,
+                  children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+                    import_react24.SelectableItem,
+                    {
+                      elementKey: element.key,
+                      itemId: hotel.id,
+                      className: (0, import_utils.cn)(
+                        "group relative bg-zinc-900/40 backdrop-blur-md border border-white/10 overflow-hidden cursor-pointer transition-all duration-500",
+                        "hover:shadow-2xl hover:shadow-black/50 hover:border-white/20 hover:-translate-y-0.5",
+                        "flex isolate rounded-xl sm:rounded-3xl",
+                        // Mobile: always stack vertically
+                        "flex-col",
+                        // Desktop list: side-by-side
+                        layout === "list" && "sm:flex-row sm:min-h-[12.5rem]"
+                      ),
+                      children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+                          "div",
+                          {
+                            className: (0, import_utils.cn)(
+                              "relative overflow-hidden z-0",
+                              // Mobile: fixed height on top
+                              "h-36 w-full",
+                              // Desktop list: side image
+                              layout === "list" && "sm:w-[15rem] sm:min-w-[15rem] sm:h-full sm:absolute sm:inset-y-0 sm:left-0"
+                            ),
+                            children: [
+                              hotel.image ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 transition-transform duration-700 group-hover:scale-110", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                                "img",
                                 {
-                                  size: 12,
-                                  className: "fill-amber-400 text-amber-400"
+                                  src: hotel.image,
+                                  alt: hotel.name,
+                                  className: "w-full h-full object-cover"
                                 }
-                              ),
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-sm font-bold text-white", children: hotel.rating })
-                            ] })
-                          ] }),
-                          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "h-px bg-white/10 w-full my-4 group-hover:bg-white/20 transition-colors" }),
-                          /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "grid grid-cols-2 gap-4 text-xs", children: [
-                            hotel.dates && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-1", children: [
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-white/40 uppercase tracking-wider font-bold text-[10px]", children: "Dates" }),
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-white font-medium flex items-center gap-1.5", children: [
-                                /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Calendar, { size: 12, className: "text-indigo-400" }),
-                                formatDateShort(hotel.dates.checkIn),
-                                /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-white/30", children: "-" }),
-                                formatDateShort(hotel.dates.checkOut)
-                              ] })
-                            ] }),
-                            /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-1", children: [
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-white/40 uppercase tracking-wider font-bold text-[10px]", children: "Details" }),
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-white font-medium flex items-center gap-2", children: [
-                                hotel.guests && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("span", { className: "flex items-center gap-1", children: [
-                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Users, { size: 12, className: "text-emerald-400" }),
-                                  " ",
-                                  hotel.guests
+                              ) }) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Hotel, { className: "w-10 h-10 sm:w-12 sm:h-12 text-white/10" }) }),
+                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" }),
+                              layout === "list" && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "hidden sm:block absolute inset-0 bg-gradient-to-r from-transparent via-black/60 to-zinc-950" }),
+                              hotel.status && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "absolute top-3 left-3 sm:top-4 sm:left-4", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(HotelStatusBadge, { status: hotel.status }) })
+                            ]
+                          }
+                        ),
+                        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+                          "div",
+                          {
+                            className: (0, import_utils.cn)(
+                              "relative z-10 flex flex-col p-4 sm:p-6 flex-1",
+                              layout === "list" && "sm:pl-[14rem]"
+                            ),
+                            children: [
+                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2", children: [
+                                /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-1 min-w-0", children: [
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("h4", { className: "text-base sm:text-xl font-bold text-foreground group-hover:text-amber-400 transition-colors leading-tight truncate", children: hotel.name }),
+                                  hotel.address && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs font-medium text-white/60", children: [
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.MapPin, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/40 flex-shrink-0" }),
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "truncate", children: hotel.address })
+                                  ] })
                                 ] }),
-                                hotel.roomType && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
-                                  "span",
-                                  {
-                                    className: "flex items-center gap-1 truncate max-w-[100px]",
-                                    title: hotel.roomType,
-                                    children: [
-                                      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Bed, { size: 12, className: "text-rose-400" }),
-                                      " ",
-                                      hotel.roomType
-                                    ]
-                                  }
-                                )
-                              ] })
-                            ] })
-                          ] }),
-                          /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "mt-auto pt-6 flex w-full items-end justify-between", children: [
-                            hotel.amenities && hotel.amenities.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "flex -space-x-2 hidden sm:flex", children: hotel.amenities.slice(0, 3).map((a, idx) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-                              "div",
-                              {
-                                className: "w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[10px] text-zinc-400 font-bold uppercase overflow-hidden",
-                                title: a,
-                                children: a[0]
-                              },
-                              idx
-                            )) }),
-                            hotel.price && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "ml-auto flex items-center gap-4", children: [
-                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-right", children: [
-                                /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-[10px] text-white/40 font-bold uppercase tracking-wide", children: hotel.price.perNight ? "Per Night" : "Total" }),
-                                /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-2xl font-black text-white tracking-tight leading-none", children: formatCurrency(
-                                  hotel.price.amount,
-                                  hotel.price.currency
-                                ) })
+                                hotel.rating && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shrink-0 self-start", children: [
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Star, { className: "w-3 h-3 fill-amber-400 text-amber-400" }),
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-xs sm:text-sm font-bold text-foreground", children: hotel.rating })
+                                ] })
                               ] }),
-                              hotel.bookingUrl ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-                                "a",
-                                {
-                                  href: hotel.bookingUrl,
-                                  target: "_blank",
-                                  rel: "noopener noreferrer",
-                                  className: "h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 transition-transform shadow-lg shadow-white/10",
-                                  children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.ArrowRight, { size: 18, strokeWidth: 2.5 })
-                                }
-                              ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("button", { className: "h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 transition-transform shadow-lg shadow-white/10", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.ArrowRight, { size: 18, strokeWidth: 2.5 }) })
-                            ] })
-                          ] })
-                        ]
-                      }
-                    )
-                  ]
-                }
-              )
-            },
-            hotel.id
-          );
-        })
-      }
-    ),
-    children
-  ] });
+                              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "h-px bg-white/10 w-full my-3 sm:my-4 group-hover:bg-white/20 transition-colors" }),
+                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "grid grid-cols-2 gap-3 sm:gap-4 text-[0.625rem] sm:text-xs", children: [
+                                hotel.dates && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-0.5 sm:space-y-1", children: [
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-white/40 uppercase tracking-wider font-bold text-[0.5rem] sm:text-[0.625rem]", children: "Dates" }),
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-foreground font-medium flex items-center gap-1 sm:gap-1.5", children: [
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Calendar, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3 text-indigo-400 flex-shrink-0" }),
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("span", { className: "truncate", children: [
+                                      formatDateShort(hotel.dates.checkIn),
+                                      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-white/30 mx-0.5", children: "-" }),
+                                      formatDateShort(hotel.dates.checkOut)
+                                    ] })
+                                  ] })
+                                ] }),
+                                /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "space-y-0.5 sm:space-y-1", children: [
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-white/40 uppercase tracking-wider font-bold text-[0.5rem] sm:text-[0.625rem]", children: "Details" }),
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-foreground font-medium flex items-center gap-1.5 sm:gap-2 flex-wrap", children: [
+                                    hotel.guests && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("span", { className: "flex items-center gap-0.5 sm:gap-1", children: [
+                                      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Users, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400" }),
+                                      hotel.guests
+                                    ] }),
+                                    hotel.roomType && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+                                      "span",
+                                      {
+                                        className: "flex items-center gap-0.5 sm:gap-1 truncate max-w-[5rem] sm:max-w-[6.25rem]",
+                                        title: hotel.roomType,
+                                        children: [
+                                          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.Bed, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-400 flex-shrink-0" }),
+                                          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "truncate", children: hotel.roomType })
+                                        ]
+                                      }
+                                    )
+                                  ] })
+                                ] })
+                              ] }),
+                              /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "mt-auto pt-4 sm:pt-6 flex w-full items-end justify-between gap-2", children: [
+                                hotel.amenities && hotel.amenities.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "hidden sm:flex -space-x-2", children: hotel.amenities.slice(0, 3).map((a, idx) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                                  "div",
+                                  {
+                                    className: "w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[0.5rem] sm:text-[0.625rem] text-zinc-400 font-bold uppercase overflow-hidden",
+                                    title: a,
+                                    children: a[0]
+                                  },
+                                  idx
+                                )) }),
+                                hotel.price && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "ml-auto flex items-center gap-3 sm:gap-4", children: [
+                                  /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "text-right", children: [
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-white/40 font-bold uppercase tracking-wide", children: hotel.price.perNight ? "Per Night" : "Total" }),
+                                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "text-lg sm:text-2xl font-black text-foreground tracking-tight leading-none", children: formatCurrency(
+                                      hotel.price.amount,
+                                      hotel.price.currency
+                                    ) })
+                                  ] }),
+                                  hotel.bookingUrl ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                                    "a",
+                                    {
+                                      href: hotel.bookingUrl,
+                                      target: "_blank",
+                                      rel: "noopener noreferrer",
+                                      className: "h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation",
+                                      children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.ArrowRight, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", strokeWidth: 2.5 })
+                                    }
+                                  ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("button", { className: "h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_lucide_react15.ArrowRight, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", strokeWidth: 2.5 }) })
+                                ] })
+                              ] })
+                            ]
+                          }
+                        )
+                      ]
+                    }
+                  )
+                },
+                hotel.id
+              );
+            })
+          }
+        ),
+        children
+      ]
+    }
+  );
 });
 
 // src/domain/Hotel/schema.ts
@@ -3027,9 +3060,9 @@ var Trip = (0, import_react26.memo)(function Trip2({
       currency: activeTrip.totalCost?.currency
     } : null
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex flex-col gap-8 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h2", { className: "text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50", children: title || "My Trips" }) }),
-    trips && trips.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "flex gap-4 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-none snap-x snap-mandatory perspective-[1000px]", children: trips.map((trip, index) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-6 lg:gap-8 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h2", { className: "text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50", children: title || "My Trips" }) }),
+    trips && trips.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-none snap-x snap-mandatory perspective-[1000px] touch-pan-x", children: trips.map((trip, index) => {
       const isActive = activeTripId === trip.id;
       return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
         import_framer_motion13.motion.div,
@@ -3041,7 +3074,7 @@ var Trip = (0, import_react26.memo)(function Trip2({
           "data-element-key": element.key,
           "data-item-id": trip.id,
           className: (0, import_utils.cn)(
-            "min-w-[280px] h-[180px] p-5 rounded-3xl cursor-pointer relative overflow-hidden group snap-center transition-all duration-500 border",
+            "min-w-[16rem] sm:min-w-[17.5rem] h-[10rem] sm:h-[11.25rem] p-4 sm:p-5 rounded-2xl sm:rounded-3xl cursor-pointer relative overflow-hidden group snap-center transition-all duration-500 border touch-manipulation",
             isActive ? "border-primary/50 shadow-[0_0_40px_-10px_rgba(99,102,241,0.4)] scale-100" : "border-white/5 hover:border-white/20 bg-black/40 hover:bg-black/60 scale-[0.98] hover:scale-[1.0]"
           ),
           children: [
@@ -3065,10 +3098,10 @@ var Trip = (0, import_react26.memo)(function Trip2({
               )
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "relative z-10 flex flex-col h-full justify-between", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex justify-between items-start", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-1.5 text-white/90 font-bold tracking-tight bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.MapPin, { size: 12, className: "text-indigo-400" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "text-xs uppercase whitespace-nowrap", children: trip.destination || "Unknown" })
+              /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex justify-between items-start gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-1.5 text-white/90 font-bold tracking-tight bg-black/30 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/5", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.MapPin, { className: "w-3 h-3 text-indigo-400" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "text-[0.625rem] sm:text-xs uppercase whitespace-nowrap", children: trip.destination || "Unknown" })
                 ] }),
                 /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
                   StatusBadge,
@@ -3083,14 +3116,14 @@ var Trip = (0, import_react26.memo)(function Trip2({
                   "h4",
                   {
                     className: (0, import_utils.cn)(
-                      "text-xl font-bold leading-tight transition-colors",
+                      "text-base sm:text-lg lg:text-xl font-bold leading-tight transition-colors line-clamp-2",
                       isActive ? "text-white" : "text-zinc-200"
                     ),
                     children: trip.title
                   }
                 ),
-                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-2 text-xs font-medium text-white/50", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Calendar, { size: 12 }),
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-medium text-white/50", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Calendar, { className: "w-3 h-3" }),
                   trip.dates?.start ? new Date(trip.dates.start).toLocaleDateString(
                     void 0,
                     { month: "short", day: "numeric" }
@@ -3102,18 +3135,20 @@ var Trip = (0, import_react26.memo)(function Trip2({
                   ) : "TBD"
                 ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "pt-4 mt-auto border-t border-white/10 flex items-center gap-4 text-xs font-medium text-white/60", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "pt-3 sm:pt-4 mt-auto border-t border-white/10 flex items-center gap-3 sm:gap-4 text-[0.625rem] sm:text-xs font-medium text-white/60", children: [
                 trip.stats?.flights ? /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("span", { className: "flex items-center gap-1", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Plane, { size: 12, className: "text-sky-400" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Plane, { className: "w-3 h-3 text-sky-400" }),
                   " ",
                   trip.stats.flights,
-                  " Flights"
+                  " ",
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "hidden sm:inline", children: "Flights" })
                 ] }) : null,
                 trip.stats?.hotels ? /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("span", { className: "flex items-center gap-1", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Hotel, { size: 12, className: "text-amber-400" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Hotel, { className: "w-3 h-3 text-amber-400" }),
                   " ",
                   trip.stats.hotels,
-                  " Hotels"
+                  " ",
+                  /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "hidden sm:inline", children: "Hotels" })
                 ] }) : null
               ] })
             ] })
@@ -3131,20 +3166,20 @@ var Trip = (0, import_react26.memo)(function Trip2({
         transition: { duration: 0.4 },
         className: "flex flex-col gap-6",
         children: [
-          activeTrip?.totalCost && /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "glass-panel p-6 rounded-2xl flex items-center justify-between", children: [
+          activeTrip?.totalCost && /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "glass-panel p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4", children: [
             /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-3", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Wallet, { size: 20 }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react16.Wallet, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
               /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
-                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-sm font-medium text-muted-foreground", children: "Total Budget" }),
-                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-2xl font-bold tracking-tight font-mono", children: formatCurrency(
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-xs sm:text-sm font-medium text-muted-foreground", children: "Total Budget" }),
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-lg sm:text-xl lg:text-2xl font-bold tracking-tight font-mono", children: formatCurrency(
                   activeTrip.totalCost.amount,
                   activeTrip.totalCost.currency
                 ) })
               ] })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-xs text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full", children: "Estimated" })
+            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground bg-white/5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full self-start sm:self-auto", children: "Estimated" })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "relative pl-6 sm:pl-8 border-l-2 border-dashed border-white/10 space-y-8", children })
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "relative pl-4 sm:pl-6 lg:pl-8 border-l-2 border-dashed border-white/10 space-y-4 sm:space-y-6 lg:space-y-8", children })
         ]
       },
       activeTripId
@@ -3379,18 +3414,18 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
     {
       initial: { opacity: 0, scale: 0.98 },
       animate: { opacity: 1, scale: 1 },
-      className: "glass-panel w-full max-w-[500px] rounded-3xl border border-white/10 bg-zinc-900/60 backdrop-blur-xl shadow-2xl relative overflow-hidden isolate",
+      className: "glass-panel w-full max-w-[500px] rounded-2xl sm:rounded-3xl border border-white/10 bg-zinc-900/60 backdrop-blur-xl shadow-2xl relative overflow-hidden isolate",
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500" }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "p-6 sm:p-8", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center justify-between mb-8", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("h3", { className: "text-xl font-bold tracking-tight text-white m-0", children: title || "Booking" }),
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "flex bg-black/40 p-1 rounded-xl border border-white/5", children: ["flight", "hotel"].map((tab) => /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "absolute top-0 left-0 right-0 h-1 sm:h-1.5 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500" }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "p-4 sm:p-6 lg:p-8", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3 sm:gap-4", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("h3", { className: "text-lg sm:text-xl font-bold tracking-tight text-white m-0", children: title || "Booking" }),
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "flex bg-black/40 p-1 rounded-lg sm:rounded-xl border border-white/5", children: ["flight", "hotel"].map((tab) => /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
               "button",
               {
                 onClick: () => setActiveTab(tab),
                 className: (0, import_utils.cn)(
-                  "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all relative",
+                  "px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-[0.625rem] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 transition-all relative touch-manipulation",
                   activeTab === tab ? "text-white" : "text-zinc-500 hover:text-zinc-300"
                 ),
                 children: [
@@ -3398,12 +3433,12 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
                     import_framer_motion14.motion.div,
                     {
                       layoutId: "activeTab",
-                      className: "absolute inset-0 bg-white/10 rounded-lg border border-white/10 shadow-sm"
+                      className: "absolute inset-0 bg-white/10 rounded-md sm:rounded-lg border border-white/10 shadow-sm"
                     }
                   ),
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("span", { className: "relative z-10 flex items-center gap-1.5", children: [
-                    tab === "flight" ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Plane, { size: 12 }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Hotel, { size: 12 }),
-                    tab
+                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("span", { className: "relative z-10 flex items-center gap-1 sm:gap-1.5", children: [
+                    tab === "flight" ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Plane, { className: "w-3 h-3" }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Hotel, { className: "w-3 h-3" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "hidden sm:inline", children: tab })
                   ] })
                 ]
               },
@@ -3417,11 +3452,11 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
               animate: { opacity: 1, x: 0 },
               exit: { opacity: 0, x: -10 },
               transition: { duration: 0.2 },
-              className: "flex flex-col gap-6",
+              className: "flex flex-col gap-4 sm:gap-6",
               children: activeTab === "flight" ? /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_jsx_runtime19.Fragment, { children: [
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-2xl p-4 flex items-center gap-4 relative", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 relative", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex-1", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1 mb-1 block", children: "From" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase tracking-widest pl-1 mb-0.5 sm:mb-1 block", children: "From" }),
                     /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
                       "input",
                       {
@@ -3429,18 +3464,18 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
                         placeholder: "JFK",
                         value: flightForm.from,
                         onChange: (e) => updateFlightField("from", e.target.value.toUpperCase()),
-                        className: "w-full bg-transparent text-2xl font-black text-white placeholder-zinc-700 outline-none uppercase font-mono tracking-tight"
+                        className: "w-full bg-transparent text-xl sm:text-2xl font-black text-white placeholder-zinc-700 outline-none uppercase font-mono tracking-tight min-h-[2.75rem]"
                       }
                     ),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs text-zinc-500 font-medium", children: flightForm.fromCity || "Origin City" })
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 font-medium", children: flightForm.fromCity || "Origin City" })
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex flex-col items-center justify-center opacity-50", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "w-px h-8 bg-zinc-700 mx-auto mb-1" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "p-1.5 rounded-full bg-zinc-800 border border-zinc-700", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Plane, { size: 12, className: "rotate-90 text-zinc-400" }) }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "w-px h-8 bg-zinc-700 mx-auto mt-1" })
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "w-px h-6 sm:h-8 bg-zinc-700 mx-auto mb-0.5 sm:mb-1" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "p-1 sm:p-1.5 rounded-full bg-zinc-800 border border-zinc-700", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Plane, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3 rotate-90 text-zinc-400" }) }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "w-px h-6 sm:h-8 bg-zinc-700 mx-auto mt-0.5 sm:mt-1" })
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex-1 text-right", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest pr-1 mb-1 block", children: "To" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase tracking-widest pr-1 mb-0.5 sm:mb-1 block", children: "To" }),
                     /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
                       "input",
                       {
@@ -3448,26 +3483,26 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
                         placeholder: "LHR",
                         value: flightForm.to,
                         onChange: (e) => updateFlightField("to", e.target.value.toUpperCase()),
-                        className: "w-full bg-transparent text-2xl font-black text-white placeholder-zinc-700 outline-none uppercase font-mono tracking-tight text-right"
+                        className: "w-full bg-transparent text-xl sm:text-2xl font-black text-white placeholder-zinc-700 outline-none uppercase font-mono tracking-tight text-right min-h-[2.75rem]"
                       }
                     ),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs text-zinc-500 font-medium", children: flightForm.toCity || "Destination City" })
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 font-medium", children: flightForm.toCity || "Destination City" })
                   ] })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "grid grid-cols-2 gap-4", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-xl p-3 hover:border-white/20 transition-colors cursor-pointer group", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-2 mb-1 text-zinc-500 group-hover:text-zinc-300", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Calendar, { size: 12 }),
-                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-[10px] font-bold uppercase tracking-widest", children: "Date" })
+                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "grid grid-cols-2 gap-2 sm:gap-4", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-lg sm:rounded-xl p-2 sm:p-3 hover:border-white/20 transition-colors cursor-pointer group touch-manipulation", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 text-zinc-500 group-hover:text-zinc-300", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Calendar, { className: "w-3 h-3" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold uppercase tracking-widest", children: "Date" })
                     ] }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-sm font-semibold text-white", children: flightForm.date || "Select Date" })
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs sm:text-sm font-semibold text-white", children: flightForm.date || "Select Date" })
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-xl p-3 hover:border-white/20 transition-colors cursor-pointer group", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-2 mb-1 text-zinc-500 group-hover:text-zinc-300", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.User, { size: 12 }),
-                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-[10px] font-bold uppercase tracking-widest", children: "Passengers" })
+                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-lg sm:rounded-xl p-2 sm:p-3 hover:border-white/20 transition-colors cursor-pointer group touch-manipulation", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 text-zinc-500 group-hover:text-zinc-300", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.User, { className: "w-3 h-3" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold uppercase tracking-widest", children: "Passengers" })
                     ] }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "text-sm font-semibold text-white", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "text-xs sm:text-sm font-semibold text-white", children: [
                       flightForm.passengers,
                       " Adult",
                       flightForm.passengers > 1 ? "s" : ""
@@ -3475,16 +3510,15 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
                   ] })
                 ] })
               ] }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_jsx_runtime19.Fragment, { children: [
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-2xl p-4 flex items-center gap-4 group hover:border-white/20 transition-colors", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/20 border border-white/5 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 group hover:border-white/20 transition-colors touch-manipulation", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
                     import_lucide_react17.MapPin,
                     {
-                      className: "text-zinc-600 group-hover:text-sky-500 transition-colors",
-                      size: 24
+                      className: "text-zinc-600 group-hover:text-sky-500 transition-colors w-5 h-5 sm:w-6 sm:h-6"
                     }
                   ),
                   /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex-1", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-0.5 block", children: "Destination" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase tracking-widest mb-0.5 block", children: "Destination" }),
                     /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
                       "input",
                       {
@@ -3492,29 +3526,29 @@ var BookingForms = (0, import_react29.memo)(function BookingForms2({
                         placeholder: "Where to?",
                         value: hotelForm.destination,
                         onChange: (e) => updateHotelField("destination", e.target.value),
-                        className: "w-full bg-transparent text-lg font-bold text-white placeholder-zinc-700 outline-none"
+                        className: "w-full bg-transparent text-base sm:text-lg font-bold text-white placeholder-zinc-700 outline-none min-h-[2.75rem]"
                       }
                     )
                   ] })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "grid grid-cols-2 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/5", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/30 p-3 hover:bg-black/40 transition-colors cursor-pointer text-center", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1", children: "Check-in" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-sm font-semibold text-white", children: hotelForm.checkIn || "Add Date" })
+                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "grid grid-cols-2 gap-px bg-white/10 rounded-lg sm:rounded-xl overflow-hidden border border-white/5", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/30 p-2 sm:p-3 hover:bg-black/40 transition-colors cursor-pointer text-center touch-manipulation", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase tracking-widest mb-0.5 sm:mb-1", children: "Check-in" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs sm:text-sm font-semibold text-white", children: hotelForm.checkIn || "Add Date" })
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/30 p-3 hover:bg-black/40 transition-colors cursor-pointer text-center", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1", children: "Check-out" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-sm font-semibold text-white", children: hotelForm.checkOut || "Add Date" })
+                  /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "bg-black/30 p-2 sm:p-3 hover:bg-black/40 transition-colors cursor-pointer text-center touch-manipulation", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase tracking-widest mb-0.5 sm:mb-1", children: "Check-out" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs sm:text-sm font-semibold text-white", children: hotelForm.checkOut || "Add Date" })
                   ] })
                 ] })
               ] })
             },
             activeTab
           ) }),
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "mt-8 pt-6 border-t border-dashed border-white/10 flex items-center justify-between", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs text-zinc-500 font-medium", children: promoText }),
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("button", { className: "h-10 px-6 bg-white text-black text-sm font-bold uppercase tracking-wide rounded-lg flex items-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-white/10", children: [
-              mode === "create" ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Search, { size: 14, strokeWidth: 3 }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.ArrowRight, { size: 14, strokeWidth: 3 }),
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-dashed border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 font-medium text-center sm:text-left", children: promoText }),
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("button", { className: "h-9 sm:h-10 px-4 sm:px-6 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wide rounded-lg flex items-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-white/10 touch-manipulation w-full sm:w-auto justify-center", children: [
+              mode === "create" ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.Search, { className: "w-3.5 h-3.5", strokeWidth: 3 }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react17.ArrowRight, { className: "w-3.5 h-3.5", strokeWidth: 3 }),
               actionLabel
             ] })
           ] })
@@ -3547,8 +3581,8 @@ var ProfileCard = (0, import_react30.memo)(function ProfileCard2({
   if (!profile) {
     return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(EmptyState, { icon: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.User, { className: "w-10 h-10" }), message: "No profile" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "group relative rounded-3xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "h-32 sm:h-40 relative bg-zinc-800 border-b border-white/5", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "group relative rounded-2xl sm:rounded-3xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "h-24 sm:h-32 lg:h-40 relative bg-zinc-800 border-b border-white/5", children: [
       profile.coverImage ? /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "absolute inset-0", children: [
         /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
           "img",
@@ -3565,51 +3599,51 @@ var ProfileCard = (0, import_react30.memo)(function ProfileCard2({
           className: "absolute inset-0 opacity-10",
           style: {
             backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
-            backgroundSize: "16px 16px"
+            backgroundSize: "12px 12px"
           }
         }
       )
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "px-6 pb-6 relative", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "absolute -top-12 left-6", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-24 h-24 rounded-2xl bg-black border-4 border-zinc-900 shadow-2xl overflow-hidden ring-1 ring-white/10 group-hover:ring-white/30 transition-all group-hover:scale-105 duration-300", children: profile.avatar ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "px-4 sm:px-5 lg:px-6 pb-4 sm:pb-5 lg:pb-6 relative", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "absolute -top-10 sm:-top-12 left-4 sm:left-6", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl bg-black border-3 sm:border-4 border-zinc-900 shadow-2xl overflow-hidden ring-1 ring-white/10 group-hover:ring-white/30 transition-all group-hover:scale-105 duration-300", children: profile.avatar ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
         "img",
         {
           src: profile.avatar,
           className: "w-full h-full object-cover"
         }
-      ) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-full h-full flex items-center justify-center bg-zinc-800 text-2xl font-bold text-zinc-500 uppercase", children: profile.name[0] }) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex justify-end pt-4 mb-4 gap-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("button", { className: "h-9 px-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-colors", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.MessageCircle, { size: 14 }),
+      ) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-full h-full flex items-center justify-center bg-zinc-800 text-xl sm:text-2xl font-bold text-zinc-500 uppercase", children: profile.name[0] }) }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex justify-end pt-3 sm:pt-4 mb-3 sm:mb-4 gap-1.5 sm:gap-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("button", { className: "h-8 sm:h-9 px-3 sm:px-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-[0.625rem] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 transition-colors touch-manipulation", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.MessageCircle, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }),
           /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "hidden sm:inline", children: "Message" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
           "button",
           {
             className: (0, import_utils.cn)(
-              "h-9 px-4 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-lg",
+              "h-8 sm:h-9 px-3 sm:px-4 rounded-lg font-bold text-[0.625rem] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 transition-all shadow-lg touch-manipulation",
               profile.isFollowing ? "bg-transparent border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 shadow-emerald-500/10" : "bg-white text-black hover:bg-zinc-200 border border-transparent shadow-white/10"
             ),
             children: [
-              profile.isFollowing ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Check, { size: 14, strokeWidth: 3 }) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.UserPlus, { size: 14, strokeWidth: 3 }),
+              profile.isFollowing ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Check, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5", strokeWidth: 3 }) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.UserPlus, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5", strokeWidth: 3 }),
               profile.isFollowing ? "Following" : "Follow"
             ]
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "mt-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("h2", { className: "text-2xl font-black text-white tracking-tight leading-none mb-1 flex items-center gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "mt-1.5 sm:mt-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("h2", { className: "text-xl sm:text-2xl font-black text-white tracking-tight leading-none mb-0.5 sm:mb-1 flex items-center gap-1.5 sm:gap-2", children: [
           profile.name,
           profile.isFollowing && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgb(16,185,129)]" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "text-sm text-zinc-500 font-mono mb-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "text-xs sm:text-sm text-zinc-500 font-mono mb-3 sm:mb-4", children: [
           "@",
           profile.handle
         ] }),
-        profile.bio && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("p", { className: "text-sm text-zinc-300 leading-relaxed mb-6 max-w-md border-l-2 border-white/10 pl-3 italic", children: profile.bio }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex flex-wrap gap-4 text-xs text-zinc-500 mb-6 font-medium", children: [
-          profile.location && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex items-center gap-1.5", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.MapPin, { size: 12, className: "text-zinc-600" }),
+        profile.bio && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("p", { className: "text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4 sm:mb-6 max-w-md border-l-2 border-white/10 pl-2 sm:pl-3 italic", children: profile.bio }),
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex flex-wrap gap-3 sm:gap-4 text-[0.625rem] sm:text-xs text-zinc-500 mb-4 sm:mb-6 font-medium", children: [
+          profile.location && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.MapPin, { className: "w-3 h-3 text-zinc-600" }),
             profile.location
           ] }),
           profile.website && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
@@ -3617,26 +3651,26 @@ var ProfileCard = (0, import_react30.memo)(function ProfileCard2({
             {
               href: profile.website,
               target: "_blank",
-              className: "flex items-center gap-1.5 text-sky-500/80 hover:text-sky-400 hover:underline transition-colors decoration-sky-500/30",
+              className: "flex items-center gap-1 sm:gap-1.5 text-sky-500/80 hover:text-sky-400 hover:underline transition-colors decoration-sky-500/30",
               children: [
-                /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Link, { size: 12 }),
-                profile.website.replace(/^https?:\/\//, "")
+                /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Link, { className: "w-3 h-3" }),
+                /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "truncate max-w-[8rem] sm:max-w-none", children: profile.website.replace(/^https?:\/\//, "") })
               ]
             }
           ),
-          profile.joinedDate && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex items-center gap-1.5", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Calendar, { size: 12, className: "text-zinc-600" }),
+          profile.joinedDate && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_lucide_react18.Calendar, { className: "w-3 h-3 text-zinc-600" }),
             "Joined ",
             profile.joinedDate
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "flex items-center gap-8 pt-6 border-t border-dashed border-white/10", children: profile.stats && Object.entries(profile.stats).map(([key, value]) => /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "flex items-center gap-6 sm:gap-8 pt-4 sm:pt-6 border-t border-dashed border-white/10", children: profile.stats && Object.entries(profile.stats).map(([key, value]) => /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
           "div",
           {
             className: "flex flex-col gap-0.5 hover:opacity-80 transition-opacity cursor-pointer",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "text-lg font-black text-white leading-none", children: value }),
-              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "text-[10px] font-bold text-zinc-600 uppercase tracking-wider", children: key })
+              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "text-base sm:text-lg font-black text-white leading-none", children: value }),
+              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-600 uppercase tracking-wider", children: key })
             ]
           },
           key
@@ -3667,76 +3701,74 @@ var ActivityFeed = (0, import_react31.memo)(function ActivityFeed2({
       }
     );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex flex-col gap-4 max-w-xl mx-auto", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex flex-col gap-3 sm:gap-4 max-w-xl mx-auto", children: [
     items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(
       "div",
       {
-        className: "group relative pl-8 pb-8 last:pb-0",
+        className: "group relative pl-6 sm:pl-8 pb-6 sm:pb-8 last:pb-0",
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": item.id,
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute left-[15px] top-10 bottom-0 w-px bg-white/10 group-last:hidden" }),
-          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute left-0 top-0 w-8 h-8 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden ring-4 ring-zinc-950 z-10 transition-transform group-hover:scale-110", children: item.user.avatar ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute left-[11px] sm:left-[15px] top-8 sm:top-10 bottom-0 w-px bg-white/10 group-last:hidden" }),
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute left-0 top-0 w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden ring-2 sm:ring-4 ring-zinc-950 z-10 transition-transform group-hover:scale-110", children: item.user.avatar ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
             "img",
             {
               src: item.user.avatar,
               className: "w-full h-full object-cover"
             }
-          ) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "w-full h-full flex items-center justify-center bg-zinc-800 text-[10px] font-bold text-zinc-500 uppercase", children: item.user.name[0] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-zinc-900/80 hover:border-white/20 transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute top-0 right-0 p-2 opacity-50", children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "w-2 h-2 rounded-full border border-white/20" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex justify-between items-start mb-3", children: [
+          ) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "w-full h-full flex items-center justify-center bg-zinc-800 text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-500 uppercase", children: item.user.name[0] }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 hover:bg-zinc-900/80 hover:border-white/20 transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute top-0 right-0 p-1.5 sm:p-2 opacity-50", children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full border border-white/20" }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex justify-between items-start mb-2 sm:mb-3 gap-2", children: [
               /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
-                /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "text-sm font-bold text-white tracking-tight", children: item.user.name }),
-                  /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("span", { className: "text-xs text-zinc-500 font-mono", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex flex-wrap items-center gap-1.5 sm:gap-2", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "text-xs sm:text-sm font-bold text-white tracking-tight", children: item.user.name }),
+                  /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 font-mono", children: [
                     "@",
                     item.user.handle || item.user.name.toLowerCase().replace(" ", "")
                   ] })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "text-[10px] font-mono text-zinc-600 mt-1 uppercase tracking-wide flex items-center gap-1.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "text-[0.5rem] sm:text-[0.625rem] font-mono text-zinc-600 mt-0.5 sm:mt-1 uppercase tracking-wide flex items-center gap-1 sm:gap-1.5", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { children: "Logged" }),
                   /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "w-1 h-1 rounded-full bg-zinc-700" }),
                   item.timestamp
                 ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { className: "text-zinc-600 hover:text-white transition-colors p-1 rounded hover:bg-white/5", children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_lucide_react19.MoreHorizontal, { size: 14 }) })
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { className: "text-zinc-600 hover:text-white transition-colors p-0.5 sm:p-1 rounded hover:bg-white/5 touch-manipulation", children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_lucide_react19.MoreHorizontal, { className: "w-3.5 h-3.5" }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "text-sm text-zinc-300 leading-relaxed mb-4", children: render(item.content, { inline: true }) }),
-            item.image && /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "rounded-xl overflow-hidden border border-white/10 mb-4 bg-zinc-950 min-h-[150px] relative group/image", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "text-xs sm:text-sm text-zinc-300 leading-relaxed mb-3 sm:mb-4", children: render(item.content, { inline: true }) }),
+            item.image && /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "rounded-lg sm:rounded-xl overflow-hidden border border-white/10 mb-3 sm:mb-4 bg-zinc-950 min-h-[100px] sm:min-h-[150px] relative group/image", children: [
               /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
                 "img",
                 {
                   src: item.image,
-                  className: "w-full h-auto object-cover max-h-[300px] transition-transform duration-700 group-hover/image:scale-105"
+                  className: "w-full h-auto object-cover max-h-[200px] sm:max-h-[300px] transition-transform duration-700 group-hover/image:scale-105"
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute inset-0 ring-1 ring-inset ring-white/5 rounded-xl pointer-events-none" })
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "absolute inset-0 ring-1 ring-inset ring-white/5 rounded-lg sm:rounded-xl pointer-events-none" })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex items-center gap-6 border-t border-dashed border-white/10 pt-3 mt-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-rose-400 transition-colors group/action py-1 px-2 rounded hover:bg-white/5 -ml-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flex items-center gap-4 sm:gap-6 border-t border-dashed border-white/10 pt-2 sm:pt-3 mt-1.5 sm:mt-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-rose-400 transition-colors group/action py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 -ml-1.5 sm:-ml-2 touch-manipulation", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
                   import_lucide_react19.Heart,
                   {
-                    size: 14,
-                    className: "group-hover/action:scale-110 transition-transform"
+                    className: "w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/action:scale-110 transition-transform"
                   }
                 ),
                 item.likes || 0
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-sky-400 transition-colors group/action py-1 px-2 rounded hover:bg-white/5", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-sky-400 transition-colors group/action py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 touch-manipulation", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
                   import_lucide_react19.MessageSquare,
                   {
-                    size: 14,
-                    className: "group-hover/action:scale-110 transition-transform"
+                    className: "w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/action:scale-110 transition-transform"
                   }
                 ),
                 item.comments || 0
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-emerald-400 transition-colors ml-auto py-1 px-2 rounded hover:bg-white/5 -mr-2", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_lucide_react19.Share2, { size: 14 }),
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-bold text-zinc-500 hover:text-emerald-400 transition-colors ml-auto py-0.5 sm:py-1 px-1.5 sm:px-2 rounded hover:bg-white/5 -mr-1.5 sm:-mr-2 touch-manipulation", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_lucide_react19.Share2, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }),
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "hidden sm:inline", children: "Share" })
               ] })
             ] })
@@ -3769,9 +3801,9 @@ var Pricing = (0, import_react32.memo)(function Pricing2({
       }
     );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex flex-col gap-6", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("h3", { className: "m-0 text-xl font-bold tracking-tight text-white", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6", children: plans.map((plan, index) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("h3", { className: "m-0 text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white", children: title }),
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-4 sm:gap-5 lg:gap-6", children: plans.map((plan, index) => {
       const isHighlight = plan.highlight;
       return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(
         "div",
@@ -3782,46 +3814,46 @@ var Pricing = (0, import_react32.memo)(function Pricing2({
           className: (0, import_utils.cn)(
             "group relative bg-zinc-900 border transition-all duration-300 flex flex-col isolate overflow-hidden",
             // Flight/Invoice Style:
-            "rounded-none sm:rounded-2xl border-white/10",
+            "rounded-xl sm:rounded-2xl border-white/10",
             isHighlight ? "shadow-2xl shadow-indigo-500/10 ring-1 ring-indigo-500/50 bg-zinc-900/80" : "hover:border-white/20 hover:shadow-xl hover:-translate-y-1"
           ),
           children: [
             isHighlight && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "absolute top-0 inset-x-0 h-1 bg-indigo-500 z-10" }),
-            /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "p-6 pb-8 border-b border-dashed border-white/10", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex justify-between items-start mb-4", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "p-4 sm:p-5 lg:p-6 pb-6 sm:pb-8 border-b border-dashed border-white/10", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex justify-between items-start mb-3 sm:mb-4 gap-2", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("h4", { className: "font-bold text-lg text-white mb-1", children: plan.name }),
-                  plan.badge && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/10 text-white/80 border border-white/10", children: plan.badge })
+                  /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("h4", { className: "font-bold text-base sm:text-lg text-white mb-1", children: plan.name }),
+                  plan.badge && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "inline-block px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] font-bold uppercase tracking-wider bg-white/10 text-white/80 border border-white/10", children: plan.badge })
                 ] }),
-                isHighlight && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/40", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_lucide_react20.Star, { size: 14, fill: "currentColor" }) })
+                isHighlight && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/40 shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_lucide_react20.Star, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5", fill: "currentColor" }) })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex items-baseline gap-1", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "text-4xl font-black text-white tracking-tight leading-none", children: plan.price }),
-                plan.cadence && /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("span", { className: "text-xs font-mono text-zinc-500 uppercase", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-none", children: plan.price }),
+                plan.cadence && /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("span", { className: "text-[0.625rem] sm:text-xs font-mono text-zinc-500 uppercase", children: [
                   "/",
                   plan.cadence
                 ] })
               ] }),
-              plan.description && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("p", { className: "mt-3 text-sm text-zinc-400 leading-snug", children: render(plan.description, { inline: true }) })
+              plan.description && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("p", { className: "mt-2 sm:mt-3 text-xs sm:text-sm text-zinc-400 leading-snug", children: render(plan.description, { inline: true }) })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "relative h-px w-full my-0 -mt-px z-10", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-r border-white/10" }),
-              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-l border-white/10" })
+              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-black border-r border-white/10" }),
+              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "absolute -right-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-black border-l border-white/10" })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "p-6 flex-1 bg-black/20", children: [
-              plan.features && plan.features.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("ul", { className: "space-y-3 mb-8", children: plan.features.map((feature) => /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "p-4 sm:p-5 lg:p-6 flex-1 bg-black/20", children: [
+              plan.features && plan.features.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("ul", { className: "space-y-2 sm:space-y-3 mb-6 sm:mb-8", children: plan.features.map((feature) => /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(
                 "li",
                 {
-                  className: "flex items-start gap-3 text-sm text-zinc-300",
+                  className: "flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-zinc-300",
                   children: [
                     /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(
                       "div",
                       {
                         className: (0, import_utils.cn)(
-                          "w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
+                          "w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
                           isHighlight ? "bg-indigo-500/20 text-indigo-400" : "bg-white/10 text-zinc-400"
                         ),
-                        children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_lucide_react20.Check, { size: 10, strokeWidth: 4 })
+                        children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_lucide_react20.Check, { className: "w-2 h-2 sm:w-2.5 sm:h-2.5", strokeWidth: 4 })
                       }
                     ),
                     /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "leading-tight", children: render(feature, { inline: true }) })
@@ -3833,7 +3865,7 @@ var Pricing = (0, import_react32.memo)(function Pricing2({
                 "button",
                 {
                   className: (0, import_utils.cn)(
-                    "w-full py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-all",
+                    "w-full py-2 sm:py-3 rounded-lg text-[0.625rem] sm:text-xs font-bold uppercase tracking-widest transition-all touch-manipulation min-h-[2.75rem]",
                     isHighlight ? "bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-500/25" : "bg-zinc-800 hover:bg-zinc-700 text-white border border-white/5"
                   ),
                   children: "Get Started"
@@ -3869,41 +3901,41 @@ var ArticleCard = (0, import_react33.memo)(function ArticleCard2({
       }
     );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "group relative rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden hover:border-white/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "group relative rounded-xl sm:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden hover:border-white/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1", children: [
     /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute top-0 left-0 right-0 h-1 bg-white/5 group-hover:bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 z-10" }),
     /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex flex-col sm:flex-row h-full", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "sm:w-1/3 min-h-[200px] relative overflow-hidden bg-zinc-800", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "sm:w-1/3 min-h-[10rem] sm:min-h-[12.5rem] relative overflow-hidden bg-zinc-800", children: [
         article.coverImage ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute inset-0 transition-transform duration-700 group-hover:scale-105", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
           "img",
           {
             src: article.coverImage,
             className: "w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           }
-        ) }) : /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "text-[10px] font-mono text-zinc-500 uppercase tracking-widest", children: "No Cover" }) }),
-        article.category && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute top-4 left-4 px-2 py-1 bg-black/60 backdrop-blur-md rounded text-[10px] font-bold text-white uppercase tracking-wider border border-white/10", children: article.category })
+        ) }) : /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] font-mono text-zinc-500 uppercase tracking-widest", children: "No Cover" }) }),
+        article.category && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "absolute top-3 sm:top-4 left-3 sm:left-4 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-black/60 backdrop-blur-md rounded text-[0.5rem] sm:text-[0.625rem] font-bold text-white uppercase tracking-wider border border-white/10", children: article.category })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex-1 p-6 flex flex-col", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-3 text-xs text-zinc-500 font-mono mb-3", children: [
-          article.date && /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-1.5", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.Calendar, { size: 12 }),
+      /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex-1 p-4 sm:p-5 lg:p-6 flex flex-col", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 text-[0.625rem] sm:text-xs text-zinc-500 font-mono mb-2 sm:mb-3", children: [
+          article.date && /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.Calendar, { className: "w-3 h-3" }),
             new Date(article.date).toLocaleDateString()
           ] }),
           article.readTime && /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(import_jsx_runtime23.Fragment, { children: [
             /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { children: "\u2022" }),
-            /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-1.5", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.Clock, { size: 12 }),
+            /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.Clock, { className: "w-3 h-3" }),
               article.readTime
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("h3", { className: "text-xl font-bold text-white leading-tight mb-3 group-hover:text-sky-300 transition-colors", children: article.title }),
-        article.excerpt && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("p", { className: "text-sm text-zinc-400 line-clamp-2 leading-relaxed mb-6 flex-1", children: render(article.excerpt, { inline: true }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center justify-between pt-4 border-t border-dashed border-white/10 mt-auto", children: [
-          article.author && /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "w-6 h-6 rounded-full bg-zinc-800 border border-white/10 overflow-hidden", children: article.author.avatar && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("img", { src: article.author.avatar }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "text-xs font-bold text-zinc-300 uppercase tracking-wide", children: article.author.name })
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("h3", { className: "text-base sm:text-lg lg:text-xl font-bold text-white leading-tight mb-2 sm:mb-3 group-hover:text-sky-300 transition-colors", children: article.title }),
+        article.excerpt && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("p", { className: "text-xs sm:text-sm text-zinc-400 line-clamp-2 leading-relaxed mb-4 sm:mb-6 flex-1", children: render(article.excerpt, { inline: true }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center justify-between pt-3 sm:pt-4 border-t border-dashed border-white/10 mt-auto", children: [
+          article.author && /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-zinc-800 border border-white/10 overflow-hidden", children: article.author.avatar && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("img", { src: article.author.avatar }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "text-[0.625rem] sm:text-xs font-bold text-zinc-300 uppercase tracking-wide", children: article.author.name })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "relative overflow-hidden w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-white/30 transition-colors", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.ArrowUpRight, { size: 16 }) })
+          /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "relative overflow-hidden w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-white/30 transition-colors", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_lucide_react21.ArrowUpRight, { className: "w-4 h-4" }) })
         ] })
       ] })
     ] }),
@@ -4273,6 +4305,14 @@ function useKanbanState(adapter, options) {
 
 // src/domain/Kanban/component.tsx
 var import_jsx_runtime26 = require("react/jsx-runtime");
+var containerVariants3 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+var columnVariants = {
+  hidden: { opacity: 0, x: "1rem" },
+  visible: { opacity: 1, x: 0 }
+};
 var Kanban = (0, import_react38.memo)(function Kanban2({
   element,
   children
@@ -4322,12 +4362,12 @@ var Kanban = (0, import_react38.memo)(function Kanban2({
     )
   });
   if (!displayColumns.length) {
-    return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex flex-col w-full min-h-[200px]", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("h3", { className: "text-2xl font-black tracking-tight text-foreground mb-6", children: title }),
+    return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex flex-col w-full min-h-[12.5rem]", children: [
+      title && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("h3", { className: "text-xl sm:text-2xl font-black tracking-tight text-foreground mb-4 sm:mb-6", children: title }),
       /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
         EmptyState,
         {
-          icon: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_lucide_react24.Layout, { className: "w-10 h-10" }),
+          icon: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_lucide_react24.Layout, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
           message: "No columns"
         }
       ),
@@ -4335,67 +4375,91 @@ var Kanban = (0, import_react38.memo)(function Kanban2({
     ] });
   }
   return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex flex-col w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "mb-6 flex items-center justify-between flex-wrap gap-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("h3", { className: "text-2xl font-black tracking-tight text-foreground", children: title }),
-      !lock && /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("button", { className: "flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_lucide_react24.Plus, { size: 14 }),
-        "NEW TASK"
+    title && /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "mb-4 sm:mb-6 flex items-center justify-between flex-wrap gap-3 sm:gap-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("h3", { className: "text-xl sm:text-2xl font-black tracking-tight text-foreground", children: title }),
+      !lock && /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("button", { className: "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:py-1.5 rounded-full bg-primary text-primary-foreground text-[0.625rem] sm:text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-transform min-h-[2.75rem] sm:min-h-0 touch-manipulation", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_lucide_react24.Plus, { className: "w-3.5 h-3.5 sm:w-3.5 sm:h-3.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "hidden sm:inline", children: "NEW TASK" }),
+        /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "sm:hidden", children: "ADD" })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "flex flex-col md:flex-row gap-4 overflow-x-auto pb-6 min-h-[200px] snap-x snap-mandatory scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent", children: displayColumns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(
-      "div",
+    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+      import_framer_motion17.motion.div,
       {
-        onDragEnter: (e) => handleDragEnter(e, col.id),
-        onDragLeave: (e) => handleDragLeave(e, col.id),
-        onDragOver: handleDragOver,
-        onDrop: (e) => handleDrop(e, col.id),
+        variants: containerVariants3,
+        initial: "hidden",
+        animate: "visible",
         className: (0, import_utils.cn)(
-          "min-w-full md:min-w-[300px] flex-shrink-0 snap-center md:snap-start flex flex-col min-h-[200px] rounded-2xl bg-zinc-900/40 backdrop-blur-md border border-white/5 relative overflow-hidden transition-all duration-200",
-          dropTarget === col.id && "border-primary/50 bg-primary/5 ring-2 ring-primary/30"
+          "flex flex-col gap-3 sm:gap-4",
+          "sm:flex-row sm:overflow-x-auto sm:pb-4",
+          "sm:snap-x sm:snap-mandatory",
+          "scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
         ),
-        children: [
-          /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
-            "div",
-            {
-              className: "absolute top-0 left-0 right-0 h-1",
-              style: { backgroundColor: col.color || "var(--border)" }
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex justify-between items-center p-4 border-b border-white/5 bg-white/[0.02]", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "font-bold text-sm tracking-wide text-foreground", children: col.title }),
-            /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "text-[10px] font-bold text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10", children: col.items.length })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex flex-col gap-3 overflow-y-auto p-3 flex-1 min-h-[100px]", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion17.AnimatePresence, { mode: "popLayout", children: col.items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
-              KanbanCard,
-              {
-                item,
-                elementKey: element.key,
-                colId: col.id,
-                lock,
-                isDragging: draggedItem?.item.id === item.id,
-                onDragStart: handleDragStart,
-                onDragEnd: handleDragEnd,
-                isSubItemCompleted,
-                toggleSubItem
-              },
-              item.id
-            )) }),
-            col.items.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
-              "div",
-              {
-                className: (0, import_utils.cn)(
-                  "flex-1 min-h-[80px] rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center text-xs text-muted-foreground",
-                  dropTarget === col.id && "border-primary/50 bg-primary/5"
-                ),
-                children: dropTarget === col.id ? "Drop here" : "No items"
-              }
-            )
-          ] })
-        ]
-      },
-      col.id
-    )) }),
+        children: displayColumns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(
+          import_framer_motion17.motion.div,
+          {
+            variants: columnVariants,
+            onDragEnter: (e) => handleDragEnter(e, col.id),
+            onDragLeave: (e) => handleDragLeave(e, col.id),
+            onDragOver: handleDragOver,
+            onDrop: (e) => handleDrop(e, col.id),
+            className: (0, import_utils.cn)(
+              // Mobile: full width, stacked
+              "w-full",
+              // Desktop: fixed width, side-by-side
+              "sm:min-w-[17rem] sm:max-w-[20rem] sm:flex-shrink-0 sm:snap-start",
+              // Common styles
+              "flex flex-col min-h-[10rem] sm:min-h-[12.5rem]",
+              "rounded-xl sm:rounded-2xl bg-zinc-900/40 backdrop-blur-md",
+              "border border-white/5 relative overflow-hidden transition-all duration-200",
+              dropTarget === col.id && "border-primary/50 bg-primary/5 ring-2 ring-primary/30"
+            ),
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+                "div",
+                {
+                  className: "absolute top-0 left-0 right-0 h-1",
+                  style: { backgroundColor: col.color || "var(--border)" }
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex justify-between items-center p-3 sm:p-4 border-b border-white/5 bg-white/[0.02]", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "font-bold text-xs sm:text-sm tracking-wide text-foreground", children: col.title }),
+                /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { className: "text-[0.5625rem] sm:text-[0.625rem] font-bold text-muted-foreground bg-white/5 px-1.5 sm:px-2 py-0.5 rounded-full border border-white/10", children: col.items.length })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 overflow-y-auto p-2 sm:p-3 flex-1 min-h-[5rem] sm:min-h-[6.25rem]", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion17.AnimatePresence, { mode: "popLayout", children: col.items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+                  KanbanCard,
+                  {
+                    item,
+                    elementKey: element.key,
+                    colId: col.id,
+                    lock,
+                    isDragging: draggedItem?.item.id === item.id,
+                    onDragStart: handleDragStart,
+                    onDragEnd: handleDragEnd,
+                    isSubItemCompleted,
+                    toggleSubItem
+                  },
+                  item.id
+                )) }),
+                col.items.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+                  "div",
+                  {
+                    className: (0, import_utils.cn)(
+                      "flex-1 min-h-[4rem] sm:min-h-[5rem] rounded-lg border-2 border-dashed border-white/10",
+                      "flex items-center justify-center text-[0.625rem] sm:text-xs text-muted-foreground",
+                      dropTarget === col.id && "border-primary/50 bg-primary/5"
+                    ),
+                    children: dropTarget === col.id ? "Drop here" : "No items"
+                  }
+                )
+              ] })
+            ]
+          },
+          col.id
+        ))
+      }
+    ),
     children
   ] });
 });
@@ -4513,6 +4577,15 @@ var PRIORITY_TO_VARIANT2 = {
   medium: "warning",
   low: "success"
 };
+var itemVariants = {
+  hidden: { opacity: 0, y: "0.625rem", scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1 }
+};
+var checkVariants = {
+  hidden: { scale: 0, rotate: -45 },
+  visible: { scale: 1, rotate: 0 },
+  exit: { scale: 0, rotate: 45 }
+};
 var TodoList = (0, import_react41.memo)(function TodoList2({
   element,
   children
@@ -4539,15 +4612,16 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
       }))
     }))
   });
-  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "flex flex-col gap-3", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion18.AnimatePresence, { mode: "popLayout", initial: false, children: itemsToRender.map((item, i) => {
+  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion18.AnimatePresence, { mode: "popLayout", initial: false, children: itemsToRender.map((item, i) => {
     return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)(
       import_framer_motion18.motion.div,
       {
         layout: true,
-        initial: { opacity: 0, y: 10, scale: 0.98 },
-        animate: { opacity: 1, y: 0, scale: 1 },
+        variants: itemVariants,
+        initial: "hidden",
+        animate: "visible",
         transition: { duration: 0.2, delay: i * 0.05 },
-        className: "flex flex-col gap-2",
+        className: "flex flex-col gap-1.5 sm:gap-2",
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)(
             "div",
@@ -4557,9 +4631,9 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
               "data-item-id": item.id,
               onClick: () => toggleItem(item.id),
               className: (0, import_utils.cn)(
-                "group relative flex items-center gap-4 py-3.5 px-5 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden isolate",
-                item.status === "done" ? "bg-white/[0.02] border-white/5 opacity-60" : "glass-panel bg-card/60 hover:bg-card/80 border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5",
-                depth > 0 && "ml-6 border-l-2 border-l-white/10"
+                "group relative flex items-center gap-3 sm:gap-4 py-3 sm:py-3.5 px-3 sm:px-5 rounded-xl sm:rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden isolate touch-manipulation",
+                item.status === "done" ? "bg-white/[0.02] border-white/5 opacity-60" : "glass-panel bg-card/60 hover:bg-card/80 border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5 active:scale-[0.98]",
+                depth > 0 && "ml-4 sm:ml-6 border-l-2 border-l-white/10"
               ),
               children: [
                 depth === 0 && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" }),
@@ -4569,8 +4643,8 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
                     "data-checkbox": true,
                     "data-interactive": true,
                     className: (0, import_utils.cn)(
-                      "w-6 h-6 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer shrink-0 shadow-sm relative overflow-hidden",
-                      item.status === "done" ? "bg-gradient-to-br from-indigo-500 to-purple-500 border-transparent shadow-[0_0_12px_rgba(99,102,241,0.4)]" : "border-white/20 bg-black/20 group-hover:border-indigo-400/50"
+                      "w-6 h-6 sm:w-6 sm:h-6 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer shrink-0 shadow-sm relative overflow-hidden min-w-[1.5rem]",
+                      item.status === "done" ? "bg-gradient-to-br from-indigo-500 to-purple-500 border-transparent shadow-[0_0_0.75rem_rgba(99,102,241,0.4)]" : "border-white/20 bg-black/20 group-hover:border-indigo-400/50"
                     ),
                     onClick: (e) => {
                       e.stopPropagation();
@@ -4579,9 +4653,10 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
                     children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion18.AnimatePresence, { children: item.status === "done" && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
                       import_framer_motion18.motion.div,
                       {
-                        initial: { scale: 0, rotate: -45 },
-                        animate: { scale: 1, rotate: 0 },
-                        exit: { scale: 0, rotate: 45 },
+                        variants: checkVariants,
+                        initial: "hidden",
+                        animate: "visible",
+                        exit: "exit",
                         transition: {
                           type: "spring",
                           stiffness: 400,
@@ -4590,9 +4665,8 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
                         children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
                           import_lucide_react25.Check,
                           {
-                            size: 14,
-                            strokeWidth: 3.5,
-                            className: "text-white drop-shadow-sm"
+                            className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-white drop-shadow-sm",
+                            strokeWidth: 3.5
                           }
                         )
                       }
@@ -4604,18 +4678,20 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
                     "span",
                     {
                       className: (0, import_utils.cn)(
-                        "text-[15px] font-medium transition-all duration-300 truncate",
+                        "text-sm sm:text-[0.9375rem] font-medium transition-all duration-300 truncate",
                         item.status === "done" ? "text-muted-foreground line-through decoration-white/20 decoration-2" : "text-foreground group-hover:text-white"
                       ),
                       children: item.text
                     }
                   ),
-                  item.time && /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "flex items-center gap-1.5 text-xs font-medium text-muted-foreground/80", children: [
+                  item.time && /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs font-medium text-muted-foreground/80", children: [
                     /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
                       import_lucide_react25.Clock,
                       {
-                        size: 11,
-                        className: item.status === "done" ? "opacity-50" : "text-indigo-400"
+                        className: (0, import_utils.cn)(
+                          "w-2.5 h-2.5 sm:w-3 sm:h-3",
+                          item.status === "done" ? "opacity-50" : "text-indigo-400"
+                        )
                       }
                     ),
                     item.time
@@ -4638,24 +4714,32 @@ var TodoList = (0, import_react41.memo)(function TodoList2({
     );
   }) }) });
   if (!items || items.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "relative overflow-hidden rounded-[24px] border border-white/10 bg-zinc-950 p-10 flex flex-col items-center justify-center text-center group", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-transparent opacity-50" }),
-      title && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("h3", { className: "relative z-10 m-0 mb-2 text-xl font-bold text-foreground", children: title }),
-      /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "relative z-10 flex flex-col items-center gap-3 text-muted-foreground mt-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-1 group-hover:scale-110 transition-transform duration-500 shadow-xl", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_lucide_react25.Sparkles, { className: "text-indigo-400 opacity-60", size: 24 }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("p", { className: "text-sm font-medium", children: "No tasks yet" }),
-        /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("button", { className: "flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-xs font-bold text-foreground transition-all", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_lucide_react25.Plus, { size: 14 }),
-          " Add First Task"
-        ] })
-      ] }),
-      children
-    ] });
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)(
+      import_framer_motion18.motion.div,
+      {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        className: "relative overflow-hidden rounded-xl sm:rounded-[1.5rem] border border-white/10 bg-zinc-950 p-6 sm:p-10 flex flex-col items-center justify-center text-center group",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-transparent opacity-50" }),
+          title && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("h3", { className: "relative z-10 m-0 mb-2 text-lg sm:text-xl font-bold text-foreground", children: title }),
+          /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "relative z-10 flex flex-col items-center gap-2 sm:gap-3 text-muted-foreground mt-3 sm:mt-4", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-1 group-hover:scale-110 transition-transform duration-500 shadow-xl", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_lucide_react25.Sparkles, { className: "text-indigo-400 opacity-60 w-5 h-5 sm:w-6 sm:h-6" }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("p", { className: "text-xs sm:text-sm font-medium", children: "No tasks yet" }),
+            /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("button", { className: "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-[0.625rem] sm:text-xs font-bold text-foreground transition-all min-h-[2.5rem] touch-manipulation", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_lucide_react25.Plus, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }),
+              " Add First Task"
+            ] })
+          ] }),
+          children
+        ]
+      }
+    );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "w-full max-w-2xl mx-auto flex flex-col gap-6", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "flex items-center justify-between px-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("h3", { className: "text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50", children: title }),
-      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "text-xs font-bold text-muted-foreground bg-white/5 px-2.5 py-1 rounded-full border border-white/5", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "w-full max-w-2xl mx-auto flex flex-col gap-4 sm:gap-6", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "flex items-center justify-between gap-2 px-1 sm:px-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("h3", { className: "text-xl sm:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50 truncate", children: title }),
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "flex items-center gap-2 shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "text-[0.625rem] sm:text-xs font-bold text-muted-foreground bg-white/5 px-2 sm:px-2.5 py-1 rounded-full border border-white/5", children: [
         completedCount,
         "/",
         totalCount,
@@ -5162,39 +5246,39 @@ var RoutineScheduler = (0, import_react46.memo)(function RoutineScheduler2({
     selectedDate,
     view: currentView
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex flex-col gap-4 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.Calendar, { className: "w-5 h-5 text-indigo-500" }),
-        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("h3", { className: "text-xl font-bold tracking-tight text-white", children: title || "Routine" })
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex flex-col gap-3 sm:gap-4 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.Calendar, { className: "w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("h3", { className: "text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white", children: title || "Routine" })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2", children: [
         /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex rounded-lg border border-white/10 overflow-hidden", children: ["day", "week"].map((v) => /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
           "button",
           {
             onClick: () => setCurrentView(v),
             className: (0, import_utils.cn)(
-              "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
+              "px-2 sm:px-3 py-1 sm:py-1.5 text-[0.625rem] sm:text-xs font-bold uppercase tracking-wider transition-colors touch-manipulation",
               currentView === v ? "bg-indigo-500/20 text-indigo-400" : "text-white/40 hover:text-white/60"
             ),
             children: v
           },
           v
         )) }),
-        /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-1", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
           /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
             "button",
             {
               onClick: () => navigateDate(-1),
-              className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors",
-              children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.ChevronLeft, { size: 16 })
+              className: "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors touch-manipulation",
+              children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.ChevronLeft, { className: "w-4 h-4" })
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
             "button",
             {
               onClick: () => setSelectedDate(todayStr),
-              className: "px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 transition-colors",
+              className: "px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-white/10 text-[0.625rem] sm:text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 transition-colors touch-manipulation",
               children: "Today"
             }
           ),
@@ -5202,36 +5286,36 @@ var RoutineScheduler = (0, import_react46.memo)(function RoutineScheduler2({
             "button",
             {
               onClick: () => navigateDate(1),
-              className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors",
-              children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.ChevronRight, { size: 16 })
+              className: "w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors touch-manipulation",
+              children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.ChevronRight, { className: "w-4 h-4" })
             }
           )
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "text-sm text-white/50 font-mono", children: currentView === "day" ? new Date(selectedDate).toLocaleDateString(void 0, {
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "text-xs sm:text-sm text-white/50 font-mono", children: currentView === "day" ? new Date(selectedDate).toLocaleDateString(void 0, {
       weekday: "long",
       month: "long",
       day: "numeric",
       year: "numeric"
     }) : `Week of ${new Date(visibleDays[0]?.date ?? selectedDate).toLocaleDateString(void 0, { month: "short", day: "numeric" })}` }),
-    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "w-14 flex-shrink-0 border-r border-white/5", children: [
-        currentView === "week" && /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "h-[60px] border-b border-white/5" }),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "bg-zinc-900/50 border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "flex", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "w-10 sm:w-14 flex-shrink-0 border-r border-white/5", children: [
+        currentView === "week" && /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "h-[3rem] sm:h-[3.75rem] border-b border-white/5" }),
         timeSlots.map((slot, i) => /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
           "div",
           {
-            className: "relative border-b border-white/5 text-[10px] font-mono text-white/30",
+            className: "relative border-b border-white/5 text-[0.5rem] sm:text-[0.625rem] font-mono text-white/30",
             style: { height: `${slotHeight}px` },
-            children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("span", { className: "absolute -top-2 left-2", children: slot })
+            children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("span", { className: "absolute -top-2 left-1 sm:left-2", children: slot })
           },
           slot
         ))
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex-1 flex overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_framer_motion20.AnimatePresence, { mode: "wait", children: visibleDays.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex-1 py-12", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex-1 flex overflow-x-auto touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_framer_motion20.AnimatePresence, { mode: "wait", children: visibleDays.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex-1 py-8 sm:py-12", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
         EmptyState,
         {
-          icon: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.Calendar, { className: "w-10 h-10" }),
+          icon: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_lucide_react28.Calendar, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
           message: "No schedule"
         }
       ) }) : visibleDays.map((day) => /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
@@ -5252,14 +5336,14 @@ var RoutineScheduler = (0, import_react46.memo)(function RoutineScheduler2({
         day.date
       )) }) })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex flex-wrap gap-3", children: Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { className: "flex flex-wrap gap-2 sm:gap-3", children: Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
       const Icon = config.icon;
       return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
         "div",
         {
-          className: "flex items-center gap-1.5 text-xs text-white/50",
+          className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-white/50",
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(Icon, { size: 12, className: config.color }),
+            /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(Icon, { className: "w-3 h-3" }),
             /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("span", { className: "capitalize", children: key })
           ]
         },
@@ -5757,19 +5841,19 @@ var SupplementTracker = (0, import_react53.memo)(function SupplementTracker2({
     supplements,
     schedule: [{ date: selectedDate, doses: displayDoses }]
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("h3", { className: "text-xl font-bold tracking-tight flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_lucide_react32.Pill, { className: "w-5 h-5 text-violet-500" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("h3", { className: "text-base sm:text-lg lg:text-xl font-bold tracking-tight flex items-center gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_lucide_react32.Pill, { className: "w-4 h-4 sm:w-5 sm:h-5 text-violet-500" }),
         title || "Supplements"
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { className: "text-xs font-mono text-white/40", children: formattedDate })
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { className: "text-[0.625rem] sm:text-xs font-mono text-white/40", children: formattedDate })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ProgressDashboard, { stats }),
-    /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { className: "flex flex-col gap-6", children: supplements.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6", children: supplements.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
       EmptyState,
       {
-        icon: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_lucide_react32.Package, { className: "w-10 h-10" }),
+        icon: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_lucide_react32.Package, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
         message: "No supplements configured"
       }
     ) : /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_framer_motion23.AnimatePresence, { mode: "popLayout", children: TIMING_ORDER.map((timing) => {
@@ -6259,6 +6343,15 @@ function useCalendarLogic(calendarAdapter, stateAdapter, options) {
 
 // src/domain/Calendar/component.tsx
 var import_jsx_runtime37 = require("react/jsx-runtime");
+var containerVariants4 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.03 } }
+};
+var eventVariants = {
+  hidden: { opacity: 0, y: "0.625rem" },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" }
+};
 var Calendar9 = (0, import_react59.memo)(function Calendar10({
   element,
   children
@@ -6309,19 +6402,19 @@ var Calendar9 = (0, import_react59.memo)(function Calendar10({
     const shifted = days.splice(0, firstDayOfWeek);
     return [...days, ...shifted];
   }, [firstDayOfWeek]);
-  return /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex flex-col gap-4 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.Calendar, { className: "w-5 h-5 text-indigo-500" }),
-        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("h3", { className: "text-xl font-bold tracking-tight text-white", children: title || "Calendar" })
+  return /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex flex-col gap-3 sm:gap-4 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.Calendar, { className: "w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" }),
+        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("h3", { className: "text-lg sm:text-xl font-bold tracking-tight text-foreground", children: title || "Calendar" })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "flex items-center gap-2 justify-between sm:justify-end", children: [
         /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "flex rounded-lg border border-white/10 overflow-hidden", children: ["month", "agenda"].map((v) => /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
           "button",
           {
             onClick: () => setCurrentView(v),
             className: (0, import_utils.cn)(
-              "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
+              "px-2.5 sm:px-3 py-1.5 text-[0.625rem] sm:text-xs font-bold uppercase tracking-wider transition-colors min-h-[2.25rem] touch-manipulation",
               currentView === v ? "bg-indigo-500/20 text-indigo-400" : "text-white/40 hover:text-white/60"
             ),
             children: v
@@ -6333,15 +6426,15 @@ var Calendar9 = (0, import_react59.memo)(function Calendar10({
             "button",
             {
               onClick: () => navigateMonth(-1),
-              className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5",
-              children: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.ChevronLeft, { size: 16 })
+              className: "w-8 h-8 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation",
+              children: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.ChevronLeft, { className: "w-4 h-4" })
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
             "button",
             {
               onClick: goToToday,
-              className: "px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/5",
+              className: "px-2 sm:px-3 py-1.5 rounded-lg border border-white/10 text-[0.625rem] sm:text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 min-h-[2rem] touch-manipulation",
               children: "Today"
             }
           ),
@@ -6349,64 +6442,77 @@ var Calendar9 = (0, import_react59.memo)(function Calendar10({
             "button",
             {
               onClick: () => navigateMonth(1),
-              className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5",
-              children: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.ChevronRight, { size: 16 })
+              className: "w-8 h-8 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation",
+              children: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.ChevronRight, { className: "w-4 h-4" })
             }
           )
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "text-lg font-bold text-white", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "text-base sm:text-lg font-bold text-foreground", children: [
       MONTHS[currentMonth],
       " ",
       currentYear
     ] }),
     currentView === "month" ? (
-      /* Month View */
-      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "grid grid-cols-7 border-b border-white/10", children: orderedDays.map((day) => /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
+      /* Month View - responsive grid */
+      /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)("div", { className: "bg-zinc-900/50 border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "grid grid-cols-7 border-b border-white/10", children: orderedDays.map((day) => /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)(
           "div",
           {
-            className: "py-2 text-center text-xs font-bold text-white/40 uppercase tracking-wider",
-            children: day
+            className: "py-1.5 sm:py-2 text-center text-[0.5625rem] sm:text-xs font-bold text-white/40 uppercase tracking-wider",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("span", { className: "sm:hidden", children: day.charAt(0) }),
+              /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("span", { className: "hidden sm:inline", children: day })
+            ]
           },
           day
         )) }),
-        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "grid grid-cols-7", children: calendarDays.map((date, i) => {
-          const dateStr = date?.toISOString().split("T")[0] || "";
-          const dayEvents = eventsByDate.get(dateStr) || [];
-          const isToday = highlightToday && dateStr === todayStr;
-          const isSelected = dateStr === selectedDateStr;
-          return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
-            DayCell,
-            {
-              date,
-              events: dayEvents,
-              isToday,
-              isSelected,
-              onClick: (d) => setSelectedDate(d),
-              onToggleEvent: handleToggleEvent,
-              lock,
-              elementKey: element.key
-            },
-            i
-          );
-        }) })
+        /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
+          import_framer_motion24.motion.div,
+          {
+            variants: containerVariants4,
+            initial: "hidden",
+            animate: "visible",
+            className: "grid grid-cols-7",
+            children: calendarDays.map((date, i) => {
+              const dateStr = date?.toISOString().split("T")[0] || "";
+              const dayEvents = eventsByDate.get(dateStr) || [];
+              const isToday = highlightToday && dateStr === todayStr;
+              const isSelected = dateStr === selectedDateStr;
+              return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
+                DayCell,
+                {
+                  date,
+                  events: dayEvents,
+                  isToday,
+                  isSelected,
+                  onClick: (d) => setSelectedDate(d),
+                  onToggleEvent: handleToggleEvent,
+                  lock,
+                  elementKey: element.key
+                },
+                i
+              );
+            })
+          }
+        )
       ] })
     ) : (
       /* Agenda View */
-      /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "flex flex-col gap-3", children: selectedDayEvents.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: selectedDayEvents.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
         EmptyState,
         {
-          icon: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.Calendar, { className: "w-10 h-10" }),
+          icon: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_lucide_react35.Calendar, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
           message: "No events"
         }
       ) : /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_framer_motion24.AnimatePresence, { mode: "popLayout", children: selectedDayEvents.map((event) => /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
         import_framer_motion24.motion.div,
         {
-          initial: { opacity: 0, y: 10 },
-          animate: { opacity: 1, y: 0 },
-          exit: { opacity: 0, y: -10 },
+          variants: eventVariants,
+          initial: "hidden",
+          animate: "visible",
+          exit: "exit",
           children: /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(
             EventCard3,
             {
@@ -6420,12 +6526,12 @@ var Calendar9 = (0, import_react59.memo)(function Calendar10({
         event.id
       )) }) })
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "flex flex-wrap gap-3", children: Object.entries(CATEGORY_CONFIG2).slice(0, 6).map(([key, config]) => /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)(
+    /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: "flex flex-wrap gap-2 sm:gap-3 overflow-x-auto pb-1", children: Object.entries(CATEGORY_CONFIG2).slice(0, 6).map(([key, config]) => /* @__PURE__ */ (0, import_jsx_runtime37.jsxs)(
       "div",
       {
-        className: "flex items-center gap-1.5 text-xs text-white/50",
+        className: "flex items-center gap-1 sm:gap-1.5 text-[0.5625rem] sm:text-xs text-white/50 whitespace-nowrap",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: (0, import_utils.cn)("w-2 h-2 rounded-full", config.color) }),
+          /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("div", { className: (0, import_utils.cn)("w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full", config.color) }),
           /* @__PURE__ */ (0, import_jsx_runtime37.jsx)("span", { className: "capitalize", children: key })
         ]
       },
@@ -6972,10 +7078,10 @@ var Diary = (0, import_react65.memo)(function Diary2({
     entries: displayEntries,
     selectedDate
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "flex flex-col gap-6 w-full", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("h3", { className: "text-xl font-bold tracking-tight flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-5 h-5 text-indigo-500" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("h3", { className: "text-base sm:text-lg lg:text-xl font-bold tracking-tight flex items-center gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" }),
         title || "Diary"
       ] }),
       view === "single" && /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "flex items-center gap-1", children: [
@@ -6983,15 +7089,15 @@ var Diary = (0, import_react65.memo)(function Diary2({
           "button",
           {
             onClick: () => navigateDate(-1),
-            className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5",
-            children: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.ChevronLeft, { size: 16 })
+            className: "w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation",
+            children: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.ChevronLeft, { className: "w-4 h-4" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
           "button",
           {
             onClick: goToToday,
-            className: "px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/5",
+            className: "px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-white/10 text-[0.625rem] sm:text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 touch-manipulation",
             children: "Today"
           }
         ),
@@ -6999,8 +7105,8 @@ var Diary = (0, import_react65.memo)(function Diary2({
           "button",
           {
             onClick: () => navigateDate(1),
-            className: "w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5",
-            children: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.ChevronRight, { size: 16 })
+            className: "w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation",
+            children: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.ChevronRight, { className: "w-4 h-4" })
           }
         )
       ] })
@@ -7029,13 +7135,13 @@ var Diary = (0, import_react65.memo)(function Diary2({
     ) : /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
       EmptyState,
       {
-        icon: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-10 h-10" }),
+        icon: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
         message: "No entry for this day"
       }
-    ) : /* @__PURE__ */ (0, import_jsx_runtime40.jsx)("div", { className: "flex flex-col gap-3", children: sortedEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
+    ) : /* @__PURE__ */ (0, import_jsx_runtime40.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: sortedEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
       EmptyState,
       {
-        icon: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-10 h-10" }),
+        icon: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(import_lucide_react39.BookOpen, { className: "w-8 h-8 sm:w-10 sm:h-10" }),
         message: "No diary entries"
       }
     ) : sortedEntries.map((entry) => /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
@@ -7335,18 +7441,18 @@ var ResearchReport = (0, import_react71.memo)(function ResearchReport2({
     totalResults
   } = props;
   if (!title && !summary && sections.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "p-8 text-center text-zinc-500", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(import_lucide_react42.FileText, { className: "w-12 h-12 mx-auto mb-4 opacity-50" }),
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("p", { children: "No report content" })
+    return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "p-4 sm:p-8 text-center text-zinc-500", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(import_lucide_react42.FileText, { className: "w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50" }),
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("p", { className: "text-sm", children: "No report content" })
     ] });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "p-6 border-b border-white/5", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("h2", { className: "text-2xl font-bold text-white mb-4", children: title }),
-        /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "text-zinc-300 leading-relaxed text-[15px]", children: renderContentWithCitations(summary, sources, render) })
+  return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "space-y-4 sm:space-y-6", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "rounded-xl sm:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "p-4 sm:p-6 border-b border-white/5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("h2", { className: "text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4", children: title }),
+        /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "text-zinc-300 leading-relaxed text-xs sm:text-sm lg:text-[15px]", children: renderContentWithCitations(summary, sources, render) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "p-6 space-y-8", children: sections.map((section, i) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "p-4 sm:p-6 space-y-6 sm:space-y-8", children: sections.map((section, i) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(
         ReportSectionComponent,
         {
           section,
@@ -7355,28 +7461,28 @@ var ResearchReport = (0, import_react71.memo)(function ResearchReport2({
         },
         i
       )) }),
-      relatedQueries.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "px-6 pb-6", children: /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "flex flex-wrap gap-2", children: relatedQueries.map((query, i) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(
+      relatedQueries.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "px-4 sm:px-6 pb-4 sm:pb-6", children: /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "flex flex-wrap gap-1.5 sm:gap-2", children: relatedQueries.map((query, i) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(
         "button",
         {
-          className: "px-3 py-1.5 text-sm text-zinc-400 bg-zinc-800/50 rounded-full border border-white/5 hover:border-sky-500/30 hover:text-sky-300 transition-all",
+          className: "px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-zinc-400 bg-zinc-800/50 rounded-full border border-white/5 hover:border-sky-500/30 hover:text-sky-300 transition-all touch-manipulation min-h-[2rem] sm:min-h-0",
           children: query
         },
         i
       )) }) })
     ] }),
-    sources.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "rounded-2xl bg-zinc-900/40 border border-white/5 p-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "flex items-center justify-between mb-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("h4", { className: "text-sm font-semibold text-zinc-400 uppercase tracking-wider", children: [
+    sources.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "rounded-xl sm:rounded-2xl bg-zinc-900/40 border border-white/5 p-3 sm:p-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "flex items-center justify-between mb-3 sm:mb-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("h4", { className: "text-xs sm:text-sm font-semibold text-zinc-400 uppercase tracking-wider", children: [
           sources.length,
           " Sources"
         ] }),
-        totalResults && totalResults > sources.length && /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("span", { className: "text-xs text-zinc-500", children: [
+        totalResults && totalResults > sources.length && /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
           "da ",
           totalResults,
           " risultati totali"
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "grid gap-2 sm:grid-cols-2", children: sources.map((source) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(SourceCard, { source }, source.id)) })
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "grid gap-2 grid-cols-1 sm:grid-cols-2", children: sources.map((source) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(SourceCard, { source }, source.id)) })
     ] }),
     children
   ] });
@@ -7417,20 +7523,20 @@ var TreeNodeItem = (0, import_react72.memo)(function TreeNodeItem2({
       {
         onClick: toggle,
         className: (0, import_utils.cn)(
-          "flex items-start gap-2 py-1.5 px-2 rounded-md transition-colors group",
+          "flex items-start gap-1.5 sm:gap-2 py-1.5 px-1.5 sm:px-2 rounded-md transition-colors group touch-manipulation",
           hasChildren && "cursor-pointer hover:bg-white/5",
           depth === 0 && "font-semibold"
         ),
-        style: { paddingLeft: `${depth * 16 + 8}px` },
+        style: { paddingLeft: `${depth * 12 + 8}px` },
         children: [
           hasChildren ? /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("span", { className: "mt-0.5 shrink-0 text-muted-foreground", children: expanded ? /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronDown, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronRight, { className: "h-4 w-4" }) }) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("span", { className: "mt-0.5 shrink-0 w-4" }),
           /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex flex-wrap items-center gap-1.5 sm:gap-2", children: [
               /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
                 "span",
                 {
                   className: (0, import_utils.cn)(
-                    "text-sm truncate",
+                    "text-xs sm:text-sm truncate",
                     depth === 0 ? "text-foreground" : "text-foreground/80"
                   ),
                   children: node.title
@@ -7439,7 +7545,7 @@ var TreeNodeItem = (0, import_react72.memo)(function TreeNodeItem2({
               /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
                 "span",
                 {
-                  className: "text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-muted-foreground shrink-0",
+                  className: "text-[0.5rem] sm:text-[0.625rem] px-1 sm:px-1.5 py-0.5 rounded bg-white/10 text-muted-foreground shrink-0",
                   style: accentColor ? { backgroundColor: `${accentColor}20` } : {},
                   children: pageRange
                 }
@@ -7534,43 +7640,43 @@ var DocumentIndex = (0, import_react72.memo)(function DocumentIndex2({
     },
     [onAction, element.key]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "rounded-lg sm:rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden", children: [
     /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)(
       "div",
       {
-        className: "flex items-center justify-between px-4 py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors",
+        className: "flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors gap-2 sm:gap-3 touch-manipulation",
         onClick: () => setCollapsed((prev) => !prev),
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3", children: [
             /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
               "div",
               {
-                className: "w-10 h-10 rounded-lg flex items-center justify-center",
+                className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0",
                 style: { backgroundColor: `${accentColor}20` },
-                children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.FileText, { className: "h-5 w-5", style: { color: accentColor } })
+                children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.FileText, { className: "h-4 w-4 sm:h-5 sm:w-5", style: { color: accentColor } })
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { children: [
-              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("h3", { className: "text-sm font-semibold text-foreground", children: title }),
-              description && /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("p", { className: "text-xs text-muted-foreground line-clamp-1 max-w-md", children: description })
+            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "min-w-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("h3", { className: "text-xs sm:text-sm font-semibold text-foreground truncate", children: title }),
+              description && /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("p", { className: "text-[0.625rem] sm:text-xs text-muted-foreground line-clamp-1 max-w-md", children: description })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-1.5 text-xs text-muted-foreground", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.BookOpen, { className: "h-3.5 w-3.5" }),
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 pl-10 sm:pl-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.BookOpen, { className: "h-3 w-3 sm:h-3.5 sm:w-3.5" }),
               /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("span", { children: [
                 pageCount,
                 " pages"
               ] })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-1.5 text-xs text-muted-foreground", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.Hash, { className: "h-3.5 w-3.5" }),
+            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.Hash, { className: "h-3 w-3 sm:h-3.5 sm:w-3.5" }),
               /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("span", { children: [
                 nodes?.length || 0,
                 " sections"
               ] })
             ] }),
-            collapsed ? /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronRight, { className: "h-5 w-5 text-muted-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronDown, { className: "h-5 w-5 text-muted-foreground" })
+            collapsed ? /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronRight, { className: "h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" }) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(import_lucide_react43.ChevronDown, { className: "h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" })
           ] })
         ]
       }
@@ -7583,7 +7689,7 @@ var DocumentIndex = (0, import_react72.memo)(function DocumentIndex2({
         exit: { height: 0, opacity: 0 },
         transition: { duration: 0.2 },
         className: "overflow-hidden",
-        children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "p-3", children: nodes && nodes.length > 0 ? nodes.map((node, index) => /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "p-2 sm:p-3", children: nodes && nodes.length > 0 ? nodes.map((node, index) => /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
           TreeNodeItem,
           {
             node,
@@ -7592,7 +7698,7 @@ var DocumentIndex = (0, import_react72.memo)(function DocumentIndex2({
             onNodeClick: handleNodeClick
           },
           node.nodeId || index
-        )) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("p", { className: "text-sm text-muted-foreground text-center py-4", children: "No sections found" }) })
+        )) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("p", { className: "text-xs sm:text-sm text-muted-foreground text-center py-3 sm:py-4", children: "No sections found" }) })
       }
     ) })
   ] });
@@ -7828,30 +7934,36 @@ var Message = (0, import_react74.memo)(function Message2({
     setReplyText("");
   };
   const getParticipant = (id) => participants.find((p) => p.id === id);
-  return /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-col h-full max-h-[600px] overflow-hidden rounded-xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex items-center justify-between border-b border-border px-4 py-3 bg-muted/20", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "font-semibold text-base", children: title }),
-      participants.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "flex -space-x-2 ml-3", children: participants.map((p) => /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
-        "div",
-        {
-          className: "relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-background text-[10px] font-medium text-white shadow-sm ring-1 ring-black/5 bg-[var(--avatar-bg,var(--primary))]",
-          style: {
-            "--avatar-bg": p.color
+  return /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-col h-full max-h-[500px] sm:max-h-[600px] overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex items-center justify-between border-b border-border px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/20 gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "font-semibold text-sm sm:text-base truncate", children: title }),
+      participants.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex -space-x-1.5 sm:-space-x-2 shrink-0", children: [
+        participants.slice(0, 5).map((p) => /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
+          "div",
+          {
+            className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm ring-1 ring-black/5 bg-[var(--avatar-bg,var(--primary))]",
+            style: {
+              "--avatar-bg": p.color
+            },
+            title: `${p.name} (${p.role})`,
+            children: p.avatar ? /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
+              "img",
+              {
+                src: p.avatar,
+                alt: p.name,
+                className: "h-full w-full rounded-full object-cover"
+              }
+            ) : /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { children: p.name[0] })
           },
-          title: `${p.name} (${p.role})`,
-          children: p.avatar ? /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
-            "img",
-            {
-              src: p.avatar,
-              alt: p.name,
-              className: "h-full w-full rounded-full object-cover"
-            }
-          ) : /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { children: p.name[0] })
-        },
-        p.id
-      )) })
+          p.id
+        )),
+        participants.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm bg-zinc-600", children: [
+          "+",
+          participants.length - 5
+        ] })
+      ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-1 flex-col gap-4 overflow-y-auto p-4 bg-muted/5 min-h-0", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-1 flex-col gap-3 sm:gap-4 overflow-y-auto p-3 sm:p-4 bg-muted/5 min-h-0 touch-pan-y", children: [
       messages.map((msg) => {
         const participant = getParticipant(msg.participantId);
         const senderName = participant ? participant.name : msg.sender;
@@ -7863,7 +7975,7 @@ var Message = (0, import_react74.memo)(function Message2({
             "data-element-key": element.key,
             "data-item-id": msg.id,
             className: (0, import_utils.cn)(
-              "flex flex-col max-w-[85%] cursor-pointer group transition-all",
+              "flex flex-col max-w-[90%] sm:max-w-[85%] cursor-pointer group transition-all",
               msg.isOwn ? "self-end items-end" : "self-start items-start"
             ),
             children: [
@@ -7871,13 +7983,13 @@ var Message = (0, import_react74.memo)(function Message2({
                 "div",
                 {
                   className: (0, import_utils.cn)(
-                    "flex items-center gap-2 mb-1 text-xs text-muted-foreground",
+                    "flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 text-[0.625rem] sm:text-xs text-muted-foreground",
                     msg.isOwn ? "flex-row-reverse" : "flex-row"
                   ),
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "font-semibold text-foreground", children: senderName }),
-                    role && /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "px-1.5 py-0.5 rounded text-[10px] bg-secondary text-secondary-foreground border border-border/50", children: role }),
-                    /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "opacity-70 text-[10px]", children: msg.timestamp })
+                    /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "font-semibold text-foreground truncate max-w-[8rem] sm:max-w-none", children: senderName }),
+                    role && /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "px-1 sm:px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] bg-secondary text-secondary-foreground border border-border/50 hidden sm:inline", children: role }),
+                    /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("span", { className: "opacity-70 text-[0.5rem] sm:text-[0.625rem]", children: msg.timestamp })
                   ]
                 }
               ),
@@ -7885,7 +7997,7 @@ var Message = (0, import_react74.memo)(function Message2({
                 "div",
                 {
                   className: (0, import_utils.cn)(
-                    "relative px-4 py-3 text-sm shadow-sm transition-all duration-200 border",
+                    "relative px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm shadow-sm transition-all duration-200 border",
                     msg.isOwn ? "rounded-2xl rounded-tr-md bg-primary text-primary-foreground border-primary/20 bg-gradient-to-br from-blue-600 to-indigo-600" : "rounded-2xl rounded-tl-md bg-card text-card-foreground border-border break-words",
                     !msg.isOwn && participant?.color && "border-l-[3px] border-l-[var(--msg-border)]"
                   ),
@@ -7900,18 +8012,18 @@ var Message = (0, import_react74.memo)(function Message2({
           msg.id
         );
       }),
-      activeAgents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "flex gap-3 mt-2 px-2", children: activeAgents.map((agentId) => {
+      activeAgents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "flex flex-wrap gap-2 sm:gap-3 mt-1 sm:mt-2 px-1 sm:px-2", children: activeAgents.map((agentId) => {
         const p = getParticipant(agentId);
         if (!p) return null;
         return /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)(
           "div",
           {
-            className: "flex items-center gap-2 text-xs text-muted-foreground animate-pulse",
+            className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs text-muted-foreground animate-pulse",
             children: [
               /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
                 "div",
                 {
-                  className: "h-2 w-2 rounded-full bg-[var(--agent-color,currentColor)]",
+                  className: "h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[var(--agent-color,currentColor)]",
                   style: {
                     "--agent-color": p.color
                   }
@@ -7926,12 +8038,12 @@ var Message = (0, import_react74.memo)(function Message2({
           agentId
         );
       }) }),
-      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(import_lucide_react45.User, { className: "h-8 w-8 opacity-50" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("p", { className: "text-sm", children: "No messages yet" })
+      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-1.5 sm:space-y-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { className: "p-3 sm:p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(import_lucide_react45.User, { className: "h-6 w-6 sm:h-8 sm:w-8 opacity-50" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("p", { className: "text-xs sm:text-sm", children: "No messages yet" })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "p-4 border-t border-border bg-background flex gap-2 items-end", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "p-2.5 sm:p-4 border-t border-border bg-background flex gap-2 items-end safe-area-bottom", children: [
       /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
         "textarea",
         {
@@ -7941,7 +8053,7 @@ var Message = (0, import_react74.memo)(function Message2({
           placeholder: lock ? "Conversation locked" : "Type a message...",
           disabled: lock,
           className: (0, import_utils.cn)(
-            "flex-1 min-h-[44px] max-h-[120px] rounded-lg border border-input bg-transparent px-3 py-2.5 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y",
+            "flex-1 min-h-[2.75rem] max-h-[6rem] sm:max-h-[7.5rem] rounded-lg border border-input bg-transparent px-3 py-2 sm:py-2.5 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none",
             lock && "bg-muted text-muted-foreground"
           ),
           onKeyDown: (e) => {
@@ -7959,10 +8071,10 @@ var Message = (0, import_react74.memo)(function Message2({
           onClick: handleSendReply,
           disabled: lock || !replyText.trim(),
           className: (0, import_utils.cn)(
-            "inline-flex items-center justify-center shrink-0 rounded-lg h-[44px] w-[44px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+            "inline-flex items-center justify-center shrink-0 rounded-lg h-[2.75rem] w-[2.75rem] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 touch-manipulation",
             !replyText.trim() ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
           ),
-          children: /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(import_lucide_react45.Send, { size: 18 })
+          children: /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(import_lucide_react45.Send, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       )
     ] }),
@@ -8125,26 +8237,26 @@ ${originalEmail.body}`
     forward: "Inoltra",
     none: ""
   }[mode];
-  return /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4", children: /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4", children: /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
     "div",
     {
-      className: "flex flex-col w-full max-w-[600px] max-h-[90vh] bg-card border border-border rounded-xl shadow-2xl overflow-hidden",
+      className: "flex flex-col w-full sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-card border-t sm:border border-border rounded-t-2xl sm:rounded-xl shadow-2xl overflow-hidden",
       onClick: (e) => e.stopPropagation(),
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex justify-between items-center px-5 py-4 border-b border-border bg-muted/20", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("span", { className: "font-semibold text-base", children: modeTitle }),
+        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-border bg-muted/20", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("span", { className: "font-semibold text-sm sm:text-base", children: modeTitle }),
           /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
             "button",
             {
               onClick: onClose,
-              className: "p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors",
-              children: /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.X, { size: 16 })
+              className: "p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
+              children: /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.X, { className: "w-4 h-4" })
             }
           )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col gap-3 p-5 flex-1 overflow-y-auto", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "w-10 text-sm text-muted-foreground", children: "A:" }),
+        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-5 flex-1 overflow-y-auto touch-pan-y", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "A:" }),
             /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
               "input",
               {
@@ -8152,13 +8264,13 @@ ${originalEmail.body}`
                 value: to,
                 onChange: (e) => setTo(e.target.value),
                 placeholder: "destinatario@email.com",
-                className: "flex-1 bg-muted/20 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all",
+                className: "flex-1 bg-muted/20 border border-border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all min-h-[2.75rem]",
                 autoFocus: true
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "w-10 text-sm text-muted-foreground", children: "Cc:" }),
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Cc:" }),
             /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
               "input",
               {
@@ -8166,12 +8278,12 @@ ${originalEmail.body}`
                 value: cc,
                 onChange: (e) => setCc(e.target.value),
                 placeholder: "cc@email.com",
-                className: "flex-1 bg-muted/20 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                className: "flex-1 bg-muted/20 border border-border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all min-h-[2.75rem]"
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "w-10 text-sm text-muted-foreground", children: "Ogg:" }),
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Ogg:" }),
             /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
               "input",
               {
@@ -8179,7 +8291,7 @@ ${originalEmail.body}`
                 value: subject,
                 onChange: (e) => setSubject(e.target.value),
                 placeholder: "Oggetto",
-                className: "flex-1 bg-muted/20 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                className: "flex-1 bg-muted/20 border border-border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all min-h-[2.75rem]"
               }
             )
           ] }),
@@ -8189,17 +8301,17 @@ ${originalEmail.body}`
               value: body,
               onChange: (e) => setBody(e.target.value),
               placeholder: "Scrivi il tuo messaggio...",
-              className: "flex-1 min-h-[200px] resize-y bg-muted/20 border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all leading-relaxed font-sans"
+              className: "flex-1 min-h-[150px] sm:min-h-[200px] resize-y bg-muted/20 border border-border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all leading-relaxed font-sans"
             }
           )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex justify-between items-center px-5 py-4 border-t border-border bg-muted/20", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-5 py-3 sm:py-4 border-t border-border bg-muted/20 safe-area-bottom", children: [
           /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
             "button",
             {
-              className: "p-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors opacity-50 cursor-pointer",
+              className: "p-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors opacity-50 cursor-pointer touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
               title: "Allega file",
-              children: /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.Paperclip, { size: 18 })
+              children: /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.Paperclip, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
@@ -8208,11 +8320,11 @@ ${originalEmail.body}`
               onClick: handleSend,
               disabled: !to.trim() || sending,
               className: (0, import_utils.cn)(
-                "flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-lg shadow-blue-500/20",
+                "flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-medium text-xs sm:text-sm transition-all shadow-lg shadow-blue-500/20 touch-manipulation min-h-[2.5rem]",
                 !to.trim() || sending ? "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50" : "bg-blue-600 hover:bg-blue-500 text-white cursor-pointer hover:shadow-blue-500/30"
               ),
               children: [
-                /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.Send, { size: 16 }),
+                /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(import_lucide_react46.Send, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
                 sending ? "Invio..." : "Invia"
               ]
             }
@@ -8236,13 +8348,13 @@ var EmailList = (0, import_react76.memo)(function EmailList2({
   onHoverEmail
 }) {
   if (emails.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-3 bg-background/50", children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex flex-col items-center justify-center py-16 text-foreground/60 text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-5xl mb-4 opacity-50", children: "\u{1F4ED}" }),
-      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
-      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
+    return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex flex-col items-center justify-center py-12 sm:py-16 text-foreground/60 text-center", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-4xl sm:text-5xl mb-3 sm:mb-4 opacity-50", children: "\u{1F4ED}" }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-base sm:text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-xs sm:text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
     ] }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-3 bg-background/50", children: emails.map((email) => /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: emails.map((email) => /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
     "div",
     {
       "data-selectable-item": true,
@@ -8252,58 +8364,58 @@ var EmailList = (0, import_react76.memo)(function EmailList2({
       onMouseEnter: () => onHoverEmail(email.id),
       onMouseLeave: () => onHoverEmail(null),
       className: (0, import_utils.cn)(
-        "group relative border border-border/50 p-4 cursor-pointer transition-all duration-200 rounded-xl mb-2 bg-card/80 shadow-sm",
+        "group relative border border-border/50 p-3 sm:p-4 cursor-pointer transition-all duration-200 rounded-lg sm:rounded-xl mb-2 bg-card/80 shadow-sm touch-manipulation",
         hoveredId === email.id ? "bg-card border-primary/30 shadow-md" : !email.read ? "bg-card border-red-500/30" : "bg-card/60"
       ),
-      children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex items-start gap-3.5", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "w-2.5 mt-2 flex justify-center", children: !email.read && /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(UnreadDot, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0 text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
+      children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex items-start gap-2.5 sm:gap-3.5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "w-2 sm:w-2.5 mt-2 flex justify-center shrink-0", children: !email.read && /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(UnreadDot, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center shrink-0 text-xs sm:text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
         /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex justify-between items-center mb-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex justify-between items-center mb-0.5 sm:mb-1 gap-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
               "span",
               {
                 className: (0, import_utils.cn)(
-                  "text-sm truncate pr-2",
+                  "text-xs sm:text-sm truncate",
                   email.read ? "font-medium text-foreground/90" : "font-bold text-foreground"
                 ),
                 children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto"
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 shrink-0", children: [
               /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
                 "button",
                 {
                   onClick: (e) => onToggleStar(email.id, e),
                   className: (0, import_utils.cn)(
-                    "p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100",
+                    "p-1.5 sm:p-1 rounded-full transition-colors sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 touch-manipulation min-h-[2rem] min-w-[2rem] sm:min-h-0 sm:min-w-0 flex items-center justify-center",
                     email.starred ? "text-yellow-400 opacity-100" : "text-muted-foreground hover:bg-muted"
                   ),
                   children: /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
                     import_lucide_react47.Star,
                     {
-                      size: 14,
+                      className: "w-3.5 h-3.5 sm:w-3.5 sm:h-3.5",
                       fill: email.starred ? "currentColor" : "none"
                     }
                   )
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("span", { className: "text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
+              /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
             ] })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
             "div",
             {
               className: (0, import_utils.cn)(
-                "text-sm mb-1.5 truncate",
+                "text-xs sm:text-sm mb-1 sm:mb-1.5 truncate",
                 email.read ? "font-normal text-foreground/80" : "font-semibold text-foreground"
               ),
               children: email.subject || "(Nessun oggetto)"
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
-          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex items-center gap-1.5 mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "bg-muted/50 px-2 py-0.5 rounded text-[10px] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(import_lucide_react47.Paperclip, { size: 10 }),
+          /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
+          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex items-center gap-1.5 mt-1.5 sm:mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "bg-muted/50 px-1.5 sm:px-2 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(import_lucide_react47.Paperclip, { className: "w-2.5 h-2.5 sm:w-2.5 sm:h-2.5" }),
             /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("span", { children: [
               email.attachments.length,
               " allegat",
@@ -8331,59 +8443,59 @@ var EmailDetail = (0, import_react77.memo)(function EmailDetail2({
   onToggleStar
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex flex-col flex-1 bg-background/30 overflow-hidden", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-2 p-3 border-b border-border bg-muted/10", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 border-b border-border bg-muted/10", children: [
       /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
         "button",
         {
           onClick: onBack,
-          className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors",
+          className: "p-2 sm:p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
           title: "Torna alla lista",
-          children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.ArrowLeft, { size: 18 })
+          children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.ArrowLeft, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "flex-1" }),
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-1", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
           "button",
           {
             onClick: () => onCompose("reply"),
-            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors",
+            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Rispondi",
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Reply, { size: 18 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Reply, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
           "button",
           {
             onClick: () => onCompose("replyAll"),
-            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors",
+            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] hidden sm:flex items-center justify-center",
             title: "Rispondi a tutti",
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.ReplyAll, { size: 18 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.ReplyAll, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
           "button",
           {
             onClick: () => onCompose("forward"),
-            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors",
+            className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Inoltra",
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Forward, { size: 18 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Forward, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-px h-5 bg-border mx-1" }),
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-1", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-px h-4 sm:h-5 bg-border mx-0.5 sm:mx-1" }),
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
           "button",
           {
             onClick: (e) => onArchive(email.id, e),
             disabled: lock,
             className: (0, import_utils.cn)(
-              "p-2 rounded-lg transition-colors",
+              "p-2 rounded-lg transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
             ),
             title: "Archivia",
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Archive, { size: 18 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Archive, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
@@ -8392,29 +8504,29 @@ var EmailDetail = (0, import_react77.memo)(function EmailDetail2({
             onClick: (e) => onDelete(email.id, e),
             disabled: lock,
             className: (0, import_utils.cn)(
-              "p-2 rounded-lg transition-colors",
+              "p-2 rounded-lg transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
             ),
             title: "Elimina",
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Trash2, { size: 18 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Trash2, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex-1 overflow-y-auto p-6 md:p-8", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("h1", { className: "text-xl md:text-2xl font-bold mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-start gap-4 mb-8 pb-6 border-b border-border/60", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-12 h-12 rounded-full flex items-center justify-center text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
+    /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 touch-pan-y", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("h1", { className: "text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-border/60", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
         /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex items-center gap-2 mb-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "font-semibold text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
-            /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-sm text-muted-foreground truncate hidden sm:inline-block", children: extractEmailAddress(email.from) })
+          /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mb-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "font-semibold text-sm sm:text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
+            /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-xs sm:text-sm text-muted-foreground truncate", children: extractEmailAddress(email.from) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
             /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { children: email.date }),
             email.to && /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)(import_jsx_runtime52.Fragment, { children: [
               /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "w-1 h-1 rounded-full bg-border" }),
-              /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("span", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("span", { className: "truncate", children: [
                 "A: ",
                 email.to
               ] })
@@ -8426,16 +8538,16 @@ var EmailDetail = (0, import_react77.memo)(function EmailDetail2({
           {
             onClick: (e) => onToggleStar(email.id, e),
             className: (0, import_utils.cn)(
-              "p-2 rounded-full hover:bg-muted transition-colors",
+              "p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center shrink-0",
               email.starred ? "text-yellow-400" : "text-muted-foreground"
             ),
-            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Star, { size: 18, fill: email.starred ? "currentColor" : "none" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Star, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", fill: email.starred ? "currentColor" : "none" })
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
-      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "mt-8 pt-6 border-t border-border/60", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "text-sm sm:text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
+      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/60", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "text-[0.625rem] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3", children: [
           email.attachments.length,
           " Allegat",
           email.attachments.length === 1 ? "o" : "i"
@@ -8443,12 +8555,12 @@ var EmailDetail = (0, import_react77.memo)(function EmailDetail2({
         /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "flex flex-wrap gap-2", children: email.attachments.map((att, i) => /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)(
           "div",
           {
-            className: "group flex items-center gap-3 p-3 bg-muted/30 border border-border hover:border-primary/30 rounded-lg cursor-pointer transition-all hover:bg-muted/60",
+            className: "group flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-muted/30 border border-border hover:border-primary/30 rounded-lg cursor-pointer transition-all hover:bg-muted/60 touch-manipulation",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-8 h-8 rounded bg-background flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Paperclip, { size: 16 }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex flex-col", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-xs font-medium text-foreground group-hover:text-primary transition-colors", children: att.name }),
-                att.size && /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-[10px] text-muted-foreground", children: att.size })
+              /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded bg-background flex items-center justify-center text-muted-foreground shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_lucide_react48.Paperclip, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: "flex flex-col min-w-0", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-[0.625rem] sm:text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate", children: att.name }),
+                att.size && /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: att.size })
               ] })
             ]
           },
@@ -8456,17 +8568,16 @@ var EmailDetail = (0, import_react77.memo)(function EmailDetail2({
         )) })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)(
+    /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "p-3 sm:p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)(
       "button",
       {
         onClick: () => onCompose("reply"),
-        className: "w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-border bg-background hover:bg-muted/50 transition-all text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 group",
+        className: "w-full flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-border bg-background hover:bg-muted/50 transition-all text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 group touch-manipulation min-h-[2.75rem]",
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
             import_lucide_react48.Reply,
             {
-              size: 16,
-              className: "group-hover:text-primary transition-colors"
+              className: "w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:text-primary transition-colors"
             }
           ),
           "Rispondi"
@@ -8554,17 +8665,17 @@ var Email = (0, import_react78.memo)(function Email2({
     },
     [onSendEmail]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "glass-panel w-full min-h-[400px] h-full flex flex-col rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex justify-between items-center px-5 py-4 border-b border-border/40 bg-black/20", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white", children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(import_lucide_react49.Mail, { size: 20 }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("h3", { className: "m-0 text-base font-bold leading-tight", children: title || "Gmail" }),
-          description && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "text-xs text-muted-foreground mt-0.5", children: description })
+  return /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(import_lucide_react49.Mail, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("h3", { className: "m-0 text-sm sm:text-base font-bold leading-tight truncate", children: title || "Gmail" }),
+          description && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate", children: description })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "hidden sm:block px-3 py-1 rounded-full bg-muted/30 text-xs font-medium text-muted-foreground border border-white/5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 shrink-0", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5", children: [
           emails.filter((e) => !e.read).length,
           " non lett",
           emails.filter((e) => !e.read).length === 1 ? "a" : "e"
@@ -8573,9 +8684,9 @@ var Email = (0, import_react78.memo)(function Email2({
           "button",
           {
             onClick: () => setComposeMode("new"),
-            className: "flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20",
+            className: "flex items-center gap-1.5 sm:gap-2 pl-2 sm:pl-3 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-medium transition-all shadow-lg shadow-blue-500/20 touch-manipulation min-h-[2.5rem]",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(import_lucide_react49.PenSquare, { size: 16 }),
+              /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(import_lucide_react49.PenSquare, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
               /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("span", { className: "hidden sm:inline", children: "Scrivi" })
             ]
           }
@@ -8646,21 +8757,12 @@ var TreeNodeItem3 = (0, import_react79.memo)(function TreeNodeItem4({
   const isExpanded = expanded.has(node.id);
   const isSelected = selectedId === node.id;
   const hasChildren = node.children && node.children.length > 0;
-  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { style: { marginLeft: depth * 16 }, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { style: { marginLeft: `${depth * 0.75}rem` }, children: [
     /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
       "div",
       {
         onClick: () => onSelect(node),
-        style: {
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "8px 12px",
-          cursor: "pointer",
-          borderRadius: 6,
-          backgroundColor: isSelected ? "#e3f2fd" : "transparent",
-          borderLeft: isSelected ? "3px solid #1976d2" : "3px solid transparent"
-        },
+        className: `flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 cursor-pointer rounded-md sm:rounded-lg touch-manipulation ${isSelected ? "bg-sky-500/10 border-l-2 sm:border-l-3 border-sky-500" : "border-l-2 sm:border-l-3 border-transparent hover:bg-white/5"}`,
         children: [
           hasChildren && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
             "button",
@@ -8669,20 +8771,14 @@ var TreeNodeItem3 = (0, import_react79.memo)(function TreeNodeItem4({
                 e.stopPropagation();
                 onToggle(node.id);
               },
-              style: {
-                border: "none",
-                background: "none",
-                cursor: "pointer",
-                padding: 0,
-                fontSize: 12
-              },
+              className: "border-0 bg-transparent cursor-pointer p-1 text-[0.625rem] sm:text-xs text-zinc-400 hover:text-white touch-manipulation min-h-[1.75rem] min-w-[1.75rem] flex items-center justify-center",
               children: isExpanded ? "v" : ">"
             }
           ),
-          !hasChildren && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("span", { style: { width: 12 } }),
-          /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { style: { flex: 1 }, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { style: { fontWeight: 500, fontSize: 14 }, children: node.title }),
-            /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { style: { fontSize: 12, color: "#666" }, children: [
+          !hasChildren && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("span", { className: "w-3 sm:w-4" }),
+          /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: node.title }),
+            /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
               "p",
               node.pageStart,
               "-",
@@ -8739,42 +8835,20 @@ var DocumentExplorer = (0, import_react79.memo)(function DocumentExplorer2({
     },
     [onNodeSelect]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
-      },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
-          "div",
-          {
-            style: {
-              padding: "12px 16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0",
-              fontWeight: 600
-            },
-            children: "Document Structure"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { style: { padding: 8, maxHeight: 500, overflowY: "auto" }, children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
-          TreeNodeItem3,
-          {
-            node: tree,
-            depth: 0,
-            onSelect: handleSelect,
-            selectedId: selectedNodeId,
-            expanded,
-            onToggle: handleToggle
-          }
-        ) })
-      ]
-    }
-  );
+  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Structure" }),
+    /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+      TreeNodeItem3,
+      {
+        node: tree,
+        depth: 0,
+        onSelect: handleSelect,
+        selectedId: selectedNodeId,
+        expanded,
+        onToggle: handleToggle
+      }
+    ) })
+  ] });
 });
 
 // src/document/KnowledgeGraph.tsx
@@ -8809,118 +8883,104 @@ var KnowledgeGraph = (0, import_react80.memo)(function KnowledgeGraph2({
     }));
     return { nodes: graphNodes, edges: graphEdges };
   }, [entities, relations, width, height]);
-  const typeColors2 = {
-    person: "#4caf50",
-    organization: "#2196f3",
-    place: "#ff9800",
-    date: "#9c27b0",
-    concept: "#f44336",
-    event: "#00bcd4",
-    number: "#795548",
-    term: "#607d8b"
+  const typeColors = {
+    person: "#10b981",
+    organization: "#0ea5e9",
+    place: "#f59e0b",
+    date: "#a855f7",
+    concept: "#f43f5e",
+    event: "#06b6d4",
+    number: "#78716c",
+    term: "#64748b"
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
-      },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
-          "div",
-          {
-            style: {
-              padding: "12px 16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0",
-              fontWeight: 600
-            },
-            children: "Knowledge Graph"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("svg", { width, height, style: { display: "block" }, children: [
-          edges.map((edge, i) => {
-            const sourceNode = nodes.find((n) => n.id === edge.source);
-            const targetNode = nodes.find((n) => n.id === edge.target);
-            if (!sourceNode || !targetNode) return null;
-            return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
-              "line",
-              {
-                x1: sourceNode.x,
-                y1: sourceNode.y,
-                x2: targetNode.x,
-                y2: targetNode.y,
-                stroke: "#ccc",
-                strokeWidth: 1
-              },
-              i
-            );
-          }),
-          nodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
-            "g",
-            {
-              transform: `translate(${node.x}, ${node.y})`,
-              style: { cursor: "pointer" },
-              onClick: () => {
-                const entity = entities.find((e) => e.id === node.id);
-                if (entity) onEntityClick?.(entity);
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
-                  "circle",
-                  {
-                    r: 20,
-                    fill: typeColors2[node.type] || "#999",
-                    stroke: "white",
-                    strokeWidth: 2
-                  }
-                ),
-                /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#333", children: node.label })
-              ]
-            },
-            node.id
-          ))
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
-          "div",
-          {
-            style: {
-              padding: "8px 16px",
-              borderTop: "1px solid #e0e0e0",
-              display: "flex",
-              gap: 16,
-              flexWrap: "wrap",
-              fontSize: 12
-            },
-            children: Object.entries(typeColors2).map(([type, color]) => /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Knowledge Graph" }),
+    /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "space-y-2", children: nodes.slice(0, 15).map((node) => {
+      const nodeEdges = edges.filter((e) => e.source === node.id || e.target === node.id);
+      return /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
+        "div",
+        {
+          className: "flex items-center gap-2 p-2 rounded-lg bg-zinc-800/30 cursor-pointer touch-manipulation",
+          onClick: () => {
+            const entity = entities.find((e) => e.id === node.id);
+            if (entity) onEntityClick?.(entity);
+          },
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
               "div",
               {
-                style: { display: "flex", alignItems: "center", gap: 4 },
-                children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
-                    "div",
-                    {
-                      style: {
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        backgroundColor: color
-                      }
-                    }
-                  ),
-                  /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("span", { children: type })
-                ]
-              },
-              type
-            ))
-          }
-        )
-      ]
-    }
-  );
+                className: "w-3 h-3 rounded-full shrink-0",
+                style: { backgroundColor: typeColors[node.type] || "#999" }
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "text-xs text-white truncate", children: node.label }),
+              /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "text-[0.5rem] text-zinc-500", children: [
+                node.type,
+                " \u2022 ",
+                nodeEdges.length,
+                " connections"
+              ] })
+            ] })
+          ]
+        },
+        node.id
+      );
+    }) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "hidden sm:block overflow-x-auto touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("svg", { width, height, className: "block min-w-full", children: [
+      edges.map((edge, i) => {
+        const sourceNode = nodes.find((n) => n.id === edge.source);
+        const targetNode = nodes.find((n) => n.id === edge.target);
+        if (!sourceNode || !targetNode) return null;
+        return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
+          "line",
+          {
+            x1: sourceNode.x,
+            y1: sourceNode.y,
+            x2: targetNode.x,
+            y2: targetNode.y,
+            stroke: "#444",
+            strokeWidth: 1
+          },
+          i
+        );
+      }),
+      nodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
+        "g",
+        {
+          transform: `translate(${node.x}, ${node.y})`,
+          className: "cursor-pointer",
+          onClick: () => {
+            const entity = entities.find((e) => e.id === node.id);
+            if (entity) onEntityClick?.(entity);
+          },
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
+              "circle",
+              {
+                r: 20,
+                fill: typeColors[node.type] || "#999",
+                stroke: "#18181b",
+                strokeWidth: 2
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#a1a1aa", children: node.label })
+          ]
+        },
+        node.id
+      ))
+    ] }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-t border-white/10 flex gap-2 sm:gap-4 flex-wrap text-[0.5rem] sm:text-xs", children: Object.entries(typeColors).map(([type, color]) => /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
+        "div",
+        {
+          className: "w-2 h-2 sm:w-3 sm:h-3 rounded-full",
+          style: { backgroundColor: color }
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("span", { className: "text-zinc-400", children: type })
+    ] }, type)) })
+  ] });
 });
 
 // src/document/DocumentTimeline.tsx
@@ -8945,141 +9005,58 @@ var DocumentTimeline = (0, import_react81.memo)(function DocumentTimeline2({
     return { entity, year };
   }).filter((e) => e !== null).sort((a, b) => a.year - b.year);
   if (events.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
-      "div",
-      {
-        style: {
-          fontFamily: "system-ui, sans-serif",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          padding: 16,
-          textAlign: "center",
-          color: "#666"
-        },
-        children: "No date entities found for timeline"
-      }
-    );
+    return /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No date entities found for timeline" });
   }
   const firstEvent = events[0];
   const lastEvent = events[events.length - 1];
   const minYear = firstEvent?.year ?? 0;
   const maxYear = lastEvent?.year ?? 0;
   const yearRange = Math.max(1, maxYear - minYear);
-  return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
+  return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Timeline" }),
+    /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "relative pl-6 border-l-2 border-sky-500/30", children: events.slice(0, 10).map((event) => /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
+      "div",
+      {
+        className: "relative mb-4 last:mb-0 cursor-pointer touch-manipulation",
+        onClick: () => onEntityClick?.(event.entity),
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" }),
+          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "text-xs font-semibold text-white", children: event.year }),
+          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "text-[0.625rem] text-zinc-400 truncate max-w-[12rem]", children: event.entity.value.slice(0, 30) })
+        ]
       },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
+      event.entity.id
+    )) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "hidden sm:block p-4 relative min-h-[6.25rem]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" }),
+      /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "flex justify-between pt-[3.75rem]", children: events.slice(0, 10).map((event) => {
+        const position = yearRange > 0 ? (event.year - minYear) / yearRange * 100 : 50;
+        return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
           "div",
           {
             style: {
-              padding: "12px 16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0",
-              fontWeight: 600
+              position: "absolute",
+              left: `calc(${position}% + 0.625rem)`,
+              top: "2.5rem",
+              transform: "translateX(-50%)"
             },
-            children: "Document Timeline"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { style: { padding: 16, position: "relative", minHeight: 100 }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
-            "div",
-            {
-              style: {
-                position: "absolute",
-                top: 50,
-                left: 20,
-                right: 20,
-                height: 4,
-                backgroundColor: "#e0e0e0",
-                borderRadius: 2
-              }
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
-            "div",
-            {
-              style: {
-                display: "flex",
-                justifyContent: "space-between",
-                paddingTop: 60
-              },
-              children: events.slice(0, 10).map((event, i) => {
-                const position = yearRange > 0 ? (event.year - minYear) / yearRange * 100 : 50;
-                return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
-                  "div",
-                  {
-                    style: {
-                      position: "absolute",
-                      left: `calc(${position}% + 10px)`,
-                      top: 40,
-                      transform: "translateX(-50%)",
-                      textAlign: "center",
-                      cursor: "pointer"
-                    },
-                    onClick: () => onEntityClick?.(event.entity),
-                    children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
-                        "div",
-                        {
-                          style: {
-                            width: 16,
-                            height: 16,
-                            borderRadius: "50%",
-                            backgroundColor: "#1976d2",
-                            margin: "0 auto 8px",
-                            border: "3px solid white",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-                          }
-                        }
-                      ),
-                      /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { style: { fontSize: 12, fontWeight: 600 }, children: event.year }),
-                      /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
-                        "div",
-                        {
-                          style: {
-                            fontSize: 11,
-                            color: "#666",
-                            maxWidth: 80,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                          },
-                          children: event.entity.value.slice(0, 15)
-                        }
-                      )
-                    ]
-                  },
-                  event.entity.id
-                );
-              })
-            }
-          )
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
-          "div",
-          {
-            style: {
-              padding: "8px 16px",
-              borderTop: "1px solid #e0e0e0",
-              fontSize: 12,
-              color: "#666"
-            },
+            className: "text-center cursor-pointer touch-manipulation",
+            onClick: () => onEntityClick?.(event.entity),
             children: [
-              events.length,
-              " date/event entities found"
+              /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" }),
+              /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "text-[0.625rem] sm:text-xs font-semibold text-white", children: event.year }),
+              /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap", children: event.entity.value.slice(0, 15) })
             ]
-          }
-        )
-      ]
-    }
-  );
+          },
+          event.entity.id
+        );
+      }) })
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500", children: [
+      events.length,
+      " date/event entities found"
+    ] })
+  ] });
 });
 
 // src/document/DeepAnalysisPanel.tsx
@@ -9091,144 +9068,81 @@ var DeepAnalysisPanel = (0, import_react82.memo)(function DeepAnalysisPanel2({
   onQuoteClick
 }) {
   const nodeQuotes = quotes.filter((q) => q.nodeId === node.id);
-  return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
-      },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
-          "div",
-          {
-            style: {
-              padding: "16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0"
-            },
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h3", { style: { margin: 0, fontSize: 18 }, children: node.title }),
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { fontSize: 12, color: "#666", marginTop: 4 }, children: [
-                "Pages ",
-                node.pageStart,
-                "-",
-                node.pageEnd
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { padding: 16, borderBottom: "1px solid #e0e0e0" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { style: { margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }, children: "Summary" }),
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 }, children: node.summary || "No summary available" }),
-          node.detailedSummary && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
-            "p",
-            {
-              style: {
-                margin: "12px 0 0 0",
-                fontSize: 14,
-                lineHeight: 1.6,
-                color: "#555"
-              },
-              children: node.detailedSummary
-            }
-          )
+  return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h3", { className: "m-0 text-base sm:text-lg font-semibold text-white", children: node.title }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1", children: [
+        "Pages ",
+        node.pageStart,
+        "-",
+        node.pageEnd
+      ] })
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Summary" }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("p", { className: "m-0 text-xs sm:text-sm leading-relaxed text-zinc-300", children: node.summary || "No summary available" }),
+      node.detailedSummary && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("p", { className: "mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400", children: node.detailedSummary })
+    ] }),
+    node.keyPoints.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Key Points" }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("ul", { className: "m-0 pl-4 sm:pl-5 space-y-1", children: node.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("li", { className: "text-xs sm:text-sm text-zinc-300", children: point }, i)) })
+    ] }),
+    node.keywords.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Keywords" }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "flex gap-1.5 sm:gap-2 flex-wrap", children: node.keywords.map((keyword, i) => /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+        "span",
+        {
+          className: "px-2 py-0.5 sm:py-1 bg-sky-500/10 rounded text-[0.625rem] sm:text-xs text-sky-300 border border-sky-500/20",
+          children: keyword
+        },
+        i
+      )) })
+    ] }),
+    nodeQuotes.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Notable Quotes" }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "space-y-2", children: nodeQuotes.map((quote) => /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
+        "div",
+        {
+          onClick: () => onQuoteClick?.(quote),
+          className: `p-2.5 sm:p-3 bg-zinc-800/30 border-l-2 sm:border-l-3 border-sky-500 rounded-r ${onQuoteClick ? "cursor-pointer hover:bg-zinc-800/50 touch-manipulation" : ""}`,
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("p", { className: "m-0 text-xs sm:text-sm italic text-zinc-300", children: [
+              '"',
+              quote.text,
+              '"'
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5", children: [
+              "Page ",
+              quote.pageNumber,
+              " - ",
+              quote.significance
+            ] })
+          ]
+        },
+        quote.id
+      )) })
+    ] }),
+    node.metrics && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-3 sm:p-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { className: "m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Metrics" }),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "grid grid-cols-3 gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "text-base sm:text-xl font-semibold text-white", children: node.metrics.wordCount }),
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Words" })
         ] }),
-        node.keyPoints.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { padding: 16, borderBottom: "1px solid #e0e0e0" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { style: { margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }, children: "Key Points" }),
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("ul", { style: { margin: 0, paddingLeft: 20 }, children: node.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("li", { style: { fontSize: 14, marginBottom: 4 }, children: point }, i)) })
+        /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-base sm:text-xl font-semibold text-white", children: [
+            node.metrics.readingTimeMinutes,
+            "m"
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Reading Time" })
         ] }),
-        node.keywords.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { padding: 16, borderBottom: "1px solid #e0e0e0" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { style: { margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }, children: "Keywords" }),
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: node.keywords.map((keyword, i) => /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
-            "span",
-            {
-              style: {
-                padding: "4px 8px",
-                backgroundColor: "#e3f2fd",
-                borderRadius: 4,
-                fontSize: 12
-              },
-              children: keyword
-            },
-            i
-          )) })
-        ] }),
-        nodeQuotes.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { padding: 16, borderBottom: "1px solid #e0e0e0" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { style: { margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }, children: "Notable Quotes" }),
-          nodeQuotes.map((quote) => /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
-            "div",
-            {
-              onClick: () => onQuoteClick?.(quote),
-              style: {
-                padding: 12,
-                backgroundColor: "#fafafa",
-                borderLeft: "3px solid #1976d2",
-                marginBottom: 8,
-                cursor: onQuoteClick ? "pointer" : "default"
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("p", { style: { margin: 0, fontSize: 14, fontStyle: "italic" }, children: [
-                  '"',
-                  quote.text,
-                  '"'
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { fontSize: 12, color: "#666", marginTop: 4 }, children: [
-                  "Page ",
-                  quote.pageNumber,
-                  " - ",
-                  quote.significance
-                ] })
-              ]
-            },
-            quote.id
-          ))
-        ] }),
-        node.metrics && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { padding: 16 }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h4", { style: { margin: "0 0 8px 0", fontSize: 14, color: "#1976d2" }, children: "Metrics" }),
-          /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
-            "div",
-            {
-              style: {
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 12
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { textAlign: "center" }, children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { style: { fontSize: 20, fontWeight: 600 }, children: node.metrics.wordCount }),
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { style: { fontSize: 11, color: "#666" }, children: "Words" })
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { textAlign: "center" }, children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { fontSize: 20, fontWeight: 600 }, children: [
-                    node.metrics.readingTimeMinutes,
-                    "m"
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { style: { fontSize: 11, color: "#666" }, children: "Reading Time" })
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { style: { textAlign: "center" }, children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
-                    "div",
-                    {
-                      style: {
-                        fontSize: 20,
-                        fontWeight: 600,
-                        textTransform: "capitalize"
-                      },
-                      children: node.metrics.complexity
-                    }
-                  ),
-                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { style: { fontSize: 11, color: "#666" }, children: "Complexity" })
-                ] })
-              ]
-            }
-          )
+        /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "text-base sm:text-xl font-semibold capitalize text-white", children: node.metrics.complexity }),
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Complexity" })
         ] })
-      ]
-    }
-  );
+      ] })
+    ] })
+  ] });
 });
 
 // src/document/CitationViewer.tsx
@@ -9256,151 +9170,64 @@ var CitationViewer = (0, import_react83.memo)(function CitationViewer2({
     {}
   );
   if (citations.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
-      "div",
-      {
-        style: {
-          fontFamily: "system-ui, sans-serif",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          padding: 16,
-          textAlign: "center",
-          color: "#666"
-        },
-        children: "No citations found in document"
-      }
-    );
+    return /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No citations found in document" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
-      },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
-          "div",
-          {
-            style: {
-              padding: "12px 16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0",
-              fontWeight: 600,
-              display: "flex",
-              justifyContent: "space-between"
-            },
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { children: "Citations" }),
-              /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("span", { style: { color: "#666", fontWeight: 400 }, children: [
-                citations.length,
-                " total"
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { style: { maxHeight: 400, overflowY: "auto" }, children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
-            "div",
-            {
-              style: {
-                padding: "8px 16px",
-                backgroundColor: "#fafafa",
-                fontWeight: 500,
-                fontSize: 12,
-                textTransform: "uppercase",
-                color: "#666",
-                borderBottom: "1px solid #e0e0e0"
-              },
-              children: [
-                type,
-                " (",
-                typeCitations.length,
+  return /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { className: "text-white", children: "Citations" }),
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("span", { className: "text-zinc-400 font-normal text-xs sm:text-sm", children: [
+        citations.length,
+        " total"
+      ] })
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5", children: [
+        type,
+        " (",
+        typeCitations.length,
+        ")"
+      ] }),
+      typeCitations.map((citation) => /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
+        "div",
+        {
+          onClick: () => onCitationClick?.(citation),
+          className: `p-3 sm:p-4 border-b border-white/5 flex gap-2.5 sm:gap-3 ${onCitationClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm", children: typeIcons[citation.type] || "?" }),
+            /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex-1 min-w-0", children: [
+              citation.title && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white", children: citation.title }),
+              citation.authors && citation.authors.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5", children: citation.authors.join(", ") }),
+              citation.year && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 ml-1", children: [
+                "(",
+                citation.year,
                 ")"
-              ]
-            }
-          ),
-          typeCitations.map((citation) => /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
-            "div",
-            {
-              onClick: () => onCitationClick?.(citation),
-              style: {
-                padding: "12px 16px",
-                borderBottom: "1px solid #f0f0f0",
-                cursor: onCitationClick ? "pointer" : "default",
-                display: "flex",
-                gap: 12
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
-                  "div",
-                  {
-                    style: {
-                      width: 32,
-                      height: 32,
-                      borderRadius: 4,
-                      backgroundColor: "#e3f2fd",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 600,
-                      color: "#1976d2",
-                      flexShrink: 0
-                    },
-                    children: typeIcons[citation.type] || "?"
-                  }
-                ),
-                /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { style: { flex: 1, minWidth: 0 }, children: [
-                  citation.title && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { style: { fontWeight: 500, fontSize: 14 }, children: citation.title }),
-                  citation.authors && citation.authors.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { style: { fontSize: 13, color: "#555" }, children: citation.authors.join(", ") }),
-                  citation.year && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("span", { style: { fontSize: 12, color: "#666" }, children: [
-                    "(",
-                    citation.year,
-                    ")"
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
-                    "div",
-                    {
-                      style: {
-                        fontSize: 12,
-                        color: "#888",
-                        marginTop: 4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
-                      },
-                      children: citation.text
-                    }
-                  ),
-                  /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { style: { fontSize: 11, color: "#999", marginTop: 4 }, children: [
-                    "Page ",
-                    citation.pageNumber
-                  ] })
-                ] })
-              ]
-            },
-            citation.id
-          ))
-        ] }, type)) })
-      ]
-    }
-  );
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap", children: citation.text }),
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1", children: [
+                "Page ",
+                citation.pageNumber
+              ] })
+            ] })
+          ]
+        },
+        citation.id
+      ))
+    ] }, type)) })
+  ] });
 });
 
 // src/document/EntityExplorer.tsx
 var import_react84 = require("react");
 var import_jsx_runtime59 = require("react/jsx-runtime");
-var typeColors = {
-  person: "#4caf50",
-  organization: "#2196f3",
-  place: "#ff9800",
-  date: "#9c27b0",
-  concept: "#f44336",
-  event: "#00bcd4",
-  number: "#795548",
-  term: "#607d8b"
+var typeColorClasses = {
+  person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
+  organization: { bg: "bg-sky-500", text: "text-sky-400", dot: "bg-sky-500" },
+  place: { bg: "bg-amber-500", text: "text-amber-400", dot: "bg-amber-500" },
+  date: { bg: "bg-purple-500", text: "text-purple-400", dot: "bg-purple-500" },
+  concept: { bg: "bg-rose-500", text: "text-rose-400", dot: "bg-rose-500" },
+  event: { bg: "bg-cyan-500", text: "text-cyan-400", dot: "bg-cyan-500" },
+  number: { bg: "bg-stone-500", text: "text-stone-400", dot: "bg-stone-500" },
+  term: { bg: "bg-slate-500", text: "text-slate-400", dot: "bg-slate-500" }
 };
 var EntityExplorer = (0, import_react84.memo)(function EntityExplorer2({
   entities,
@@ -9438,177 +9265,80 @@ var EntityExplorer = (0, import_react84.memo)(function EntityExplorer2({
     }
     return groups;
   }, [filteredEntities]);
-  return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
-    "div",
-    {
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden"
-      },
-      children: [
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: [
+      "Entities (",
+      filteredEntities.length,
+      ")"
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+        "input",
+        {
+          type: "text",
+          placeholder: "Search entities...",
+          value: searchQuery,
+          onChange: (e) => setSearchQuery(e.target.value),
+          className: "flex-1 min-w-0 px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
+        "select",
+        {
+          value: selectedType || "",
+          onChange: (e) => setSelectedType(e.target.value || null),
+          className: "px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0",
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("option", { value: "", children: "All types" }),
+            types.map((type) => /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("option", { value: type, children: type }, type))
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap", children: types.map((type) => {
+      const count = entities.filter((e) => e.type === type).length;
+      const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
+      return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
+        "button",
+        {
+          onClick: () => setSelectedType((prev) => prev === type ? null : type),
+          className: `px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border-none text-[0.625rem] sm:text-xs cursor-pointer flex items-center gap-1 sm:gap-1.5 transition-colors touch-manipulation min-h-[1.75rem] ${selectedType === type ? `${colors.bg} text-white` : "bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700"}`,
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("span", { className: `w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}` }),
+            type,
+            " (",
+            count,
+            ")"
+          ]
+        },
+        type
+      );
+    }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(groupedEntities).map(([type, typeEntities]) => {
+      const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
+      return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: `px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`, children: type }),
+        typeEntities.map((entity) => /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
           "div",
           {
-            style: {
-              padding: "12px 16px",
-              backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #e0e0e0",
-              fontWeight: 600
-            },
+            onClick: () => onEntityClick?.(entity),
+            className: `px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 flex justify-between items-center gap-2 ${onEntityClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
             children: [
-              "Entities (",
-              filteredEntities.length,
-              ")"
+              /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: entity.value }),
+                entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 truncate", children: entity.normalized })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-600 shrink-0", children: [
+                entity.occurrences.length,
+                " occ"
+              ] })
             ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
-          "div",
-          {
-            style: {
-              padding: "12px 16px",
-              borderBottom: "1px solid #e0e0e0",
-              display: "flex",
-              gap: 12,
-              flexWrap: "wrap"
-            },
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
-                "input",
-                {
-                  type: "text",
-                  placeholder: "Search entities...",
-                  value: searchQuery,
-                  onChange: (e) => setSearchQuery(e.target.value),
-                  style: {
-                    flex: 1,
-                    minWidth: 150,
-                    padding: "6px 12px",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                    fontSize: 14
-                  }
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
-                "select",
-                {
-                  value: selectedType || "",
-                  onChange: (e) => setSelectedType(e.target.value || null),
-                  style: {
-                    padding: "6px 12px",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                    fontSize: 14
-                  },
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("option", { value: "", children: "All types" }),
-                    types.map((type) => /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("option", { value: type, children: type }, type))
-                  ]
-                }
-              )
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
-          "div",
-          {
-            style: {
-              padding: "8px 16px",
-              borderBottom: "1px solid #e0e0e0",
-              display: "flex",
-              gap: 8,
-              flexWrap: "wrap"
-            },
-            children: types.map((type) => {
-              const count = entities.filter((e) => e.type === type).length;
-              return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
-                "button",
-                {
-                  onClick: () => setSelectedType((prev) => prev === type ? null : type),
-                  style: {
-                    padding: "4px 8px",
-                    borderRadius: 12,
-                    border: "none",
-                    backgroundColor: selectedType === type ? typeColors[type] : "#e0e0e0",
-                    color: selectedType === type ? "white" : "#333",
-                    fontSize: 12,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4
-                  },
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
-                      "span",
-                      {
-                        style: {
-                          width: 8,
-                          height: 8,
-                          borderRadius: "50%",
-                          backgroundColor: typeColors[type] || "#999"
-                        }
-                      }
-                    ),
-                    type,
-                    " (",
-                    count,
-                    ")"
-                  ]
-                },
-                type
-              );
-            })
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { style: { maxHeight: 400, overflowY: "auto" }, children: Object.entries(groupedEntities).map(([type, typeEntities]) => /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
-            "div",
-            {
-              style: {
-                padding: "6px 16px",
-                backgroundColor: "#fafafa",
-                fontSize: 12,
-                fontWeight: 500,
-                textTransform: "uppercase",
-                color: typeColors[type] || "#666",
-                position: "sticky",
-                top: 0
-              },
-              children: type
-            }
-          ),
-          typeEntities.map((entity) => /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
-            "div",
-            {
-              onClick: () => onEntityClick?.(entity),
-              style: {
-                padding: "10px 16px",
-                borderBottom: "1px solid #f0f0f0",
-                cursor: onEntityClick ? "pointer" : "default",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center"
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { style: { fontWeight: 500, fontSize: 14 }, children: entity.value }),
-                  entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { style: { fontSize: 12, color: "#666" }, children: entity.normalized })
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { style: { fontSize: 12, color: "#999" }, children: [
-                  entity.occurrences.length,
-                  " occurrences"
-                ] })
-              ]
-            },
-            entity.id
-          ))
-        ] }, type)) })
-      ]
-    }
-  );
+          },
+          entity.id
+        ))
+      ] }, type);
+    }) })
+  ] });
 });
 
 // src/document/hooks/useKnowledgeBase.ts

@@ -24,6 +24,17 @@ import { getHotelAdapter } from "./adapters";
 
 const hotelAdapter = getHotelAdapter();
 
+/** Animation variants */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: "1.25rem" },
+  visible: { opacity: 1, y: 0 },
+};
+
 const HotelStatusBadge = ({ status }: { status: HotelStatusType }) => (
   <StatusBadge
     label={status}
@@ -39,14 +50,13 @@ export const Hotel = memo(function Hotel({
   const {
     title,
     hotels,
-    layout = "list", // 'list' | 'card'
+    layout = "list",
   } = element.props as {
     title?: string | null;
     hotels?: HotelData[] | null;
     layout?: "list" | "card";
   };
 
-  // Calculate check-in/out dates and total price
   const { checkIn, checkOut, totalPrice, currency } = useMemo(() => {
     const hotelList = hotels || [];
     let minCheckIn: Date | null = null;
@@ -88,45 +98,55 @@ export const Hotel = memo(function Hotel({
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col gap-4 sm:gap-6 w-full"
+    >
       {title && (
-        <h3 className="m-0 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-2">
-          <HotelIcon size={24} className="text-amber-400 hidden" />
+        <h3 className="m-0 text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight flex items-center gap-2">
+          <HotelIcon className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 hidden" />
           {title}
         </h3>
       )}
 
       <div
         className={cn(
-          "grid gap-6",
+          "grid gap-4 sm:gap-6",
+          // Mobile-first: single column, then responsive
           layout === "card"
-            ? "grid-cols-[repeat(auto-fill,minmax(300px,1fr))]"
+            ? "grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(16rem,1fr))]"
             : "grid-cols-1",
         )}
       >
         {(hotels || []).map((hotel, i) => {
           return (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              variants={cardVariants}
               key={hotel.id}
             >
               <SelectableItem
                 elementKey={element.key}
                 itemId={hotel.id}
                 className={cn(
-                  "group relative bg-zinc-900/40 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-black/50 hover:border-white/20 hover:-translate-y-1 flex isolate",
-                  layout === "card" ? "flex-col" : "flex-row min-h-[200px]",
+                  "group relative bg-zinc-900/40 backdrop-blur-md border border-white/10 overflow-hidden cursor-pointer transition-all duration-500",
+                  "hover:shadow-2xl hover:shadow-black/50 hover:border-white/20 hover:-translate-y-0.5",
+                  "flex isolate rounded-xl sm:rounded-3xl",
+                  // Mobile: always stack vertically
+                  "flex-col",
+                  // Desktop list: side-by-side
+                  layout === "list" && "sm:flex-row sm:min-h-[12.5rem]",
                 )}
               >
                 {/* Hotel Image & Overlay */}
                 <div
                   className={cn(
                     "relative overflow-hidden z-0",
-                    layout === "card"
-                      ? "h-48 w-full"
-                      : "w-[240px] min-w-[240px] h-full absolute inset-y-0 left-0",
+                    // Mobile: fixed height on top
+                    "h-36 w-full",
+                    // Desktop list: side image
+                    layout === "list" && "sm:w-[15rem] sm:min-w-[15rem] sm:h-full sm:absolute sm:inset-y-0 sm:left-0",
                   )}
                 >
                   {hotel.image ? (
@@ -139,19 +159,19 @@ export const Hotel = memo(function Hotel({
                     </div>
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
-                      <HotelIcon size={48} className="text-white/10" />
+                      <HotelIcon className="w-10 h-10 sm:w-12 sm:h-12 text-white/10" />
                     </div>
                   )}
 
                   {/* Gradients */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
-                  {layout !== "card" && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/60 to-zinc-950" />
+                  {layout === "list" && (
+                    <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-transparent via-black/60 to-zinc-950" />
                   )}
 
                   {/* Status Badge */}
                   {hotel.status && (
-                    <div className="absolute top-4 left-4">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
                       <HotelStatusBadge status={hotel.status} />
                     </div>
                   )}
@@ -160,31 +180,28 @@ export const Hotel = memo(function Hotel({
                 {/* Content Section */}
                 <div
                   className={cn(
-                    "relative z-10 flex flex-col p-6 flex-1",
-                    layout !== "card" && "pl-[220px]",
+                    "relative z-10 flex flex-col p-4 sm:p-6 flex-1",
+                    layout === "list" && "sm:pl-[14rem]",
                   )}
                 >
-                  <div className="flex justify-between items-start gap-4 mb-2">
-                    <div className="space-y-1">
-                      <h4 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors leading-tight">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
+                    <div className="space-y-1 min-w-0">
+                      <h4 className="text-base sm:text-xl font-bold text-foreground group-hover:text-amber-400 transition-colors leading-tight truncate">
                         {hotel.name}
                       </h4>
                       {hotel.address && (
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-white/60">
-                          <MapPin size={12} className="text-white/40" />
-                          {hotel.address}
+                        <div className="flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs font-medium text-white/60">
+                          <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/40 flex-shrink-0" />
+                          <span className="truncate">{hotel.address}</span>
                         </div>
                       )}
                     </div>
 
                     {/* Rating */}
                     {hotel.rating && (
-                      <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shrink-0">
-                        <Star
-                          size={12}
-                          className="fill-amber-400 text-amber-400"
-                        />
-                        <span className="text-sm font-bold text-white">
+                      <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shrink-0 self-start">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        <span className="text-xs sm:text-sm font-bold text-foreground">
                           {hotel.rating}
                         </span>
                       </div>
@@ -192,42 +209,44 @@ export const Hotel = memo(function Hotel({
                   </div>
 
                   {/* Divider */}
-                  <div className="h-px bg-white/10 w-full my-4 group-hover:bg-white/20 transition-colors" />
+                  <div className="h-px bg-white/10 w-full my-3 sm:my-4 group-hover:bg-white/20 transition-colors" />
 
                   {/* Trip Details */}
-                  <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-[0.625rem] sm:text-xs">
                     {hotel.dates && (
-                      <div className="space-y-1">
-                        <div className="text-white/40 uppercase tracking-wider font-bold text-[10px]">
+                      <div className="space-y-0.5 sm:space-y-1">
+                        <div className="text-white/40 uppercase tracking-wider font-bold text-[0.5rem] sm:text-[0.625rem]">
                           Dates
                         </div>
-                        <div className="text-white font-medium flex items-center gap-1.5">
-                          <Calendar size={12} className="text-indigo-400" />
-                          {formatDateShort(hotel.dates.checkIn)}
-                          <span className="text-white/30">-</span>
-                          {formatDateShort(hotel.dates.checkOut)}
+                        <div className="text-foreground font-medium flex items-center gap-1 sm:gap-1.5">
+                          <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-indigo-400 flex-shrink-0" />
+                          <span className="truncate">
+                            {formatDateShort(hotel.dates.checkIn)}
+                            <span className="text-white/30 mx-0.5">-</span>
+                            {formatDateShort(hotel.dates.checkOut)}
+                          </span>
                         </div>
                       </div>
                     )}
 
-                    <div className="space-y-1">
-                      <div className="text-white/40 uppercase tracking-wider font-bold text-[10px]">
+                    <div className="space-y-0.5 sm:space-y-1">
+                      <div className="text-white/40 uppercase tracking-wider font-bold text-[0.5rem] sm:text-[0.625rem]">
                         Details
                       </div>
-                      <div className="text-white font-medium flex items-center gap-2">
+                      <div className="text-foreground font-medium flex items-center gap-1.5 sm:gap-2 flex-wrap">
                         {hotel.guests && (
-                          <span className="flex items-center gap-1">
-                            <Users size={12} className="text-emerald-400" />{" "}
+                          <span className="flex items-center gap-0.5 sm:gap-1">
+                            <Users className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400" />
                             {hotel.guests}
                           </span>
                         )}
                         {hotel.roomType && (
                           <span
-                            className="flex items-center gap-1 truncate max-w-[100px]"
+                            className="flex items-center gap-0.5 sm:gap-1 truncate max-w-[5rem] sm:max-w-[6.25rem]"
                             title={hotel.roomType}
                           >
-                            <Bed size={12} className="text-rose-400" />{" "}
-                            {hotel.roomType}
+                            <Bed className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-400 flex-shrink-0" />
+                            <span className="truncate">{hotel.roomType}</span>
                           </span>
                         )}
                       </div>
@@ -235,13 +254,13 @@ export const Hotel = memo(function Hotel({
                   </div>
 
                   {/* Footer: Price & Action */}
-                  <div className="mt-auto pt-6 flex w-full items-end justify-between">
+                  <div className="mt-auto pt-4 sm:pt-6 flex w-full items-end justify-between gap-2">
                     {hotel.amenities && hotel.amenities.length > 0 && (
-                      <div className="flex -space-x-2 hidden sm:flex">
+                      <div className="hidden sm:flex -space-x-2">
                         {hotel.amenities.slice(0, 3).map((a, idx) => (
                           <div
                             key={idx}
-                            className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[10px] text-zinc-400 font-bold uppercase overflow-hidden"
+                            className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[0.5rem] sm:text-[0.625rem] text-zinc-400 font-bold uppercase overflow-hidden"
                             title={a}
                           >
                             {a[0]}
@@ -251,12 +270,12 @@ export const Hotel = memo(function Hotel({
                     )}
 
                     {hotel.price && (
-                      <div className="ml-auto flex items-center gap-4">
+                      <div className="ml-auto flex items-center gap-3 sm:gap-4">
                         <div className="text-right">
-                          <div className="text-[10px] text-white/40 font-bold uppercase tracking-wide">
+                          <div className="text-[0.5rem] sm:text-[0.625rem] text-white/40 font-bold uppercase tracking-wide">
                             {hotel.price.perNight ? "Per Night" : "Total"}
                           </div>
-                          <div className="text-2xl font-black text-white tracking-tight leading-none">
+                          <div className="text-lg sm:text-2xl font-black text-foreground tracking-tight leading-none">
                             {formatCurrency(
                               hotel.price.amount,
                               hotel.price.currency,
@@ -269,13 +288,13 @@ export const Hotel = memo(function Hotel({
                             href={hotel.bookingUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 transition-transform shadow-lg shadow-white/10"
+                            className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation"
                           >
-                            <ArrowRight size={18} strokeWidth={2.5} />
+                            <ArrowRight className="w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" strokeWidth={2.5} />
                           </a>
                         ) : (
-                          <button className="h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 transition-transform shadow-lg shadow-white/10">
-                            <ArrowRight size={18} strokeWidth={2.5} />
+                          <button className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation">
+                            <ArrowRight className="w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" strokeWidth={2.5} />
                           </button>
                         )}
                       </div>
@@ -289,6 +308,6 @@ export const Hotel = memo(function Hotel({
       </div>
 
       {children}
-    </div>
+    </motion.div>
   );
 });

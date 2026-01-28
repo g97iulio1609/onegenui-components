@@ -51,10 +51,10 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
 }: MultiDocumentExplorerProps) {
   return (
     <div className={`multi-document-explorer ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Multi-Document Results</h3>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+        <h3 className="text-base sm:text-lg font-semibold">Multi-Document Results</h3>
         {progress && (
-          <span className="text-sm text-gray-500">
+          <span className="text-xs sm:text-sm text-gray-500">
             {progress.documentsSearched}/{progress.totalDocuments} documents
           </span>
         )}
@@ -62,10 +62,10 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
 
       {/* Progress bar */}
       {isSearching && progress && (
-        <div className="mb-4">
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
+        <div className="mb-3 sm:mb-4">
+          <div className="w-full bg-gray-200 rounded-full h-1 sm:h-1.5">
             <motion.div
-              className="bg-blue-500 h-1.5 rounded-full"
+              className="bg-blue-500 h-1 sm:h-1.5 rounded-full"
               initial={{ width: 0 }}
               animate={{
                 width: `${(progress.documentsSearched / progress.totalDocuments) * 100}%`,
@@ -77,18 +77,18 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
 
       {/* Merged content */}
       {mergedContent && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+          <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
             Synthesized Answer
           </h4>
-          <p className="text-sm text-gray-600 whitespace-pre-wrap">
+          <p className="text-xs sm:text-sm text-gray-600 whitespace-pre-wrap">
             {mergedContent}
           </p>
         </div>
       )}
 
       {/* Document results */}
-      <div className="space-y-3 mb-6">
+      <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
         <AnimatePresence>
           {results.map((doc, i) => (
             <motion.div
@@ -97,14 +97,14 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
               onClick={() => onDocumentClick?.(doc.documentId)}
-              className={`p-4 border rounded-lg ${
+              className={`p-3 sm:p-4 border rounded-lg touch-manipulation ${
                 onDocumentClick ? "cursor-pointer hover:border-blue-300" : ""
               } transition-colors`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-sm">{doc.documentTitle}</h4>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1.5 sm:mb-2 gap-1.5">
+                <h4 className="font-medium text-xs sm:text-sm">{doc.documentTitle}</h4>
                 <span
-                  className={`px-2 py-0.5 rounded text-xs ${
+                  className={`px-1.5 sm:px-2 py-0.5 rounded text-[0.625rem] sm:text-xs self-start sm:self-auto ${
                     doc.confidence > 0.8
                       ? "bg-green-100 text-green-800"
                       : doc.confidence > 0.5
@@ -116,7 +116,7 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
                 </span>
               </div>
               {doc.extractedContent && (
-                <p className="text-sm text-gray-600 line-clamp-3">
+                <p className="text-xs sm:text-sm text-gray-600 line-clamp-3">
                   {doc.extractedContent}
                 </p>
               )}
@@ -128,10 +128,10 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
       {/* Cross-document relations */}
       {relations.length > 0 && (
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-3">
+          <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
             Cross-Document Relations
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-1.5 sm:space-y-2">
             {relations.map((relation, i) => {
               const sourceDoc = results.find(
                 (r) => r.documentId === relation.sourceDocId,
@@ -143,9 +143,9 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
               return (
                 <div
                   key={i}
-                  className={`p-3 rounded-lg border ${relationColors[relation.type]}`}
+                  className={`p-2 sm:p-3 rounded-lg border ${relationColors[relation.type]}`}
                 >
-                  <div className="flex items-center gap-2 text-xs mb-1">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs mb-0.5 sm:mb-1">
                     <span className="font-medium">
                       {sourceDoc?.documentTitle || relation.sourceDocId}
                     </span>
@@ -154,7 +154,7 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
                       {targetDoc?.documentTitle || relation.targetDocId}
                     </span>
                   </div>
-                  <p className="text-xs opacity-80">{relation.description}</p>
+                  <p className="text-[0.625rem] sm:text-xs opacity-80">{relation.description}</p>
                 </div>
               );
             })}
@@ -164,8 +164,8 @@ export const MultiDocumentExplorer = memo(function MultiDocumentExplorer({
 
       {/* Empty state */}
       {!isSearching && results.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          <p className="text-sm">
+        <div className="text-center py-6 sm:py-8 text-gray-500">
+          <p className="text-xs sm:text-sm">
             No results yet. Start a search to explore documents.
           </p>
         </div>

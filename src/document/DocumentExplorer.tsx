@@ -32,21 +32,14 @@ const TreeNodeItem = memo(function TreeNodeItem({
   const hasChildren = node.children && node.children.length > 0;
 
   return (
-    <div style={{ marginLeft: depth * 16 }}>
+    <div style={{ marginLeft: `${depth * 0.75}rem` }}>
       <div
         onClick={() => onSelect(node)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "8px 12px",
-          cursor: "pointer",
-          borderRadius: 6,
-          backgroundColor: isSelected ? "#e3f2fd" : "transparent",
-          borderLeft: isSelected
-            ? "3px solid #1976d2"
-            : "3px solid transparent",
-        }}
+        className={`flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 cursor-pointer rounded-md sm:rounded-lg touch-manipulation ${
+          isSelected 
+            ? "bg-sky-500/10 border-l-2 sm:border-l-3 border-sky-500" 
+            : "border-l-2 sm:border-l-3 border-transparent hover:bg-white/5"
+        }`}
       >
         {hasChildren && (
           <button
@@ -54,21 +47,15 @@ const TreeNodeItem = memo(function TreeNodeItem({
               e.stopPropagation();
               onToggle(node.id);
             }}
-            style={{
-              border: "none",
-              background: "none",
-              cursor: "pointer",
-              padding: 0,
-              fontSize: 12,
-            }}
+            className="border-0 bg-transparent cursor-pointer p-1 text-[0.625rem] sm:text-xs text-zinc-400 hover:text-white touch-manipulation min-h-[1.75rem] min-w-[1.75rem] flex items-center justify-center"
           >
             {isExpanded ? "v" : ">"}
           </button>
         )}
-        {!hasChildren && <span style={{ width: 12 }} />}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 500, fontSize: 14 }}>{node.title}</div>
-          <div style={{ fontSize: 12, color: "#666" }}>
+        {!hasChildren && <span className="w-3 sm:w-4" />}
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-xs sm:text-sm text-white truncate">{node.title}</div>
+          <div className="text-[0.625rem] sm:text-xs text-zinc-500">
             p{node.pageStart}-{node.pageEnd}
           </div>
         </div>
@@ -129,25 +116,11 @@ export const DocumentExplorer = memo(function DocumentExplorer({
   );
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #e0e0e0",
-          fontWeight: 600,
-        }}
-      >
+    <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm">
+      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white">
         Document Structure
       </div>
-      <div style={{ padding: 8, maxHeight: 500, overflowY: "auto" }}>
+      <div className="p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y">
         <TreeNodeItem
           node={tree}
           depth={0}

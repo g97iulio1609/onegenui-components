@@ -34,119 +34,56 @@ export const CitationViewer = memo(function CitationViewer({
 
   if (citations.length === 0) {
     return (
-      <div
-        style={{
-          fontFamily: "system-ui, sans-serif",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          padding: 16,
-          textAlign: "center",
-          color: "#666",
-        }}
-      >
+      <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm">
         No citations found in document
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e0e0e0",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: "#f5f5f5",
-          borderBottom: "1px solid #e0e0e0",
-          fontWeight: 600,
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <span>Citations</span>
-        <span style={{ color: "#666", fontWeight: 400 }}>
+    <div className="font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm">
+      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base">
+        <span className="text-white">Citations</span>
+        <span className="text-zinc-400 font-normal text-xs sm:text-sm">
           {citations.length} total
         </span>
       </div>
 
-      <div style={{ maxHeight: 400, overflowY: "auto" }}>
+      <div className="max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y">
         {Object.entries(byType).map(([type, typeCitations]) => (
           <div key={type}>
-            <div
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "#fafafa",
-                fontWeight: 500,
-                fontSize: 12,
-                textTransform: "uppercase",
-                color: "#666",
-                borderBottom: "1px solid #e0e0e0",
-              }}
-            >
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5">
               {type} ({typeCitations.length})
             </div>
             {typeCitations.map((citation) => (
               <div
                 key={citation.id}
                 onClick={() => onCitationClick?.(citation)}
-                style={{
-                  padding: "12px 16px",
-                  borderBottom: "1px solid #f0f0f0",
-                  cursor: onCitationClick ? "pointer" : "default",
-                  display: "flex",
-                  gap: 12,
-                }}
+                className={`p-3 sm:p-4 border-b border-white/5 flex gap-2.5 sm:gap-3 ${onCitationClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`}
               >
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 4,
-                    backgroundColor: "#e3f2fd",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 600,
-                    color: "#1976d2",
-                    flexShrink: 0,
-                  }}
-                >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm">
                   {typeIcons[citation.type] || "?"}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="flex-1 min-w-0">
                   {citation.title && (
-                    <div style={{ fontWeight: 500, fontSize: 14 }}>
+                    <div className="font-medium text-xs sm:text-sm text-white">
                       {citation.title}
                     </div>
                   )}
                   {citation.authors && citation.authors.length > 0 && (
-                    <div style={{ fontSize: 13, color: "#555" }}>
+                    <div className="text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5">
                       {citation.authors.join(", ")}
                     </div>
                   )}
                   {citation.year && (
-                    <span style={{ fontSize: 12, color: "#666" }}>
+                    <span className="text-[0.625rem] sm:text-xs text-zinc-500 ml-1">
                       ({citation.year})
                     </span>
                   )}
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#888",
-                      marginTop: 4,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <div className="text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap">
                     {citation.text}
                   </div>
-                  <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>
+                  <div className="text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1">
                     Page {citation.pageNumber}
                   </div>
                 </div>

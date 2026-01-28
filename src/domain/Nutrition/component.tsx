@@ -87,11 +87,11 @@ export const Nutrition = memo(function Nutrition({
   }, [displayMeals]);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full">
       {/* Header */}
       {title && (
-        <h3 className="m-0 text-xl font-bold font-sans tracking-tight flex items-center gap-3">
-          <Flame className="w-5 h-5 text-orange-500" />
+        <h3 className="m-0 text-base sm:text-lg lg:text-xl font-bold font-sans tracking-tight flex items-center gap-2 sm:gap-3">
+          <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
           {title}
         </h3>
       )}
@@ -100,27 +100,27 @@ export const Nutrition = memo(function Nutrition({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-5 rounded-2xl bg-zinc-900 border border-white/10 shadow-lg relative overflow-hidden"
+        className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900 border border-white/10 shadow-lg relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 p-3 opacity-10">
-          <Target size={80} strokeWidth={1} />
+        <div className="absolute top-0 right-0 p-2 sm:p-3 opacity-10">
+          <Target className="w-16 h-16 sm:w-20 sm:h-20" strokeWidth={1} />
         </div>
 
-        <div className="flex justify-between items-end mb-6 relative z-10">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-4 sm:mb-6 relative z-10 gap-2">
           <div>
-            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">
+            <div className="text-[0.625rem] font-bold text-muted-foreground uppercase tracking-widest mb-1">
               Daily Target
             </div>
-            <div className="text-3xl font-black text-white leading-none">
+            <div className="text-2xl sm:text-3xl font-black text-white leading-none">
               {Math.round(stats.cal)}
-              <span className="text-sm font-medium text-white/40 ml-1">
+              <span className="text-xs sm:text-sm font-medium text-white/40 ml-1">
                 / {MACRO_TARGETS.cal} kcal
               </span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 relative z-10">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
           <MacroMetric
             label="Protein"
             value={stats.p}
@@ -143,10 +143,10 @@ export const Nutrition = memo(function Nutrition({
       </motion.div>
 
       {/* Meals List */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         {displayMeals.length === 0 ? (
           <EmptyState
-            icon={<Utensils className="w-10 h-10" />}
+            icon={<Utensils className="w-8 h-8 sm:w-10 sm:h-10" />}
             message="Empty Plan"
           />
         ) : (

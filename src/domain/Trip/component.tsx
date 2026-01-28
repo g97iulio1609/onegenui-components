@@ -73,17 +73,17 @@ export const Trip = memo(function Trip({
   );
 
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 w-full">
       {/* Header Section */}
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
           {title || "My Trips"}
         </h2>
       </div>
 
       {/* Trip Selector / Cards */}
       {trips && trips.length > 0 && (
-        <div className="flex gap-4 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-none snap-x snap-mandatory perspective-[1000px]">
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-none snap-x snap-mandatory perspective-[1000px] touch-pan-x">
           {trips.map((trip, index) => {
             const isActive = activeTripId === trip.id;
 
@@ -97,7 +97,7 @@ export const Trip = memo(function Trip({
                 data-element-key={element.key}
                 data-item-id={trip.id}
                 className={cn(
-                  "min-w-[280px] h-[180px] p-5 rounded-3xl cursor-pointer relative overflow-hidden group snap-center transition-all duration-500 border",
+                  "min-w-[16rem] sm:min-w-[17.5rem] h-[10rem] sm:h-[11.25rem] p-4 sm:p-5 rounded-2xl sm:rounded-3xl cursor-pointer relative overflow-hidden group snap-center transition-all duration-500 border touch-manipulation",
                   isActive
                     ? "border-primary/50 shadow-[0_0_40px_-10px_rgba(99,102,241,0.4)] scale-100"
                     : "border-white/5 hover:border-white/20 bg-black/40 hover:bg-black/60 scale-[0.98] hover:scale-[1.0]",
@@ -125,10 +125,10 @@ export const Trip = memo(function Trip({
 
                 {/* Content Layer */}
                 <div className="relative z-10 flex flex-col h-full justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-1.5 text-white/90 font-bold tracking-tight bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-                      <MapPin size={12} className="text-indigo-400" />
-                      <span className="text-xs uppercase whitespace-nowrap">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex items-center gap-1.5 text-white/90 font-bold tracking-tight bg-black/30 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/5">
+                      <MapPin className="w-3 h-3 text-indigo-400" />
+                      <span className="text-[0.625rem] sm:text-xs uppercase whitespace-nowrap">
                         {trip.destination || "Unknown"}
                       </span>
                     </div>
@@ -141,14 +141,14 @@ export const Trip = memo(function Trip({
                   <div className="space-y-1">
                     <h4
                       className={cn(
-                        "text-xl font-bold leading-tight transition-colors",
+                        "text-base sm:text-lg lg:text-xl font-bold leading-tight transition-colors line-clamp-2",
                         isActive ? "text-white" : "text-zinc-200",
                       )}
                     >
                       {trip.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-xs font-medium text-white/50">
-                      <Calendar size={12} />
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs font-medium text-white/50">
+                      <Calendar className="w-3 h-3" />
                       {trip.dates?.start
                         ? new Date(trip.dates.start).toLocaleDateString(
                             undefined,
@@ -166,17 +166,17 @@ export const Trip = memo(function Trip({
                   </div>
 
                   {/* Stats Strip */}
-                  <div className="pt-4 mt-auto border-t border-white/10 flex items-center gap-4 text-xs font-medium text-white/60">
+                  <div className="pt-3 sm:pt-4 mt-auto border-t border-white/10 flex items-center gap-3 sm:gap-4 text-[0.625rem] sm:text-xs font-medium text-white/60">
                     {trip.stats?.flights ? (
                       <span className="flex items-center gap-1">
-                        <Plane size={12} className="text-sky-400" />{" "}
-                        {trip.stats.flights} Flights
+                        <Plane className="w-3 h-3 text-sky-400" />{" "}
+                        {trip.stats.flights} <span className="hidden sm:inline">Flights</span>
                       </span>
                     ) : null}
                     {trip.stats?.hotels ? (
                       <span className="flex items-center gap-1">
-                        <Hotel size={12} className="text-amber-400" />{" "}
-                        {trip.stats.hotels} Hotels
+                        <Hotel className="w-3 h-3 text-amber-400" />{" "}
+                        {trip.stats.hotels} <span className="hidden sm:inline">Hotels</span>
                       </span>
                     ) : null}
                   </div>
@@ -200,16 +200,16 @@ export const Trip = memo(function Trip({
           >
             {/* Total Budget Overview if Available */}
             {activeTrip?.totalCost && (
-              <div className="glass-panel p-6 rounded-2xl flex items-center justify-between">
+              <div className="glass-panel p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-                    <Wallet size={20} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground">
+                    <div className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Total Budget
                     </div>
-                    <div className="text-2xl font-bold tracking-tight font-mono">
+                    <div className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight font-mono">
                       {formatCurrency(
                         activeTrip.totalCost.amount,
                         activeTrip.totalCost.currency,
@@ -217,14 +217,14 @@ export const Trip = memo(function Trip({
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full">
+                <div className="text-[0.625rem] sm:text-xs text-muted-foreground bg-white/5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full self-start sm:self-auto">
                   Estimated
                 </div>
               </div>
             )}
 
             {/* Itinerary Container */}
-            <div className="relative pl-6 sm:pl-8 border-l-2 border-dashed border-white/10 space-y-8">
+            <div className="relative pl-4 sm:pl-6 lg:pl-8 border-l-2 border-dashed border-white/10 space-y-4 sm:space-y-6 lg:space-y-8">
               {/* Render Children (Flights, Hotels, Activities) */}
               {children}
             </div>

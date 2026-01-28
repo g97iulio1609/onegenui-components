@@ -57,11 +57,11 @@ export const Diary = memo(function Diary({
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold tracking-tight flex items-center gap-3">
-          <BookOpen className="w-5 h-5 text-indigo-500" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
+          <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
           {title || "Diary"}
         </h3>
 
@@ -69,21 +69,21 @@ export const Diary = memo(function Diary({
           <div className="flex items-center gap-1">
             <button
               onClick={() => navigateDate(-1)}
-              className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={goToToday}
-              className="px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/5"
+              className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-white/10 text-[0.625rem] sm:text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 touch-manipulation"
             >
               Today
             </button>
             <button
               onClick={() => navigateDate(1)}
-              className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 touch-manipulation"
             >
-              <ChevronRight size={16} />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -112,15 +112,15 @@ export const Diary = memo(function Diary({
             </motion.div>
           ) : (
             <EmptyState
-              icon={<BookOpen className="w-10 h-10" />}
+              icon={<BookOpen className="w-8 h-8 sm:w-10 sm:h-10" />}
               message="No entry for this day"
             />
           )
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 sm:gap-3">
             {sortedEntries.length === 0 ? (
               <EmptyState
-                icon={<BookOpen className="w-10 h-10" />}
+                icon={<BookOpen className="w-8 h-8 sm:w-10 sm:h-10" />}
                 message="No diary entries"
               />
             ) : (

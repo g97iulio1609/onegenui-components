@@ -34,11 +34,11 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
 
   return (
     <div className={`tree-search-visualizer ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Tree Search</h3>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+        <h3 className="text-base sm:text-lg font-semibold">Tree Search</h3>
         {algorithm && (
           <span
-            className={`px-2 py-1 rounded text-sm ${
+            className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm self-start sm:self-auto ${
               algorithm === "greedy"
                 ? "bg-green-100 text-green-800"
                 : "bg-blue-100 text-blue-800"
@@ -55,11 +55,11 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mb-4"
+            className="mb-3 sm:mb-4"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-sm text-gray-600">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs sm:text-sm text-gray-600">
                 {lastEvent?.type === "node_visited"
                   ? `Visiting: ${lastEvent.data?.title || lastEvent.data?.nodeId}`
                   : lastEvent?.type === "simulation"
@@ -68,7 +68,7 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
               </span>
             </div>
             {result && (
-              <div className="mt-2 text-sm text-gray-500">
+              <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-gray-500">
                 Nodes visited: {result.nodesVisited}
               </div>
             )}
@@ -77,18 +77,18 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
       </AnimatePresence>
 
       {result && result.path.length > 0 && (
-        <div className="mb-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
+        <div className="mb-3 sm:mb-4">
+          <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
             Search Path
           </h4>
           <div className="flex flex-wrap gap-1 items-center">
             {result.path.map((nodeId, i) => (
               <div key={nodeId} className="flex items-center">
-                <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded text-xs sm:text-sm">
                   {nodeId}
                 </span>
                 {i < result.path.length - 1 && (
-                  <span className="mx-1 text-gray-400">→</span>
+                  <span className="mx-0.5 sm:mx-1 text-gray-400">→</span>
                 )}
               </div>
             ))}
@@ -97,16 +97,16 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
       )}
 
       {result && (
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium">Confidence</span>
-            <span className="text-sm">
+            <span className="text-xs sm:text-sm font-medium">Confidence</span>
+            <span className="text-xs sm:text-sm">
               {(result.confidence * 100).toFixed(0)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
             <motion.div
-              className={`h-2 rounded-full ${
+              className={`h-1.5 sm:h-2 rounded-full ${
                 result.confidence > 0.8
                   ? "bg-green-500"
                   : result.confidence > 0.5
@@ -122,25 +122,25 @@ export const TreeSearchVisualizer = memo(function TreeSearchVisualizer({
       )}
 
       {result?.extractedContent && (
-        <div className="p-3 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
+        <div className="p-2 sm:p-3 bg-gray-50 rounded-lg">
+          <h4 className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
             Extracted Content
           </h4>
-          <p className="text-sm text-gray-600">{result.extractedContent}</p>
+          <p className="text-xs sm:text-sm text-gray-600">{result.extractedContent}</p>
         </div>
       )}
 
       {events.length > 0 && (
-        <details className="mt-4">
-          <summary className="text-sm text-gray-500 cursor-pointer">
+        <details className="mt-3 sm:mt-4">
+          <summary className="text-xs sm:text-sm text-gray-500 cursor-pointer touch-manipulation">
             View {events.length} events
           </summary>
-          <div className="mt-2 max-h-48 overflow-y-auto text-xs font-mono">
+          <div className="mt-1.5 sm:mt-2 max-h-48 overflow-y-auto text-[0.625rem] sm:text-xs font-mono">
             {events.slice(-20).map((event, i) => (
-              <div key={i} className="py-1 border-b border-gray-100">
+              <div key={i} className="py-0.5 sm:py-1 border-b border-gray-100">
                 <span className="text-gray-400">{event.type}</span>
                 {event.data?.nodeId && (
-                  <span className="ml-2 text-gray-600">
+                  <span className="ml-1.5 sm:ml-2 text-gray-600">
                     {event.data.nodeId as string}
                   </span>
                 )}

@@ -1,32 +1,33 @@
 
+
 > @onegenui/components@0.1.0 build /Users/giulioleone/Sviluppo/genUi/json-render/packages/components
 > rm -rf dist && tsup
 
-CLI Building entry: src/definitions.ts, src/index.ts, src/skills.ts
-CLI Using tsconfig: tsconfig.json
-CLI tsup v8.5.1
-CLI Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/components/tsup.config.ts
-CLI Target: es2022
-CJS Build start
-ESM Build start
-CJS dist/definitions.js     33.90 KB
-CJS dist/skills.js          2.60 KB
-CJS dist/index.js           427.59 KB
-CJS dist/skills.js.map      3.44 KB
-CJS dist/definitions.js.map 56.02 KB
-CJS dist/index.js.map       636.98 KB
-CJS ⚡️ Build success in 69ms
-ESM dist/definitions.mjs        2.10 KB
-ESM dist/skills.mjs             1.48 KB
-ESM dist/index.mjs              357.45 KB
-ESM dist/chunk-FF2UFRAJ.mjs     26.63 KB
-ESM dist/definitions.mjs.map    2.78 KB
-ESM dist/skills.mjs.map         3.38 KB
-ESM dist/index.mjs.map          597.42 KB
-ESM dist/chunk-FF2UFRAJ.mjs.map 53.76 KB
-ESM ⚡️ Build success in 72ms
+[34mCLI[39m Building entry: src/definitions.ts, src/index.ts, src/skills.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.5.1
+[34mCLI[39m Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/components/tsup.config.ts
+[34mCLI[39m Target: es2022
+[34mCJS[39m Build start
+[34mESM[39m Build start
+[32mCJS[39m [1mdist/definitions.js     [22m[32m33.90 KB[39m
+[32mCJS[39m [1mdist/skills.js          [22m[32m2.60 KB[39m
+[32mCJS[39m [1mdist/index.js           [22m[32m441.31 KB[39m
+[32mCJS[39m [1mdist/definitions.js.map [22m[32m56.02 KB[39m
+[32mCJS[39m [1mdist/skills.js.map      [22m[32m3.44 KB[39m
+[32mCJS[39m [1mdist/index.js.map       [22m[32m649.87 KB[39m
+[32mCJS[39m ⚡️ Build success in 43ms
+[32mESM[39m [1mdist/definitions.mjs        [22m[32m2.10 KB[39m
+[32mESM[39m [1mdist/chunk-FF2UFRAJ.mjs     [22m[32m26.63 KB[39m
+[32mESM[39m [1mdist/index.mjs              [22m[32m370.40 KB[39m
+[32mESM[39m [1mdist/skills.mjs             [22m[32m1.48 KB[39m
+[32mESM[39m [1mdist/definitions.mjs.map    [22m[32m2.78 KB[39m
+[32mESM[39m [1mdist/skills.mjs.map         [22m[32m3.38 KB[39m
+[32mESM[39m [1mdist/chunk-FF2UFRAJ.mjs.map [22m[32m53.76 KB[39m
+[32mESM[39m [1mdist/index.mjs.map          [22m[32m610.50 KB[39m
+[32mESM[39m ⚡️ Build success in 43ms
 DTS Build start
-DTS ⚡️ Build success in 4115ms
+DTS ⚡️ Build success in 3732ms
 DTS dist/skills.d.ts                704.00 B
 DTS dist/index.d.ts                 73.75 KB
 DTS dist/definitions.d.ts           1.13 KB

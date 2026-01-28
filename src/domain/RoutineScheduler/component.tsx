@@ -65,17 +65,17 @@ export const RoutineScheduler = memo(function RoutineScheduler({
   });
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-3 sm:gap-4 w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Calendar className="w-5 h-5 text-indigo-500" />
-          <h3 className="text-xl font-bold tracking-tight text-white">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
+          <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white">
             {title || "Routine"}
           </h3>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* View Toggle */}
           <div className="flex rounded-lg border border-white/10 overflow-hidden">
             {(["day", "week"] as const).map((v) => (
@@ -83,7 +83,7 @@ export const RoutineScheduler = memo(function RoutineScheduler({
                 key={v}
                 onClick={() => setCurrentView(v)}
                 className={cn(
-                  "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
+                  "px-2 sm:px-3 py-1 sm:py-1.5 text-[0.625rem] sm:text-xs font-bold uppercase tracking-wider transition-colors touch-manipulation",
                   currentView === v
                     ? "bg-indigo-500/20 text-indigo-400"
                     : "text-white/40 hover:text-white/60",
@@ -95,31 +95,31 @@ export const RoutineScheduler = memo(function RoutineScheduler({
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1">
             <button
               onClick={() => navigateDate(-1)}
-              className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors touch-manipulation"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setSelectedDate(todayStr)}
-              className="px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+              className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-white/10 text-[0.625rem] sm:text-xs font-bold text-white/60 hover:text-white hover:bg-white/5 transition-colors touch-manipulation"
             >
               Today
             </button>
             <button
               onClick={() => navigateDate(1)}
-              className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors touch-manipulation"
             >
-              <ChevronRight size={16} />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Date Display */}
-      <div className="text-sm text-white/50 font-mono">
+      <div className="text-xs sm:text-sm text-white/50 font-mono">
         {currentView === "day"
           ? new Date(selectedDate).toLocaleDateString(undefined, {
               weekday: "long",
@@ -131,31 +131,31 @@ export const RoutineScheduler = memo(function RoutineScheduler({
       </div>
 
       {/* Schedule Grid */}
-      <div className="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden">
+      <div className="bg-zinc-900/50 border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
         <div className="flex">
           {/* Time Labels */}
-          <div className="w-14 flex-shrink-0 border-r border-white/5">
+          <div className="w-10 sm:w-14 flex-shrink-0 border-r border-white/5">
             {currentView === "week" && (
-              <div className="h-[60px] border-b border-white/5" />
+              <div className="h-[3rem] sm:h-[3.75rem] border-b border-white/5" />
             )}
             {timeSlots.map((slot, i) => (
               <div
                 key={slot}
-                className="relative border-b border-white/5 text-[10px] font-mono text-white/30"
+                className="relative border-b border-white/5 text-[0.5rem] sm:text-[0.625rem] font-mono text-white/30"
                 style={{ height: `${slotHeight}px` }}
               >
-                <span className="absolute -top-2 left-2">{slot}</span>
+                <span className="absolute -top-2 left-1 sm:left-2">{slot}</span>
               </div>
             ))}
           </div>
 
           {/* Day Columns */}
-          <div className="flex-1 flex overflow-x-auto">
+          <div className="flex-1 flex overflow-x-auto touch-pan-x">
             <AnimatePresence mode="wait">
               {visibleDays.length === 0 ? (
-                <div className="flex-1 py-12">
+                <div className="flex-1 py-8 sm:py-12">
                   <EmptyState
-                    icon={<Calendar className="w-10 h-10" />}
+                    icon={<Calendar className="w-8 h-8 sm:w-10 sm:h-10" />}
                     message="No schedule"
                   />
                 </div>
@@ -183,15 +183,15 @@ export const RoutineScheduler = memo(function RoutineScheduler({
       </div>
 
       {/* Category Legend */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         {Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
           const Icon = config.icon;
           return (
             <div
               key={key}
-              className="flex items-center gap-1.5 text-xs text-white/50"
+              className="flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-white/50"
             >
-              <Icon size={12} className={config.color} />
+              <Icon className="w-3 h-3" />
               <span className="capitalize">{key}</span>
             </div>
           );

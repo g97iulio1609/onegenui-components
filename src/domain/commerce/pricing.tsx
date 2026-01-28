@@ -41,13 +41,13 @@ export const Pricing = memo(function Pricing({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
       {title && (
-        <h3 className="m-0 text-xl font-bold tracking-tight text-white">
+        <h3 className="m-0 text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white">
           {title}
         </h3>
       )}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-4 sm:gap-5 lg:gap-6">
         {plans.map((plan, index) => {
           const isHighlight = plan.highlight;
 
@@ -60,7 +60,7 @@ export const Pricing = memo(function Pricing({
               className={cn(
                 "group relative bg-zinc-900 border transition-all duration-300 flex flex-col isolate overflow-hidden",
                 // Flight/Invoice Style:
-                "rounded-none sm:rounded-2xl border-white/10",
+                "rounded-xl sm:rounded-2xl border-white/10",
                 isHighlight
                   ? "shadow-2xl shadow-indigo-500/10 ring-1 ring-indigo-500/50 bg-zinc-900/80"
                   : "hover:border-white/20 hover:shadow-xl hover:-translate-y-1",
@@ -70,38 +70,38 @@ export const Pricing = memo(function Pricing({
                 <div className="absolute top-0 inset-x-0 h-1 bg-indigo-500 z-10" />
               )}
 
-              <div className="p-6 pb-8 border-b border-dashed border-white/10">
-                <div className="flex justify-between items-start mb-4">
+              <div className="p-4 sm:p-5 lg:p-6 pb-6 sm:pb-8 border-b border-dashed border-white/10">
+                <div className="flex justify-between items-start mb-3 sm:mb-4 gap-2">
                   <div>
-                    <h4 className="font-bold text-lg text-white mb-1">
+                    <h4 className="font-bold text-base sm:text-lg text-white mb-1">
                       {plan.name}
                     </h4>
                     {plan.badge && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/10 text-white/80 border border-white/10">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] font-bold uppercase tracking-wider bg-white/10 text-white/80 border border-white/10">
                         {plan.badge}
                       </span>
                     )}
                   </div>
                   {isHighlight && (
-                    <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/40">
-                      <Star size={14} fill="currentColor" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/40 shrink-0">
+                      <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white tracking-tight leading-none">
+                  <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-none">
                     {plan.price}
                   </span>
                   {plan.cadence && (
-                    <span className="text-xs font-mono text-zinc-500 uppercase">
+                    <span className="text-[0.625rem] sm:text-xs font-mono text-zinc-500 uppercase">
                       /{plan.cadence}
                     </span>
                   )}
                 </div>
 
                 {plan.description && (
-                  <p className="mt-3 text-sm text-zinc-400 leading-snug">
+                  <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-zinc-400 leading-snug">
                     {render(plan.description, { inline: true })}
                   </p>
                 )}
@@ -109,27 +109,27 @@ export const Pricing = memo(function Pricing({
 
               {/* Receipt edge visual (perforations) */}
               <div className="relative h-px w-full my-0 -mt-px z-10">
-                <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-r border-white/10" />
-                <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-l border-white/10" />
+                <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-black border-r border-white/10" />
+                <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-black border-l border-white/10" />
               </div>
 
-              <div className="p-6 flex-1 bg-black/20">
+              <div className="p-4 sm:p-5 lg:p-6 flex-1 bg-black/20">
                 {plan.features && plan.features.length > 0 && (
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
                     {plan.features.map((feature) => (
                       <li
                         key={feature}
-                        className="flex items-start gap-3 text-sm text-zinc-300"
+                        className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-zinc-300"
                       >
                         <div
                           className={cn(
-                            "w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
+                            "w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
                             isHighlight
                               ? "bg-indigo-500/20 text-indigo-400"
                               : "bg-white/10 text-zinc-400",
                           )}
                         >
-                          <Check size={10} strokeWidth={4} />
+                          <Check className="w-2 h-2 sm:w-2.5 sm:h-2.5" strokeWidth={4} />
                         </div>
                         <span className="leading-tight">
                           {render(feature, { inline: true })}
@@ -141,7 +141,7 @@ export const Pricing = memo(function Pricing({
 
                 <button
                   className={cn(
-                    "w-full py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-all",
+                    "w-full py-2 sm:py-3 rounded-lg text-[0.625rem] sm:text-xs font-bold uppercase tracking-widest transition-all touch-manipulation min-h-[2.75rem]",
                     isHighlight
                       ? "bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-500/25"
                       : "bg-zinc-800 hover:bg-zinc-700 text-white border border-white/5",

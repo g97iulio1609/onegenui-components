@@ -48,9 +48,9 @@ export const ProfileCard = memo(function ProfileCard({
   }
 
   return (
-    <div className="group relative rounded-3xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl">
+    <div className="group relative rounded-2xl sm:rounded-3xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl">
       {/* Cover Image */}
-      <div className="h-32 sm:h-40 relative bg-zinc-800 border-b border-white/5">
+      <div className="h-24 sm:h-32 lg:h-40 relative bg-zinc-800 border-b border-white/5">
         {profile.coverImage ? (
           <div className="absolute inset-0">
             <img
@@ -68,22 +68,22 @@ export const ProfileCard = memo(function ProfileCard({
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
-            backgroundSize: "16px 16px",
+            backgroundSize: "12px 12px",
           }}
         />
       </div>
 
-      <div className="px-6 pb-6 relative">
+      <div className="px-4 sm:px-5 lg:px-6 pb-4 sm:pb-5 lg:pb-6 relative">
         {/* Avatar - Floating */}
-        <div className="absolute -top-12 left-6">
-          <div className="w-24 h-24 rounded-2xl bg-black border-4 border-zinc-900 shadow-2xl overflow-hidden ring-1 ring-white/10 group-hover:ring-white/30 transition-all group-hover:scale-105 duration-300">
+        <div className="absolute -top-10 sm:-top-12 left-4 sm:left-6">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl bg-black border-3 sm:border-4 border-zinc-900 shadow-2xl overflow-hidden ring-1 ring-white/10 group-hover:ring-white/30 transition-all group-hover:scale-105 duration-300">
             {profile.avatar ? (
               <img
                 src={profile.avatar}
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-zinc-800 text-2xl font-bold text-zinc-500 uppercase">
+              <div className="w-full h-full flex items-center justify-center bg-zinc-800 text-xl sm:text-2xl font-bold text-zinc-500 uppercase">
                 {profile.name[0]}
               </div>
             )}
@@ -91,51 +91,51 @@ export const ProfileCard = memo(function ProfileCard({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end pt-4 mb-4 gap-2">
-          <button className="h-9 px-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-colors">
-            <MessageCircle size={14} />
+        <div className="flex justify-end pt-3 sm:pt-4 mb-3 sm:mb-4 gap-1.5 sm:gap-2">
+          <button className="h-8 sm:h-9 px-3 sm:px-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-[0.625rem] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 transition-colors touch-manipulation">
+            <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             <span className="hidden sm:inline">Message</span>
           </button>
           <button
             className={cn(
-              "h-9 px-4 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-lg",
+              "h-8 sm:h-9 px-3 sm:px-4 rounded-lg font-bold text-[0.625rem] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 transition-all shadow-lg touch-manipulation",
               profile.isFollowing
                 ? "bg-transparent border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 shadow-emerald-500/10"
                 : "bg-white text-black hover:bg-zinc-200 border border-transparent shadow-white/10",
             )}
           >
             {profile.isFollowing ? (
-              <Check size={14} strokeWidth={3} />
+              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={3} />
             ) : (
-              <UserPlus size={14} strokeWidth={3} />
+              <UserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={3} />
             )}
             {profile.isFollowing ? "Following" : "Follow"}
           </button>
         </div>
 
         {/* Info */}
-        <div className="mt-2">
-          <h2 className="text-2xl font-black text-white tracking-tight leading-none mb-1 flex items-center gap-2">
+        <div className="mt-1.5 sm:mt-2">
+          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none mb-0.5 sm:mb-1 flex items-center gap-1.5 sm:gap-2">
             {profile.name}
             {profile.isFollowing && (
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgb(16,185,129)]" />
             )}
           </h2>
-          <div className="text-sm text-zinc-500 font-mono mb-4">
+          <div className="text-xs sm:text-sm text-zinc-500 font-mono mb-3 sm:mb-4">
             @{profile.handle}
           </div>
 
           {profile.bio && (
-            <p className="text-sm text-zinc-300 leading-relaxed mb-6 max-w-md border-l-2 border-white/10 pl-3 italic">
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4 sm:mb-6 max-w-md border-l-2 border-white/10 pl-2 sm:pl-3 italic">
               {profile.bio}
             </p>
           )}
 
           {/* Meta Grid */}
-          <div className="flex flex-wrap gap-4 text-xs text-zinc-500 mb-6 font-medium">
+          <div className="flex flex-wrap gap-3 sm:gap-4 text-[0.625rem] sm:text-xs text-zinc-500 mb-4 sm:mb-6 font-medium">
             {profile.location && (
-              <div className="flex items-center gap-1.5">
-                <MapPin size={12} className="text-zinc-600" />
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <MapPin className="w-3 h-3 text-zinc-600" />
                 {profile.location}
               </div>
             )}
@@ -143,32 +143,32 @@ export const ProfileCard = memo(function ProfileCard({
               <a
                 href={profile.website}
                 target="_blank"
-                className="flex items-center gap-1.5 text-sky-500/80 hover:text-sky-400 hover:underline transition-colors decoration-sky-500/30"
+                className="flex items-center gap-1 sm:gap-1.5 text-sky-500/80 hover:text-sky-400 hover:underline transition-colors decoration-sky-500/30"
               >
-                <LinkIcon size={12} />
-                {profile.website.replace(/^https?:\/\//, "")}
+                <LinkIcon className="w-3 h-3" />
+                <span className="truncate max-w-[8rem] sm:max-w-none">{profile.website.replace(/^https?:\/\//, "")}</span>
               </a>
             )}
             {profile.joinedDate && (
-              <div className="flex items-center gap-1.5">
-                <Calendar size={12} className="text-zinc-600" />
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <Calendar className="w-3 h-3 text-zinc-600" />
                 Joined {profile.joinedDate}
               </div>
             )}
           </div>
 
           {/* Stats Bar */}
-          <div className="flex items-center gap-8 pt-6 border-t border-dashed border-white/10">
+          <div className="flex items-center gap-6 sm:gap-8 pt-4 sm:pt-6 border-t border-dashed border-white/10">
             {profile.stats &&
               Object.entries(profile.stats).map(([key, value]) => (
                 <div
                   key={key}
                   className="flex flex-col gap-0.5 hover:opacity-80 transition-opacity cursor-pointer"
                 >
-                  <span className="text-lg font-black text-white leading-none">
+                  <span className="text-base sm:text-lg font-black text-white leading-none">
                     {value}
                   </span>
-                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider">
+                  <span className="text-[0.5rem] sm:text-[0.625rem] font-bold text-zinc-600 uppercase tracking-wider">
                     {key}
                   </span>
                 </div>
