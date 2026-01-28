@@ -16,18 +16,18 @@
 [32mCJS[39m [1mdist/definitions.js.map [22m[32m56.02 KB[39m
 [32mCJS[39m [1mdist/skills.js.map      [22m[32m3.44 KB[39m
 [32mCJS[39m [1mdist/index.js.map       [22m[32m649.87 KB[39m
-[32mCJS[39m ⚡️ Build success in 43ms
+[32mCJS[39m ⚡️ Build success in 48ms
 [32mESM[39m [1mdist/definitions.mjs        [22m[32m2.10 KB[39m
-[32mESM[39m [1mdist/chunk-FF2UFRAJ.mjs     [22m[32m26.63 KB[39m
-[32mESM[39m [1mdist/index.mjs              [22m[32m370.40 KB[39m
 [32mESM[39m [1mdist/skills.mjs             [22m[32m1.48 KB[39m
-[32mESM[39m [1mdist/definitions.mjs.map    [22m[32m2.78 KB[39m
+[32mESM[39m [1mdist/index.mjs              [22m[32m370.40 KB[39m
+[32mESM[39m [1mdist/chunk-FF2UFRAJ.mjs     [22m[32m26.63 KB[39m
 [32mESM[39m [1mdist/skills.mjs.map         [22m[32m3.38 KB[39m
+[32mESM[39m [1mdist/definitions.mjs.map    [22m[32m2.78 KB[39m
 [32mESM[39m [1mdist/chunk-FF2UFRAJ.mjs.map [22m[32m53.76 KB[39m
 [32mESM[39m [1mdist/index.mjs.map          [22m[32m610.50 KB[39m
-[32mESM[39m ⚡️ Build success in 43ms
+[32mESM[39m ⚡️ Build success in 49ms
 DTS Build start
-DTS ⚡️ Build success in 3732ms
+DTS ⚡️ Build success in 3775ms
 DTS dist/skills.d.ts                704.00 B
 DTS dist/index.d.ts                 73.75 KB
 DTS dist/definitions.d.ts           1.13 KB
