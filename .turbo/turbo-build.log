@@ -1,0 +1,37 @@
+
+> @onegenui/components@0.1.0 build /Users/giulioleone/Sviluppo/genUi/json-render/packages/components
+> rm -rf dist && tsup
+
+CLI Building entry: src/definitions.ts, src/index.ts, src/skills.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/components/tsup.config.ts
+CLI Target: es2022
+CJS Build start
+ESM Build start
+CJS dist/index.js           427.59 KB
+CJS dist/definitions.js     33.90 KB
+CJS dist/skills.js          2.60 KB
+CJS dist/definitions.js.map 56.02 KB
+CJS dist/skills.js.map      3.44 KB
+CJS dist/index.js.map       636.98 KB
+CJS ⚡️ Build success in 51ms
+ESM dist/definitions.mjs        2.10 KB
+ESM dist/chunk-FF2UFRAJ.mjs     26.63 KB
+ESM dist/index.mjs              357.45 KB
+ESM dist/skills.mjs             1.48 KB
+ESM dist/chunk-FF2UFRAJ.mjs.map 53.76 KB
+ESM dist/definitions.mjs.map    2.78 KB
+ESM dist/skills.mjs.map         3.38 KB
+ESM dist/index.mjs.map          597.42 KB
+ESM ⚡️ Build success in 52ms
+DTS Build start
+DTS ⚡️ Build success in 3752ms
+DTS dist/skills.d.ts                704.00 B
+DTS dist/index.d.ts                 73.75 KB
+DTS dist/definitions.d.ts           1.13 KB
+DTS dist/definitions-OV_MwvaU.d.ts  57.91 KB
+DTS dist/skills.d.mts               704.00 B
+DTS dist/index.d.mts                73.75 KB
+DTS dist/definitions.d.mts          1.13 KB
+DTS dist/definitions-OV_MwvaU.d.mts 57.91 KB

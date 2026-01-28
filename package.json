@@ -1,0 +1,107 @@
+{
+  "name": "@onegenui/components",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Standard UI component library for @onegenui. Pre-built components with schemas and AI skills.",
+  "keywords": [
+    "json",
+    "ui",
+    "react",
+    "ai",
+    "generative-ui",
+    "llm",
+    "components",
+    "dashboard",
+    "charts",
+    "tables"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g97iulio1609/Oneui-generate.git",
+    "directory": "packages/components"
+  },
+  "homepage": "https://github.com/g97iulio1609/Oneui-generate#readme",
+  "bugs": {
+    "url": "https://github.com/g97iulio1609/Oneui-generate/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./definitions": {
+      "types": "./dist/definitions.d.ts",
+      "import": "./dist/definitions.mjs",
+      "require": "./dist/definitions.js"
+    },
+    "./skills": {
+      "types": "./dist/skills.d.ts",
+      "import": "./dist/skills.mjs",
+      "require": "./dist/skills.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/**/skills.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@onegenui/core": "workspace:*",
+    "@onegenui/react": "workspace:*",
+    "@onegenui/schemas": "workspace:^",
+    "@onegenui/ui": "workspace:*",
+    "@onegenui/utils": "workspace:^",
+    "@onegenui/vectorless": "workspace:*",
+    "@onegenui/viz": "workspace:*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.26.2",
+    "tailwind-merge": "^3.4.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/react": "19.2.3",
+    "@types/react-dom": "19.1.6",
+    "@types/uuid": "^11.0.0",
+    "lightweight-charts": "^5.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "clsx": "^2.0.0",
+    "lightweight-charts": "^5.0.0",
+    "lucide-react": "^0.400.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.0.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "lightweight-charts": {
+      "optional": true
+    },
+    "recharts": {
+      "optional": true
+    },
+    "lucide-react": {
+      "optional": true
+    },
+    "clsx": {
+      "optional": true
+    }
+  }
+}
