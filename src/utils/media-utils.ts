@@ -73,6 +73,83 @@ export type MediaCoreProps = {
   accentColor?: string;
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SafeImage - Image with fallback for broken URLs
+// ─────────────────────────────────────────────────────────────────────────────
+
+// LRU cache for broken image URLs (client-side only)
+const brokenImageCache = new Set<string>();
+const BROKEN_CACHE_MAX_SIZE = 500;
+
+/**
+ * Check if an image URL is known to be broken
+ */
+export function isImageBroken(src: string): boolean {
+  return brokenImageCache.has(src);
+}
+
+/**
+ * Mark an image URL as broken
+ */
+export function markImageBroken(src: string): void {
+  if (brokenImageCache.size >= BROKEN_CACHE_MAX_SIZE) {
+    // Remove oldest entries (Set maintains insertion order)
+    const iterator = brokenImageCache.values();
+    for (let i = 0; i < 100; i++) {
+      const next = iterator.next();
+      if (next.done) break;
+      brokenImageCache.delete(next.value);
+    }
+  }
+  brokenImageCache.add(src);
+}
+
+/**
+ * Get a fallback image URL based on category
+ */
+export function getFallbackImage(category: "hotel" | "flight" | "trip" | "generic" = "generic"): string {
+  const fallbacks: Record<string, string> = {
+    hotel: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+    flight: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
+    trip: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80",
+    generic: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+  };
+  return fallbacks[category] || fallbacks.generic;
+}
+
+/**
+ * Sort images by resolution (highest first)
+ */
+export function sortImagesByResolution<T extends { width?: number; height?: number }>(
+  images: T[],
+): T[] {
+  return [...images].sort((a, b) => {
+    const aRes = (a.width || 0) * (a.height || 0);
+    const bRes = (b.width || 0) * (b.height || 0);
+    return bRes - aRes; // Descending order
+  });
+}
+
+/**
+ * Filter and sort images, preferring high resolution and excluding known broken URLs
+ */
+export function selectBestImages<T extends { src?: string; url?: string; width?: number; height?: number }>(
+  images: T[],
+  maxCount: number = 5,
+): T[] {
+  // Filter out broken URLs
+  const valid = images.filter((img) => {
+    const src = img.src || img.url;
+    return src && !isImageBroken(src);
+  });
+  
+  // Sort by resolution
+  const sorted = sortImagesByResolution(valid);
+  
+  // Return top N
+  return sorted.slice(0, maxCount);
+}
+
 export function formatBytes(bytes?: number | null): string {
   if (!bytes || bytes <= 0) return "-";
   const units = ["B", "KB", "MB", "GB"];
