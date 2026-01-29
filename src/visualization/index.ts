@@ -1,23 +1,13 @@
 /**
- * visualization components - re-exported from @onegenui/viz
+ * Visualization components
+ * Charts, graphs, and data visualization primitives
  */
-export {
-  Graph,
-  GraphPropsSchema,
-  GraphDefinition,
-  type GraphProps,
-} from "@onegenui/viz";
 
-export {
-  MindMap,
-  MindMapPropsSchema,
-  MindMapDefinition,
-  type MindMapProps,
-} from "@onegenui/viz";
+// Charts
+export { Chart, ChartPropsSchema, ChartDefinition, type ChartProps } from "./charts/Chart";
+export { StockChart, StockChartPropsSchema, StockChartDefinition, type StockChartProps } from "./charts/StockChart";
 
-export {
-  Gantt,
-  GanttPropsSchema,
-  GanttDefinition,
-  type GanttProps,
-} from "@onegenui/viz";
+// Graphs
+export { Graph, GraphPropsSchema, GraphDefinition, type GraphProps } from "./graphs/Graph";
+export { MindMap, MindMapPropsSchema, MindMapDefinition, type MindMapProps } from "./graphs/MindMap";
+export { Gantt, GanttPropsSchema, GanttDefinition, type GanttProps } from "./graphs/Gantt";

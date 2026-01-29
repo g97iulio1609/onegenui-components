@@ -70,5 +70,12 @@ export { DiaryDefinition } from "./domain/Diary/schema";
 export { DocumentIndexDefinition } from "./domain/DocumentIndex/schema";
 export { SourceCitationDefinition } from "./domain/SourceCitation/schema";
 
+// Visualization (formerly @onegenui/viz)
+export { ChartDefinition } from "./visualization/charts/Chart/schema";
+export { StockChartDefinition } from "./visualization/charts/StockChart/schema";
+export { GraphDefinition } from "./visualization/graphs/Graph/schema";
+export { MindMapDefinition } from "./visualization/graphs/MindMap/schema";
+export { GanttDefinition } from "./visualization/graphs/Gantt/schema";
+
 // Shared Schemas
 export { exerciseSchema } from "./utils/shared-schemas";

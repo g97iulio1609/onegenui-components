@@ -9,29 +9,29 @@ CLI Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/co
 CLI Target: es2022
 CJS Build start
 ESM Build start
-CJS dist/definitions.js     33.90 KB
 CJS dist/skills.js          2.60 KB
-CJS dist/index.js           441.31 KB
-CJS dist/definitions.js.map 56.02 KB
+CJS dist/index.js           492.35 KB
+CJS dist/definitions.js     39.51 KB
 CJS dist/skills.js.map      3.44 KB
-CJS dist/index.js.map       649.87 KB
-CJS ⚡️ Build success in 74ms
-ESM dist/definitions.mjs        2.10 KB
+CJS dist/index.js.map       732.15 KB
+CJS dist/definitions.js.map 67.17 KB
+CJS ⚡️ Build success in 61ms
 ESM dist/skills.mjs             1.48 KB
-ESM dist/index.mjs              370.40 KB
-ESM dist/chunk-FF2UFRAJ.mjs     26.63 KB
-ESM dist/definitions.mjs.map    2.78 KB
+ESM dist/chunk-LSALQVIQ.mjs     32.09 KB
+ESM dist/index.mjs              412.69 KB
+ESM dist/definitions.mjs        2.30 KB
 ESM dist/skills.mjs.map         3.38 KB
-ESM dist/chunk-FF2UFRAJ.mjs.map 53.76 KB
-ESM dist/index.mjs.map          610.50 KB
-ESM ⚡️ Build success in 74ms
+ESM dist/chunk-LSALQVIQ.mjs.map 65.22 KB
+ESM dist/definitions.mjs.map    3.20 KB
+ESM dist/index.mjs.map          683.17 KB
+ESM ⚡️ Build success in 62ms
 DTS Build start
-DTS ⚡️ Build success in 4521ms
+DTS ⚡️ Build success in 4508ms
 DTS dist/skills.d.ts                704.00 B
-DTS dist/index.d.ts                 73.75 KB
-DTS dist/definitions.d.ts           1.13 KB
-DTS dist/definitions-OV_MwvaU.d.ts  57.91 KB
+DTS dist/index.d.ts                 80.16 KB
+DTS dist/definitions.d.ts           1.25 KB
+DTS dist/definitions-DyOX_v7k.d.ts  68.05 KB
 DTS dist/skills.d.mts               704.00 B
-DTS dist/index.d.mts                73.75 KB
-DTS dist/definitions.d.mts          1.13 KB
-DTS dist/definitions-OV_MwvaU.d.mts 57.91 KB
+DTS dist/index.d.mts                80.16 KB
+DTS dist/definitions.d.mts          1.25 KB
+DTS dist/definitions-DyOX_v7k.d.mts 68.05 KB

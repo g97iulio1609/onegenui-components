@@ -1,6 +1,6 @@
 import * as zod_v4_core from 'zod/v4/core';
-import { D as DocumentIndexNode } from './definitions-OV_MwvaU.mjs';
-export { m as BookingFormsDefinition, n as BookingFormsProps, B as BookingFormsPropsSchema, a as CalendarAgendaDefinition, b as CalendarAgendaProps, C as CalendarAgendaSchema, y as CalendarDefinition, z as CalendarProps, x as CalendarPropsSchema, E as DiaryDefinition, G as DiaryProps, A as DiaryPropsSchema, J as DocumentIndexProps, I as DocumentIndexPropsSchema, V as EmailDefinition, X as EmailProps, U as EmailPropsSchema, g as FlightDefinition, h as FlightProps, F as FlightPropsSchema, i as HotelDefinition, j as HotelProps, H as HotelPropsSchema, o as KanbanDefinition, p as KanbanProps, K as KanbanPropsSchema, P as MessageDefinition, Q as MessageProps, O as MessagePropsSchema, e as NutritionDefinition, f as NutritionProps, N as NutritionPropsSchema, t as RoutineSchedulerDefinition, u as RoutineSchedulerProps, R as RoutineSchedulerPropsSchema, M as SourceCitationProps, L as SourceCitationPropsSchema, v as SupplementTrackerDefinition, w as SupplementTrackerProps, S as SupplementTrackerPropsSchema, r as TodoListDefinition, s as TodoListProps, q as TodoListPropsSchema, k as TripDefinition, l as TripProps, T as TripPropsSchema, c as WorkoutDefinition, d as WorkoutProps, W as WorkoutPropsSchema } from './definitions-OV_MwvaU.mjs';
+import { D as DocumentIndexNode } from './definitions-DyOX_v7k.mjs';
+export { m as BookingFormsDefinition, n as BookingFormsProps, B as BookingFormsPropsSchema, a as CalendarAgendaDefinition, b as CalendarAgendaProps, C as CalendarAgendaSchema, y as CalendarDefinition, z as CalendarProps, x as CalendarPropsSchema, Z as ChartDefinition, _ as ChartProps, Y as ChartPropsSchema, E as DiaryDefinition, G as DiaryProps, A as DiaryPropsSchema, J as DocumentIndexProps, I as DocumentIndexPropsSchema, V as EmailDefinition, X as EmailProps, U as EmailPropsSchema, g as FlightDefinition, h as FlightProps, F as FlightPropsSchema, a9 as GanttDefinition, aa as GanttProps, a8 as GanttPropsSchema, a3 as GraphDefinition, a4 as GraphProps, a2 as GraphPropsSchema, i as HotelDefinition, j as HotelProps, H as HotelPropsSchema, o as KanbanDefinition, p as KanbanProps, K as KanbanPropsSchema, P as MessageDefinition, Q as MessageProps, O as MessagePropsSchema, a6 as MindMapDefinition, a7 as MindMapProps, a5 as MindMapPropsSchema, e as NutritionDefinition, f as NutritionProps, N as NutritionPropsSchema, t as RoutineSchedulerDefinition, u as RoutineSchedulerProps, R as RoutineSchedulerPropsSchema, M as SourceCitationProps, L as SourceCitationPropsSchema, a0 as StockChartDefinition, a1 as StockChartProps, $ as StockChartPropsSchema, v as SupplementTrackerDefinition, w as SupplementTrackerProps, S as SupplementTrackerPropsSchema, r as TodoListDefinition, s as TodoListProps, q as TodoListPropsSchema, k as TripDefinition, l as TripProps, T as TripPropsSchema, c as WorkoutDefinition, d as WorkoutProps, W as WorkoutPropsSchema } from './definitions-DyOX_v7k.mjs';
 import * as zod from 'zod';
 import * as react from 'react';
 import { ComponentType } from 'react';
@@ -193,6 +193,16 @@ declare const SourceCitationDefinition: {
         accentColor: zod.ZodOptional<zod.ZodString>;
     }, zod_v4_core.$strip>;
 };
+
+declare const Chart: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
+
+declare const StockChart: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
+
+declare const Graph: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
+
+declare const MindMap: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
+
+declare const Gantt: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
 
 declare const Message: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
 
@@ -1671,6 +1681,138 @@ declare const componentDefinitions: {
             accentColor: zod.ZodOptional<zod.ZodString>;
         }, zod_v4_core.$strip>;
     };
+    Chart: {
+        name: "Chart";
+        props: zod.ZodObject<{
+            title: zod.ZodNullable<zod.ZodString>;
+            data: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                label: zod.ZodString;
+                value: zod.ZodNumber;
+                color: zod.ZodNullable<zod.ZodString>;
+            }, zod_v4_core.$strip>>>;
+            dataPath: zod.ZodNullable<zod.ZodString>;
+            height: zod.ZodNullable<zod.ZodNumber>;
+            series: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                name: zod.ZodString;
+                data: zod.ZodArray<zod.ZodNumber>;
+                color: zod.ZodNullable<zod.ZodString>;
+            }, zod_v4_core.$strip>>>;
+            categories: zod.ZodNullable<zod.ZodArray<zod.ZodString>>;
+        }, zod_v4_core.$strip>;
+        description: string;
+        hasChildren: boolean;
+    };
+    StockChart: {
+        name: "StockChart";
+        props: zod.ZodObject<{
+            title: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+            series: zod.ZodOptional<zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                symbol: zod.ZodString;
+                name: zod.ZodString;
+                color: zod.ZodString;
+                data: zod.ZodArray<zod.ZodObject<{
+                    time: zod.ZodString;
+                    open: zod.ZodNumber;
+                    high: zod.ZodNumber;
+                    low: zod.ZodNumber;
+                    close: zod.ZodNumber;
+                    volume: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                }, zod_v4_core.$strip>>;
+            }, zod_v4_core.$strip>>>>;
+            levels: zod.ZodOptional<zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                price: zod.ZodNumber;
+                type: zod.ZodEnum<{
+                    support: "support";
+                    resistance: "resistance";
+                }>;
+                strength: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                label: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+            }, zod_v4_core.$strip>>>>;
+            chartType: zod.ZodOptional<zod.ZodNullable<zod.ZodEnum<{
+                Line: "Line";
+                Candlestick: "Candlestick";
+            }>>>;
+            timeframe: zod.ZodOptional<zod.ZodNullable<zod.ZodEnum<{
+                "1D": "1D";
+                "1W": "1W";
+                "1M": "1M";
+                "3M": "3M";
+                "1Y": "1Y";
+                "5Y": "5Y";
+                "10Y": "10Y";
+                ALL: "ALL";
+            }>>>;
+            height: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+            showLevels: zod.ZodOptional<zod.ZodNullable<zod.ZodBoolean>>;
+            showVolume: zod.ZodOptional<zod.ZodNullable<zod.ZodBoolean>>;
+        }, zod_v4_core.$strip>;
+        description: string;
+        hasChildren: boolean;
+    };
+    Graph: {
+        name: "Graph";
+        props: zod.ZodObject<{
+            title: zod.ZodNullable<zod.ZodString>;
+            nodes: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                id: zod.ZodString;
+                label: zod.ZodString;
+                description: zod.ZodNullable<zod.ZodString>;
+                group: zod.ZodNullable<zod.ZodString>;
+                type: zod.ZodNullable<zod.ZodString>;
+                color: zod.ZodNullable<zod.ZodString>;
+                size: zod.ZodNullable<zod.ZodNumber>;
+                icon: zod.ZodNullable<zod.ZodString>;
+            }, zod_v4_core.$catchall<zod.ZodUnknown>>>>;
+            edges: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
+                id: zod.ZodNullable<zod.ZodString>;
+                from: zod.ZodNullable<zod.ZodString>;
+                to: zod.ZodNullable<zod.ZodString>;
+                source: zod.ZodNullable<zod.ZodString>;
+                target: zod.ZodNullable<zod.ZodString>;
+                label: zod.ZodNullable<zod.ZodString>;
+                weight: zod.ZodNullable<zod.ZodNumber>;
+                directed: zod.ZodNullable<zod.ZodBoolean>;
+                color: zod.ZodNullable<zod.ZodString>;
+            }, zod_v4_core.$strip>>>;
+            layout: zod.ZodNullable<zod.ZodEnum<{
+                grid: "grid";
+                force: "force";
+                radial: "radial";
+            }>>;
+            showLabels: zod.ZodNullable<zod.ZodBoolean>;
+            showEdgeLabels: zod.ZodNullable<zod.ZodBoolean>;
+            allowPanZoom: zod.ZodNullable<zod.ZodBoolean>;
+            width: zod.ZodNullable<zod.ZodNumber>;
+            height: zod.ZodNullable<zod.ZodNumber>;
+            lock: zod.ZodNullable<zod.ZodBoolean>;
+        }, zod_v4_core.$strip>;
+        description: string;
+        hasChildren: boolean;
+    };
+    MindMap: {
+        name: "MindMap";
+        props: zod.ZodObject<{
+            title: zod.ZodNullable<zod.ZodString>;
+            nodes: zod.ZodArray<zod.ZodType<Record<string, unknown>, unknown, zod_v4_core.$ZodTypeInternals<Record<string, unknown>, unknown>>>;
+            layout: zod.ZodNullable<zod.ZodEnum<{
+                horizontal: "horizontal";
+                vertical: "vertical";
+            }>>;
+            expandedByDefault: zod.ZodNullable<zod.ZodBoolean>;
+        }, zod_v4_core.$strip>;
+        description: string;
+        hasChildren: boolean;
+    };
+    Gantt: {
+        name: "Gantt";
+        props: zod.ZodObject<{
+            title: zod.ZodNullable<zod.ZodString>;
+            tasks: zod.ZodArray<zod.ZodType<Record<string, unknown>, unknown, zod_v4_core.$ZodTypeInternals<Record<string, unknown>, unknown>>>;
+            lock: zod.ZodNullable<zod.ZodBoolean>;
+        }, zod_v4_core.$strip>;
+        description: string;
+        hasChildren: boolean;
+    };
 };
 /** Get list of all registered component names */
 declare const componentNames: string[];
@@ -1679,4 +1821,4 @@ declare function hasComponent(name: string): boolean;
 
 declare const VERSION = "0.1.0";
 
-export { ActivityFeed, type ActivityFeedProps, ArticleCard, type ArticleCardProps, BookingForms, Calendar, CalendarAgenda, CitationViewer, type CitationViewerProps, type ComponentRegistry, DeepAnalysisPanel, type DeepAnalysisPanelProps, Diary, DocumentExplorer, type DocumentExplorerProps, DocumentIndex, DocumentIndexDefinition, DocumentTimeline, type DocumentTimelineProps, Email, EntityExplorer, type EntityExplorerProps, Flight, Hotel, Kanban, KnowledgeGraph, type KnowledgeGraphProps, Message, Nutrition, Pricing, type PricingProps, ProfileCard, type ProfileCardProps, type ReportSection, ResearchReport, type ResearchReportProps, type Source as ResearchSource, RoutineScheduler, SourceCitation, SourceCitationDefinition, SupplementTracker, TodoList, Trip, type UseDocumentExplorerOptions, type UseDocumentExplorerReturn, type UseKnowledgeBaseOptions, type UseKnowledgeBaseReturn, type UseQuestionAnswerOptions, type UseQuestionAnswerReturn, VERSION, Workout, componentDefinitions, componentNames, componentRegistry, hasComponent, useDocumentExplorer, useKnowledgeBase, useQuestionAnswer };
+export { ActivityFeed, type ActivityFeedProps, ArticleCard, type ArticleCardProps, BookingForms, Calendar, CalendarAgenda, Chart, CitationViewer, type CitationViewerProps, type ComponentRegistry, DeepAnalysisPanel, type DeepAnalysisPanelProps, Diary, DocumentExplorer, type DocumentExplorerProps, DocumentIndex, DocumentIndexDefinition, DocumentTimeline, type DocumentTimelineProps, Email, EntityExplorer, type EntityExplorerProps, Flight, Gantt, Graph, Hotel, Kanban, KnowledgeGraph, type KnowledgeGraphProps, Message, MindMap, Nutrition, Pricing, type PricingProps, ProfileCard, type ProfileCardProps, type ReportSection, ResearchReport, type ResearchReportProps, type Source as ResearchSource, RoutineScheduler, SourceCitation, SourceCitationDefinition, StockChart, SupplementTracker, TodoList, Trip, type UseDocumentExplorerOptions, type UseDocumentExplorerReturn, type UseKnowledgeBaseOptions, type UseKnowledgeBaseReturn, type UseQuestionAnswerOptions, type UseQuestionAnswerReturn, VERSION, Workout, componentDefinitions, componentNames, componentRegistry, hasComponent, useDocumentExplorer, useKnowledgeBase, useQuestionAnswer };

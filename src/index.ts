@@ -136,6 +136,12 @@ export {
 } from "./domain/SourceCitation";
 
 // ============================================================================
+// Visualization Components (formerly @onegenui/viz)
+// ============================================================================
+
+export * from "./visualization";
+
+// ============================================================================
 // Component Registry
 // ============================================================================
 
@@ -252,6 +258,20 @@ import {
   SourceCitationDefinition,
 } from "./domain/SourceCitation";
 
+// Visualization components
+import {
+  Chart,
+  ChartDefinition,
+  StockChart,
+  StockChartDefinition,
+  Graph,
+  GraphDefinition,
+  MindMap,
+  MindMapDefinition,
+  Gantt,
+  GanttDefinition,
+} from "./visualization";
+
 /** Registry type for component lookup by name */
 export type ComponentRegistry = Record<string, ComponentType<any>>;
 
@@ -312,6 +332,12 @@ export const componentRegistry: ComponentRegistry = {
   ResearchReport,
   DocumentIndex,
   SourceCitation,
+  // Visualization
+  Chart,
+  StockChart,
+  Graph,
+  MindMap,
+  Gantt,
 };
 
 /**
@@ -367,6 +393,12 @@ export const componentDefinitions = {
   Diary: DiaryDefinition,
   DocumentIndex: DocumentIndexDefinition,
   SourceCitation: SourceCitationDefinition,
+  // Visualization
+  Chart: ChartDefinition,
+  StockChart: StockChartDefinition,
+  Graph: GraphDefinition,
+  MindMap: MindMapDefinition,
+  Gantt: GanttDefinition,
 };
 
 // ============================================================================

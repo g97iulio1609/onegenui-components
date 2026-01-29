@@ -29,6 +29,7 @@ __export(definitions_exports, {
   CalendarAgendaDefinition: () => CalendarAgendaDefinition,
   CalendarDefinition: () => CalendarDefinition,
   CardDefinition: () => import_definitions.CardDefinition,
+  ChartDefinition: () => ChartDefinition,
   CodeBlockDefinition: () => import_definitions.CodeBlockDefinition,
   DatePickerDefinition: () => import_definitions.DatePickerDefinition,
   DiaryDefinition: () => DiaryDefinition,
@@ -41,6 +42,8 @@ __export(definitions_exports, {
   EmptyDefinition: () => import_definitions.EmptyDefinition,
   FlightDefinition: () => FlightDefinition,
   GalleryDefinition: () => import_definitions.GalleryDefinition,
+  GanttDefinition: () => GanttDefinition,
+  GraphDefinition: () => GraphDefinition,
   GridDefinition: () => import_definitions.GridDefinition,
   HeadingDefinition: () => import_definitions.HeadingDefinition,
   HotelDefinition: () => HotelDefinition,
@@ -49,12 +52,14 @@ __export(definitions_exports, {
   ListDefinition: () => import_definitions.ListDefinition,
   MessageDefinition: () => MessageDefinition,
   MetricDefinition: () => import_definitions.MetricDefinition,
+  MindMapDefinition: () => MindMapDefinition,
   NutritionDefinition: () => NutritionDefinition,
   RoutineSchedulerDefinition: () => RoutineSchedulerDefinition,
   SearchResultsDefinition: () => import_definitions.SearchResultsDefinition,
   SelectDefinition: () => import_definitions.SelectDefinition,
   SourceCitationDefinition: () => SourceCitationDefinition,
   StackDefinition: () => import_definitions.StackDefinition,
+  StockChartDefinition: () => StockChartDefinition,
   SupplementTrackerDefinition: () => SupplementTrackerDefinition,
   TableDefinition: () => import_definitions.TableDefinition,
   TextDefinition: () => import_definitions.TextDefinition,
@@ -687,6 +692,124 @@ var SourceCitationDefinition = {
   props: SourceCitationPropsSchema,
   description: "Source citations with page references. Shows cited text with links to source pages. Use after document analysis to show where information comes from."
 };
+
+// src/visualization/charts/Chart/schema.ts
+var import_zod18 = require("zod");
+
+// src/visualization/utils/shared-schemas.ts
+var import_schemas2 = require("@onegenui/schemas");
+
+// src/visualization/charts/Chart/schema.ts
+var seriesSchema = import_zod18.z.object({
+  name: import_zod18.z.string(),
+  data: import_zod18.z.array(import_zod18.z.number()),
+  color: import_zod18.z.string().nullable()
+});
+var ChartPropsSchema = import_zod18.z.object({
+  title: import_zod18.z.string().nullable(),
+  data: import_zod18.z.array(import_schemas2.chartDatumSchema).nullable(),
+  dataPath: import_zod18.z.string().nullable(),
+  height: import_zod18.z.number().nullable(),
+  // Multi-series support
+  series: import_zod18.z.array(seriesSchema).nullable(),
+  categories: import_zod18.z.array(import_zod18.z.string()).nullable()
+});
+var ChartDefinition = {
+  name: "Chart",
+  props: ChartPropsSchema,
+  description: "Display a chart from array data",
+  hasChildren: true
+};
+
+// src/visualization/charts/StockChart/schema.ts
+var import_zod19 = require("zod");
+var ohlcSchema = import_zod19.z.object({
+  time: import_zod19.z.string().describe("Date in YYYY-MM-DD format"),
+  open: import_zod19.z.number().describe("Opening price"),
+  high: import_zod19.z.number().describe("Highest price"),
+  low: import_zod19.z.number().describe("Lowest price"),
+  close: import_zod19.z.number().describe("Closing price"),
+  volume: import_zod19.z.number().nullable().optional().describe("Trading volume")
+});
+var stockSeriesSchema = import_zod19.z.object({
+  symbol: import_zod19.z.string().describe("Stock ticker symbol (e.g., AAPL, GOOGL)"),
+  name: import_zod19.z.string().describe("Full company/instrument name"),
+  color: import_zod19.z.string().describe("Hex color for the series line (e.g., #3b82f6)"),
+  data: import_zod19.z.array(ohlcSchema).describe("Array of OHLC data points")
+});
+var technicalLevelSchema = import_zod19.z.object({
+  price: import_zod19.z.number().describe("Price level"),
+  type: import_zod19.z.enum(["support", "resistance"]).describe("Type of technical level"),
+  strength: import_zod19.z.number().nullable().optional().describe("Strength indicator (0-1)"),
+  label: import_zod19.z.string().nullable().optional().describe("Custom label for the level")
+});
+var timeframeSchema = import_zod19.z.enum(["1D", "1W", "1M", "3M", "1Y", "5Y", "10Y", "ALL"]).describe("Time period to display");
+var StockChartPropsSchema = import_zod19.z.object({
+  title: import_zod19.z.string().nullable().optional().describe("Chart title"),
+  series: import_zod19.z.array(stockSeriesSchema).nullable().optional().describe("Array of stock series to display"),
+  levels: import_zod19.z.array(technicalLevelSchema).nullable().optional().describe("Technical support/resistance levels"),
+  chartType: import_zod19.z.enum(["Line", "Candlestick"]).nullable().optional().describe("Chart visualization type"),
+  timeframe: timeframeSchema.nullable().optional().describe("Initial timeframe selection"),
+  height: import_zod19.z.number().nullable().optional().describe("Chart height in pixels (default: 400)"),
+  showLevels: import_zod19.z.boolean().nullable().optional().describe("Show support/resistance levels (default: true)"),
+  showVolume: import_zod19.z.boolean().nullable().optional().describe("Show volume bars (default: false)")
+});
+var StockChartDefinition = {
+  name: "StockChart",
+  props: StockChartPropsSchema,
+  description: "Interactive financial chart with candlestick/line views, multiple series comparison, and technical levels",
+  hasChildren: false
+};
+
+// src/visualization/graphs/Graph/schema.ts
+var import_zod20 = require("zod");
+var GraphPropsSchema = import_zod20.z.object({
+  title: import_zod20.z.string().nullable(),
+  nodes: import_zod20.z.array(import_schemas2.graphNodeSchema).nullable(),
+  edges: import_zod20.z.array(import_schemas2.graphEdgeSchema).nullable(),
+  layout: import_zod20.z.enum(["force", "radial", "grid"]).nullable(),
+  showLabels: import_zod20.z.boolean().nullable(),
+  showEdgeLabels: import_zod20.z.boolean().nullable(),
+  allowPanZoom: import_zod20.z.boolean().nullable(),
+  width: import_zod20.z.number().nullable(),
+  height: import_zod20.z.number().nullable(),
+  lock: import_zod20.z.boolean().nullable()
+});
+var GraphDefinition = {
+  name: "Graph",
+  props: GraphPropsSchema,
+  description: "Interactive graph (nodes + edges). IMPORTANT: Provide content via ",
+  hasChildren: true
+};
+
+// src/visualization/graphs/MindMap/schema.ts
+var import_zod21 = require("zod");
+var MindMapPropsSchema = import_zod21.z.object({
+  title: import_zod21.z.string().nullable(),
+  nodes: import_zod21.z.array(import_schemas2.mindMapNodeSchema),
+  layout: import_zod21.z.enum(["horizontal", "vertical"]).nullable(),
+  expandedByDefault: import_zod21.z.boolean().nullable()
+});
+var MindMapDefinition = {
+  name: "MindMap",
+  props: MindMapPropsSchema,
+  description: "A hierarchical mind map. MUST use ",
+  hasChildren: true
+};
+
+// src/visualization/graphs/Gantt/schema.ts
+var import_zod22 = require("zod");
+var GanttPropsSchema = import_zod22.z.object({
+  title: import_zod22.z.string().nullable(),
+  tasks: import_zod22.z.array(import_schemas2.ganttTaskSchema).min(1).describe("Tasks (REQUIRED, min 1)"),
+  lock: import_zod22.z.boolean().nullable()
+});
+var GanttDefinition = {
+  name: "Gantt",
+  props: GanttPropsSchema,
+  description: "Gantt chart for project timelines and dependencies.",
+  hasChildren: true
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AlertDefinition,
@@ -698,6 +821,7 @@ var SourceCitationDefinition = {
   CalendarAgendaDefinition,
   CalendarDefinition,
   CardDefinition,
+  ChartDefinition,
   CodeBlockDefinition,
   DatePickerDefinition,
   DiaryDefinition,
@@ -710,6 +834,8 @@ var SourceCitationDefinition = {
   EmptyDefinition,
   FlightDefinition,
   GalleryDefinition,
+  GanttDefinition,
+  GraphDefinition,
   GridDefinition,
   HeadingDefinition,
   HotelDefinition,
@@ -718,12 +844,14 @@ var SourceCitationDefinition = {
   ListDefinition,
   MessageDefinition,
   MetricDefinition,
+  MindMapDefinition,
   NutritionDefinition,
   RoutineSchedulerDefinition,
   SearchResultsDefinition,
   SelectDefinition,
   SourceCitationDefinition,
   StackDefinition,
+  StockChartDefinition,
   SupplementTrackerDefinition,
   TableDefinition,
   TextDefinition,
