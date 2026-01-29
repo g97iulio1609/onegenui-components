@@ -18,7 +18,7 @@ import {
 import { cn } from "../../utils/cn";
 import { formatCurrency, formatDateShort } from "../../utils/format-utils";
 import { StatusBadge } from "../../utils/shared-components";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import type { HotelData, HotelStatus as HotelStatusType } from "./ports";
 import { getHotelAdapter } from "./adapters";
 
@@ -33,6 +33,7 @@ const containerVariants = {
 const cardVariants = {
   hidden: { opacity: 0, y: "1.25rem" },
   visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-1.25rem" },
 };
 
 const HotelStatusBadge = ({ status }: { status: HotelStatusType }) => (
@@ -120,12 +121,16 @@ export const Hotel = memo(function Hotel({
             : "grid-cols-1",
         )}
       >
-        {(hotels || []).map((hotel, i) => {
-          return (
-            <motion.div
-              variants={cardVariants}
-              key={hotel.id}
-            >
+        <AnimatePresence mode="popLayout">
+          {(hotels || []).map((hotel, i) => {
+            return (
+              <motion.div
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                key={hotel.id}
+              >
               <SelectableItem
                 elementKey={element.key}
                 itemId={hotel.id}
@@ -305,6 +310,7 @@ export const Hotel = memo(function Hotel({
             </motion.div>
           );
         })}
+        </AnimatePresence>
       </div>
 
       {children}
