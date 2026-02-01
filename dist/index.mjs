@@ -7669,7 +7669,7 @@ var StockChart = memo48(function StockChart2({
     if (chartRef.current) {
       chartRef.current.remove();
     }
-    const { createChart } = chartsModule;
+    const { createChart, CandlestickSeries } = chartsModule;
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
       height: containerRef.current.clientHeight,
@@ -7702,7 +7702,7 @@ var StockChart = memo48(function StockChart2({
         }
       }
     });
-    const series = chart.addCandlestickSeries({
+    const series = chart.addSeries(CandlestickSeries, {
       upColor,
       downColor,
       borderVisible: false,

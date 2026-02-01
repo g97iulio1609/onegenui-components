@@ -1,6 +1,6 @@
 import * as zod_v4_core from 'zod/v4/core';
-import { D as DocumentIndexNode } from './definitions-DyOX_v7k.mjs';
-export { m as BookingFormsDefinition, n as BookingFormsProps, B as BookingFormsPropsSchema, a as CalendarAgendaDefinition, b as CalendarAgendaProps, C as CalendarAgendaSchema, y as CalendarDefinition, z as CalendarProps, x as CalendarPropsSchema, Z as ChartDefinition, _ as ChartProps, Y as ChartPropsSchema, E as DiaryDefinition, G as DiaryProps, A as DiaryPropsSchema, J as DocumentIndexProps, I as DocumentIndexPropsSchema, V as EmailDefinition, X as EmailProps, U as EmailPropsSchema, g as FlightDefinition, h as FlightProps, F as FlightPropsSchema, a9 as GanttDefinition, aa as GanttProps, a8 as GanttPropsSchema, a3 as GraphDefinition, a4 as GraphProps, a2 as GraphPropsSchema, i as HotelDefinition, j as HotelProps, H as HotelPropsSchema, o as KanbanDefinition, p as KanbanProps, K as KanbanPropsSchema, P as MessageDefinition, Q as MessageProps, O as MessagePropsSchema, a6 as MindMapDefinition, a7 as MindMapProps, a5 as MindMapPropsSchema, e as NutritionDefinition, f as NutritionProps, N as NutritionPropsSchema, t as RoutineSchedulerDefinition, u as RoutineSchedulerProps, R as RoutineSchedulerPropsSchema, M as SourceCitationProps, L as SourceCitationPropsSchema, a0 as StockChartDefinition, a1 as StockChartProps, $ as StockChartPropsSchema, v as SupplementTrackerDefinition, w as SupplementTrackerProps, S as SupplementTrackerPropsSchema, r as TodoListDefinition, s as TodoListProps, q as TodoListPropsSchema, k as TripDefinition, l as TripProps, T as TripPropsSchema, c as WorkoutDefinition, d as WorkoutProps, W as WorkoutPropsSchema } from './definitions-DyOX_v7k.mjs';
+import { D as DocumentIndexNode } from './definitions-BdsaHtnh.mjs';
+export { m as BookingFormsDefinition, n as BookingFormsProps, B as BookingFormsPropsSchema, a as CalendarAgendaDefinition, b as CalendarAgendaProps, C as CalendarAgendaSchema, y as CalendarDefinition, z as CalendarProps, x as CalendarPropsSchema, Z as ChartDefinition, _ as ChartProps, Y as ChartPropsSchema, E as DiaryDefinition, G as DiaryProps, A as DiaryPropsSchema, J as DocumentIndexProps, I as DocumentIndexPropsSchema, V as EmailDefinition, X as EmailProps, U as EmailPropsSchema, g as FlightDefinition, h as FlightProps, F as FlightPropsSchema, a9 as GanttDefinition, aa as GanttProps, a8 as GanttPropsSchema, a3 as GraphDefinition, a4 as GraphProps, a2 as GraphPropsSchema, i as HotelDefinition, j as HotelProps, H as HotelPropsSchema, o as KanbanDefinition, p as KanbanProps, K as KanbanPropsSchema, P as MessageDefinition, Q as MessageProps, O as MessagePropsSchema, a6 as MindMapDefinition, a7 as MindMapProps, a5 as MindMapPropsSchema, e as NutritionDefinition, f as NutritionProps, N as NutritionPropsSchema, t as RoutineSchedulerDefinition, u as RoutineSchedulerProps, R as RoutineSchedulerPropsSchema, M as SourceCitationProps, L as SourceCitationPropsSchema, a0 as StockChartDefinition, a1 as StockChartProps, $ as StockChartPropsSchema, v as SupplementTrackerDefinition, w as SupplementTrackerProps, S as SupplementTrackerPropsSchema, r as TodoListDefinition, s as TodoListProps, q as TodoListPropsSchema, k as TripDefinition, l as TripProps, T as TripPropsSchema, c as WorkoutDefinition, d as WorkoutProps, W as WorkoutPropsSchema } from './definitions-BdsaHtnh.mjs';
 import * as zod from 'zod';
 import * as react from 'react';
 import { ComponentType } from 'react';
@@ -1292,8 +1292,8 @@ declare const componentDefinitions: {
             columns: zod.ZodArray<zod.ZodObject<{
                 id: zod.ZodString;
                 title: zod.ZodString;
-                color: zod.ZodNullable<zod.ZodString>;
-                items: zod.ZodNullable<zod.ZodArray<zod.ZodType<Record<string, unknown>, unknown, zod_v4_core.$ZodTypeInternals<Record<string, unknown>, unknown>>>>;
+                color: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                items: zod.ZodOptional<zod.ZodNullable<zod.ZodArray<zod.ZodType<Record<string, unknown>, unknown, zod_v4_core.$ZodTypeInternals<Record<string, unknown>, unknown>>>>>;
             }, zod_v4_core.$strip>>;
             lock: zod.ZodNullable<zod.ZodBoolean>;
         }, zod_v4_core.$strip>;
@@ -1756,23 +1756,23 @@ declare const componentDefinitions: {
             nodes: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
                 id: zod.ZodString;
                 label: zod.ZodString;
-                description: zod.ZodNullable<zod.ZodString>;
-                group: zod.ZodNullable<zod.ZodString>;
-                type: zod.ZodNullable<zod.ZodString>;
-                color: zod.ZodNullable<zod.ZodString>;
-                size: zod.ZodNullable<zod.ZodNumber>;
-                icon: zod.ZodNullable<zod.ZodString>;
+                description: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                group: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                type: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                color: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                size: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                icon: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
             }, zod_v4_core.$catchall<zod.ZodUnknown>>>>;
             edges: zod.ZodNullable<zod.ZodArray<zod.ZodObject<{
-                id: zod.ZodNullable<zod.ZodString>;
-                from: zod.ZodNullable<zod.ZodString>;
-                to: zod.ZodNullable<zod.ZodString>;
-                source: zod.ZodNullable<zod.ZodString>;
-                target: zod.ZodNullable<zod.ZodString>;
-                label: zod.ZodNullable<zod.ZodString>;
-                weight: zod.ZodNullable<zod.ZodNumber>;
-                directed: zod.ZodNullable<zod.ZodBoolean>;
-                color: zod.ZodNullable<zod.ZodString>;
+                id: zod.ZodOptional<zod.ZodString>;
+                from: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                to: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                source: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                target: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                label: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                weight: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                directed: zod.ZodOptional<zod.ZodNullable<zod.ZodBoolean>>;
+                color: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
             }, zod_v4_core.$strip>>>;
             layout: zod.ZodNullable<zod.ZodEnum<{
                 force: "force";

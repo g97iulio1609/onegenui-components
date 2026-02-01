@@ -130,7 +130,7 @@ export const StockChart = memo(function StockChart({
       chartRef.current.remove();
     }
 
-    const { createChart } = chartsModule;
+    const { createChart, CandlestickSeries } = chartsModule;
 
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
@@ -162,7 +162,8 @@ export const StockChart = memo(function StockChart({
       },
     });
 
-    const series = chart.addCandlestickSeries({
+    // v5 API: use addSeries(CandlestickSeries, options)
+    const series = chart.addSeries(CandlestickSeries, {
       upColor: upColor,
       downColor: downColor,
       borderVisible: false,

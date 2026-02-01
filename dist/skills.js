@@ -48,13 +48,26 @@ var COMPONENT_ARRAY_PROPS = {
   Flight: "flights",
   Hotel: "hotels",
   Trip: "trips",
-  Kanban: "columns"
-  // Visualization
+  Kanban: "columns",
+  // Canvas/Editor - content is Tiptap document with content array
+  Canvas: "content.content",
+  CanvasBlock: "content.content"
 };
 var NESTED_PATHS = {
   Kanban: [
     '- Kanban (Column): {"op":"add","path":"/elements/KEY/props/columns/-","value":{...}}',
     '- Kanban (Card in Column): {"op":"add","path":"/elements/KEY/props/columns/COL_INDEX/cards/-","value":{...}}'
+  ],
+  // Canvas uses standard JSON Patch to add nodes to document content array
+  Canvas: [
+    '- Canvas (Paragraph): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"paragraph","content":[{"type":"text","text":"..."}]}}',
+    '- Canvas (Heading): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"..."}]}}',
+    '- Canvas (Table): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"table","content":[{"type":"tableRow","content":[{"type":"tableHeader","content":[{"type":"paragraph","content":[{"type":"text","text":"Header"}]}]}]}]}}',
+    '- Canvas (CodeBlock): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"codeBlock","attrs":{"language":"typescript"},"content":[{"type":"text","text":"const x = 1;"}]}}',
+    '- Canvas (BulletList): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Item"}]}]}]}}',
+    '- Canvas (Diagram): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"diagram","attrs":{"code":"graph TD\\n  A-->B","diagramType":"flowchart"}}}',
+    '- Canvas (Math): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"mathBlock","attrs":{"latex":"E = mc^2"}}}',
+    '- Canvas (Callout): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"callout","attrs":{"variant":"info","title":"Note"},"content":[{"type":"paragraph","content":[{"type":"text","text":"..."}]}]}}'
   ]
 };
 function generateJSONLPaths() {
