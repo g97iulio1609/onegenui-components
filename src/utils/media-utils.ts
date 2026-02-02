@@ -107,14 +107,16 @@ export function markImageBroken(src: string): void {
 /**
  * Get a fallback image URL based on category
  */
-export function getFallbackImage(category: "hotel" | "flight" | "trip" | "generic" = "generic"): string {
-  const fallbacks: Record<string, string> = {
+export function getFallbackImage(
+  category: "hotel" | "flight" | "trip" | "generic" = "generic",
+): string {
+  const fallbacks: Record<"hotel" | "flight" | "trip" | "generic", string> = {
     hotel: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     flight: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
     trip: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80",
     generic: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
   };
-  return fallbacks[category] || fallbacks.generic;
+  return fallbacks[category];
 }
 
 /**

@@ -41,6 +41,7 @@ export {
   SkeletonText,
   SkeletonCard,
   LoadingState,
+  LoadingIndicator,
   type StatusVariant,
 } from "./shared-components";
 

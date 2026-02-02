@@ -125,16 +125,22 @@ export const ProgressBar = memo(function ProgressBar({
 // --- Empty State ---
 
 interface EmptyStateProps {
-  icon: React.ReactNode;
-  message: string;
+  icon?: React.ReactNode;
+  message?: string;
+  title?: string;
+  description?: string;
   className?: string;
 }
 
 export const EmptyState = memo(function EmptyState({
   icon,
   message,
+  title,
+  description,
   className,
 }: EmptyStateProps) {
+  const hasDetails = Boolean(title || description);
+
   return (
     <div
       className={cn(
@@ -142,10 +148,29 @@ export const EmptyState = memo(function EmptyState({
         className,
       )}
     >
-      <div className="opacity-20 mb-4">{icon}</div>
-      <p className="font-mono text-xs uppercase tracking-widest opacity-50">
-        {message}
-      </p>
+      {icon && (
+        <div className={cn("mb-4", hasDetails ? "opacity-60" : "opacity-20")}>
+          {icon}
+        </div>
+      )}
+      {hasDetails ? (
+        <div className="flex flex-col items-center text-center gap-2">
+          {title && (
+            <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          )}
+          {description && (
+            <p className="text-sm text-muted-foreground max-w-xs">
+              {description}
+            </p>
+          )}
+        </div>
+      ) : (
+        message && (
+          <p className="font-mono text-xs uppercase tracking-widest opacity-50">
+            {message}
+          </p>
+        )
+      )}
     </div>
   );
 });
@@ -404,6 +429,50 @@ export const LoadingState = memo(function LoadingState({
       <p className="font-mono text-xs uppercase tracking-widest opacity-50">
         {message}
       </p>
+    </div>
+  );
+});
+
+// --- Loading Indicator ---
+
+interface LoadingIndicatorProps {
+  message?: string;
+  className?: string;
+}
+
+export const LoadingIndicator = memo(function LoadingIndicator({
+  message,
+  className,
+}: LoadingIndicatorProps) {
+  const label = message ?? "Loading";
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label={label}
+      className={cn("flex items-center gap-2 text-muted-foreground", className)}
+    >
+      <div className="flex items-center gap-1">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="w-2 h-2 rounded-full bg-current"
+            animate={{ opacity: [0.2, 1, 0.2], y: [0, -4, 0] }}
+            transition={{
+              duration: 0.9,
+              repeat: Infinity,
+              delay: i * 0.15,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+      {message && (
+        <span className="text-xs uppercase font-mono tracking-widest opacity-60">
+          {message}
+        </span>
+      )}
     </div>
   );
 });

@@ -3,7 +3,7 @@
 import { memo, useMemo } from "react";
 import { Lock, Unlock, Activity, BicepsFlexed } from "lucide-react";
 import { cn } from "../../utils/cn";
-import { ComponentRenderProps, useDomainAutoSave } from "@onegenui/react";
+import { ComponentRenderProps, useDomainAutoSave, useTreeSync } from "@onegenui/react";
 import { WorkoutProps } from "./schema";
 import { EmptyState } from "../../utils/shared-components";
 import { SessionTimer } from "./components/session-timer";
@@ -47,6 +47,13 @@ export const Workout = memo(function Workout({
     initialItems: resolvedItems,
     lock: initialLock,
   });
+
+  // Sync workout items back to tree so AI receives current data
+  useTreeSync(
+    element.key,
+    useMemo(() => ({ items: displayItems }), [displayItems]),
+    { skipMount: true },
+  );
 
   useDomainAutoSave("workout", element.key, {
     title,

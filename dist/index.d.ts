@@ -27,6 +27,20 @@ declare const DocumentIndexDefinition: {
     }, zod_v4_core.$strip>;
 };
 
+interface EmptyStateProps {
+    icon?: React.ReactNode;
+    message?: string;
+    title?: string;
+    description?: string;
+    className?: string;
+}
+declare const EmptyState: react.NamedExoticComponent<EmptyStateProps>;
+interface LoadingIndicatorProps {
+    message?: string;
+    className?: string;
+}
+declare const LoadingIndicator: react.NamedExoticComponent<LoadingIndicatorProps>;
+
 declare const CalendarAgenda: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
 
 declare const Workout: react.NamedExoticComponent<ComponentRenderProps<Record<string, unknown>>>;
@@ -1821,4 +1835,4 @@ declare function hasComponent(name: string): boolean;
 
 declare const VERSION = "0.1.0";
 
-export { ActivityFeed, type ActivityFeedProps, ArticleCard, type ArticleCardProps, BookingForms, Calendar, CalendarAgenda, Chart, CitationViewer, type CitationViewerProps, type ComponentRegistry, DeepAnalysisPanel, type DeepAnalysisPanelProps, Diary, DocumentExplorer, type DocumentExplorerProps, DocumentIndex, DocumentIndexDefinition, DocumentTimeline, type DocumentTimelineProps, Email, EntityExplorer, type EntityExplorerProps, Flight, Gantt, Graph, Hotel, Kanban, KnowledgeGraph, type KnowledgeGraphProps, Message, MindMap, Nutrition, Pricing, type PricingProps, ProfileCard, type ProfileCardProps, type ReportSection, ResearchReport, type ResearchReportProps, type Source as ResearchSource, RoutineScheduler, SourceCitation, SourceCitationDefinition, StockChart, SupplementTracker, TodoList, Trip, type UseDocumentExplorerOptions, type UseDocumentExplorerReturn, type UseKnowledgeBaseOptions, type UseKnowledgeBaseReturn, type UseQuestionAnswerOptions, type UseQuestionAnswerReturn, VERSION, Workout, componentDefinitions, componentNames, componentRegistry, hasComponent, useDocumentExplorer, useKnowledgeBase, useQuestionAnswer };
+export { ActivityFeed, type ActivityFeedProps, ArticleCard, type ArticleCardProps, BookingForms, Calendar, CalendarAgenda, Chart, CitationViewer, type CitationViewerProps, type ComponentRegistry, DeepAnalysisPanel, type DeepAnalysisPanelProps, Diary, DocumentExplorer, type DocumentExplorerProps, DocumentIndex, DocumentIndexDefinition, DocumentTimeline, type DocumentTimelineProps, Email, EmptyState, EntityExplorer, type EntityExplorerProps, Flight, Gantt, Graph, Hotel, Kanban, KnowledgeGraph, type KnowledgeGraphProps, LoadingIndicator, Message, MindMap, Nutrition, Pricing, type PricingProps, ProfileCard, type ProfileCardProps, type ReportSection, ResearchReport, type ResearchReportProps, type Source as ResearchSource, RoutineScheduler, SourceCitation, SourceCitationDefinition, StockChart, SupplementTracker, TodoList, Trip, type UseDocumentExplorerOptions, type UseDocumentExplorerReturn, type UseKnowledgeBaseOptions, type UseKnowledgeBaseReturn, type UseQuestionAnswerOptions, type UseQuestionAnswerReturn, VERSION, Workout, componentDefinitions, componentNames, componentRegistry, hasComponent, useDocumentExplorer, useKnowledgeBase, useQuestionAnswer };

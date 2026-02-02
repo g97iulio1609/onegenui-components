@@ -18,7 +18,7 @@ Specialized component for displaying gym/exercise routines, cardio sessions, sup
 | --------- | ------- | -------- | ------------------------------------ |
 | title     | string  | No       | Workout title (e.g., "Day 1 - Push") |
 | items     | array   | Yes      | List of exercises/activities (min 1) |
-| exercises | array   | No       | Legacy alias for `items`             |
+| exercises | array   | No       | Alias for `items` (for data compatibility) |
 | lock      | boolean | No       | Lock editing                         |
 
 ### Item Structure
