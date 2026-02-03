@@ -15,6 +15,7 @@ import {
   Hotel as HotelIcon,
   ArrowRight,
 } from "lucide-react";
+import { sanitizeUrl } from "@onegenui/utils";
 import { cn } from "../../utils/cn";
 import { formatCurrency, formatDateShort } from "../../utils/format-utils";
 import { StatusBadge } from "../../utils/shared-components";
@@ -290,7 +291,7 @@ export const Hotel = memo(function Hotel({
 
                         {hotel.bookingUrl ? (
                           <a
-                            href={hotel.bookingUrl}
+                            href={sanitizeUrl(hotel.bookingUrl)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation"

@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { ArrowRight, ArrowLeftRight } from "lucide-react";
 import { SelectableItem } from "@onegenui/react";
+import { sanitizeUrl } from "@onegenui/utils";
 import { formatCurrency } from "../../../utils/format-utils";
 import { motion } from "framer-motion";
 import type { FlightData, FlightTrip } from "./types";
@@ -87,7 +88,7 @@ export const RoundTripCard = memo(function RoundTripCard({
 
               {bookingUrl && !lock && (
                 <motion.a
-                  href={bookingUrl}
+                  href={sanitizeUrl(bookingUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.05 }}
@@ -150,7 +151,7 @@ export const SingleFlightCard = memo(function SingleFlightCard({
 
               {flight.bookingUrl && !lock && (
                 <motion.a
-                  href={flight.bookingUrl}
+                  href={sanitizeUrl(flight.bookingUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.05 }}

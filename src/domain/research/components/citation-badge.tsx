@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import { sanitizeUrl } from "@onegenui/utils";
 import type { Source } from "./types";
 
 interface CitationBadgeProps {
@@ -16,7 +17,7 @@ export const CitationBadge = memo(function CitationBadge({
 
   return (
     <a
-      href={source.url}
+      href={sanitizeUrl(source.url)}
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-0.5 px-1 py-0.5 mx-0.5 text-[10px] font-medium bg-sky-500/20 text-sky-400 rounded hover:bg-sky-500/30 transition-colors cursor-pointer"

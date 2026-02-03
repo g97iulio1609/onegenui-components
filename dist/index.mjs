@@ -2224,6 +2224,7 @@ var FlightSegment = memo13(function FlightSegment2({
 import { memo as memo14 } from "react";
 import { ArrowRight as ArrowRight2, ArrowLeftRight } from "lucide-react";
 import { SelectableItem as SelectableItem2 } from "@onegenui/react";
+import { sanitizeUrl } from "@onegenui/utils";
 import { motion as motion10 } from "framer-motion";
 import { Fragment as Fragment2, jsx as jsx16, jsxs as jsxs15 } from "react/jsx-runtime";
 var RoundTripCard = memo14(function RoundTripCard2({
@@ -2296,7 +2297,7 @@ var RoundTripCard = memo14(function RoundTripCard2({
                     bookingUrl && !lock && /* @__PURE__ */ jsxs15(
                       motion10.a,
                       {
-                        href: bookingUrl,
+                        href: sanitizeUrl(bookingUrl),
                         target: "_blank",
                         rel: "noopener noreferrer",
                         whileHover: { scale: 1.05 },
@@ -2355,7 +2356,7 @@ var SingleFlightCard = memo14(function SingleFlightCard2({
                     flight.bookingUrl && !lock && /* @__PURE__ */ jsxs15(
                       motion10.a,
                       {
-                        href: flight.bookingUrl,
+                        href: sanitizeUrl(flight.bookingUrl),
                         target: "_blank",
                         rel: "noopener noreferrer",
                         whileHover: { scale: 1.05 },
@@ -2586,6 +2587,7 @@ import {
   Hotel as HotelIcon,
   ArrowRight as ArrowRight3
 } from "lucide-react";
+import { sanitizeUrl as sanitizeUrl2 } from "@onegenui/utils";
 import { motion as motion12, AnimatePresence as AnimatePresence4 } from "framer-motion";
 
 // src/domain/Hotel/adapters/hotel.adapter.ts
@@ -2836,7 +2838,7 @@ var Hotel = memo16(function Hotel2({
                                   hotel.bookingUrl ? /* @__PURE__ */ jsx18(
                                     "a",
                                     {
-                                      href: hotel.bookingUrl,
+                                      href: sanitizeUrl2(hotel.bookingUrl),
                                       target: "_blank",
                                       rel: "noopener noreferrer",
                                       className: "h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation",
@@ -6919,6 +6921,7 @@ var VideoPlayer = memo40(function VideoPlayer2({
 
 // src/domain/research/components/citation-badge.tsx
 import { memo as memo41 } from "react";
+import { sanitizeUrl as sanitizeUrl3 } from "@onegenui/utils";
 import { jsx as jsx43, jsxs as jsxs42 } from "react/jsx-runtime";
 var CitationBadge = memo41(function CitationBadge2({
   id,
@@ -6932,7 +6935,7 @@ var CitationBadge = memo41(function CitationBadge2({
   return /* @__PURE__ */ jsxs42(
     "a",
     {
-      href: source.url,
+      href: sanitizeUrl3(source.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "inline-flex items-center gap-0.5 px-1 py-0.5 mx-0.5 text-[10px] font-medium bg-sky-500/20 text-sky-400 rounded hover:bg-sky-500/30 transition-colors cursor-pointer",
@@ -6962,6 +6965,7 @@ function renderContentWithCitations(content, sources, renderText) {
 // src/domain/research/components/source-card.tsx
 import { memo as memo42 } from "react";
 import { ExternalLink, Globe } from "lucide-react";
+import { sanitizeUrl as sanitizeUrl4 } from "@onegenui/utils";
 import { jsx as jsx44, jsxs as jsxs43 } from "react/jsx-runtime";
 var SourceCard = memo42(function SourceCard2({
   source
@@ -6969,7 +6973,7 @@ var SourceCard = memo42(function SourceCard2({
   return /* @__PURE__ */ jsxs43(
     "a",
     {
-      href: source.url,
+      href: sanitizeUrl4(source.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "group flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/5 hover:border-sky-500/30 hover:bg-zinc-800 transition-all",

@@ -2390,6 +2390,7 @@ var FlightSegment = (0, import_react20.memo)(function FlightSegment2({
 var import_react21 = require("react");
 var import_lucide_react13 = require("lucide-react");
 var import_react22 = require("@onegenui/react");
+var import_utils5 = require("@onegenui/utils");
 var import_framer_motion10 = require("framer-motion");
 var import_jsx_runtime16 = require("react/jsx-runtime");
 var RoundTripCard = (0, import_react21.memo)(function RoundTripCard2({
@@ -2462,7 +2463,7 @@ var RoundTripCard = (0, import_react21.memo)(function RoundTripCard2({
                     bookingUrl && !lock && /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
                       import_framer_motion10.motion.a,
                       {
-                        href: bookingUrl,
+                        href: (0, import_utils5.sanitizeUrl)(bookingUrl),
                         target: "_blank",
                         rel: "noopener noreferrer",
                         whileHover: { scale: 1.05 },
@@ -2521,7 +2522,7 @@ var SingleFlightCard = (0, import_react21.memo)(function SingleFlightCard2({
                     flight.bookingUrl && !lock && /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
                       import_framer_motion10.motion.a,
                       {
-                        href: flight.bookingUrl,
+                        href: (0, import_utils5.sanitizeUrl)(flight.bookingUrl),
                         target: "_blank",
                         rel: "noopener noreferrer",
                         whileHover: { scale: 1.05 },
@@ -2792,6 +2793,7 @@ var FlightDefinition = {
 var import_react27 = require("react");
 var import_react28 = require("@onegenui/react");
 var import_lucide_react15 = require("lucide-react");
+var import_utils6 = require("@onegenui/utils");
 var import_framer_motion12 = require("framer-motion");
 
 // src/domain/Hotel/adapters/hotel.adapter.ts
@@ -3042,7 +3044,7 @@ var Hotel = (0, import_react27.memo)(function Hotel2({
                                   hotel.bookingUrl ? /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
                                     "a",
                                     {
-                                      href: hotel.bookingUrl,
+                                      href: (0, import_utils6.sanitizeUrl)(hotel.bookingUrl),
                                       target: "_blank",
                                       rel: "noopener noreferrer",
                                       className: "h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-transform shadow-lg shadow-white/10 touch-manipulation",
@@ -7448,6 +7450,7 @@ var VideoPlayer = (0, import_react78.memo)(function VideoPlayer2({
 
 // src/domain/research/components/citation-badge.tsx
 var import_react79 = require("react");
+var import_utils18 = require("@onegenui/utils");
 var import_jsx_runtime43 = require("react/jsx-runtime");
 var CitationBadge = (0, import_react79.memo)(function CitationBadge2({
   id,
@@ -7461,7 +7464,7 @@ var CitationBadge = (0, import_react79.memo)(function CitationBadge2({
   return /* @__PURE__ */ (0, import_jsx_runtime43.jsxs)(
     "a",
     {
-      href: source.url,
+      href: (0, import_utils18.sanitizeUrl)(source.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "inline-flex items-center gap-0.5 px-1 py-0.5 mx-0.5 text-[10px] font-medium bg-sky-500/20 text-sky-400 rounded hover:bg-sky-500/30 transition-colors cursor-pointer",
@@ -7491,6 +7494,7 @@ function renderContentWithCitations(content, sources, renderText) {
 // src/domain/research/components/source-card.tsx
 var import_react80 = require("react");
 var import_lucide_react41 = require("lucide-react");
+var import_utils19 = require("@onegenui/utils");
 var import_jsx_runtime44 = require("react/jsx-runtime");
 var SourceCard = (0, import_react80.memo)(function SourceCard2({
   source
@@ -7498,7 +7502,7 @@ var SourceCard = (0, import_react80.memo)(function SourceCard2({
   return /* @__PURE__ */ (0, import_jsx_runtime44.jsxs)(
     "a",
     {
-      href: source.url,
+      href: (0, import_utils19.sanitizeUrl)(source.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "group flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/5 hover:border-sky-500/30 hover:bg-zinc-800 transition-all",
@@ -8020,10 +8024,10 @@ var import_react85 = require("react");
 var import_react86 = require("@onegenui/react");
 
 // src/visualization/utils/data-utils.ts
-var import_utils16 = require("@onegenui/utils");
+var import_utils20 = require("@onegenui/utils");
 
 // src/visualization/utils/cn.ts
-var import_utils17 = require("@onegenui/utils");
+var import_utils21 = require("@onegenui/utils");
 
 // src/visualization/charts/Chart/component.tsx
 var import_jsx_runtime49 = require("react/jsx-runtime");
@@ -8103,7 +8107,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
         color: firstSeries.color
       }));
     }
-    return (0, import_utils16.resolveArrayProp)(globalData, data, dataPath);
+    return (0, import_utils20.resolveArrayProp)(globalData, data, dataPath);
   }, [series, categories, globalData, data, dataPath]);
   const chartHeight = Math.max(height || DEFAULT_HEIGHT, MIN_HEIGHT);
   const { selectedItems, isItemSelected } = (0, import_react86.useItemSelection)(element.key);
@@ -8188,7 +8192,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                       (isHovered || isSelected) && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
                         "div",
                         {
-                          className: (0, import_utils17.cn)(
+                          className: (0, import_utils21.cn)(
                             "absolute bottom-full mb-1 z-20 px-1.5 sm:px-2 py-0.5 sm:py-1",
                             "bg-popover text-popover-foreground text-[0.625rem] sm:text-xs font-medium rounded shadow-md pointer-events-none whitespace-nowrap",
                             "animate-in fade-in zoom-in-95 duration-200"
@@ -8205,7 +8209,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                       /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
                         "div",
                         {
-                          className: (0, import_utils17.cn)(
+                          className: (0, import_utils21.cn)(
                             "w-full rounded-t transition-all duration-200 relative",
                             isSelected ? "opacity-100 ring-2 ring-primary ring-offset-1" : "opacity-85 hover:opacity-100"
                           ),
@@ -8406,7 +8410,7 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
         "button",
         {
           onClick: () => setTimeframe(tf),
-          className: (0, import_utils17.cn)(
+          className: (0, import_utils21.cn)(
             "px-2 sm:px-2.5 py-1 sm:py-1.5 text-[0.625rem] sm:text-xs font-medium rounded transition-all touch-manipulation min-h-[1.75rem] sm:min-h-0 flex-shrink-0",
             timeframe === tf ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           ),
@@ -8814,7 +8818,7 @@ var Graph = (0, import_react90.memo)(function Graph2({
       style: {
         height: `${Math.max(200, (height ?? DEFAULT_H) * 0.8)}px`
       },
-      className: (0, import_utils17.cn)(
+      className: (0, import_utils21.cn)(
         "relative w-full overflow-hidden rounded-lg sm:rounded-xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md touch-none select-none shadow-lg"
       ),
       onWheel: handleWheel,
@@ -8977,7 +8981,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
   return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
     "div",
     {
-      className: (0, import_utils17.cn)(
+      className: (0, import_utils21.cn)(
         "flex relative",
         isHorizontal ? "flex-row items-center" : "flex-col items-center"
       ),
@@ -8990,7 +8994,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
               "data-selectable-item": true,
               "data-element-key": elementKey,
               "data-item-id": node.id,
-              className: (0, import_utils17.cn)(
+              className: (0, import_utils21.cn)(
                 "relative border rounded-xl transition-all duration-300 shadow-sm",
                 "backdrop-blur-md bg-card/90 border-border hover:border-primary/50 hover:shadow-lg hover:-translate-y-0.5",
                 "flex items-center gap-3 p-3 min-w-[140px] max-w-[240px]",
@@ -9006,7 +9010,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
                   /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
                     "div",
                     {
-                      className: (0, import_utils17.cn)(
+                      className: (0, import_utils21.cn)(
                         "font-semibold leading-tight truncate",
                         depth === 0 ? "text-[15px]" : "text-[13px]"
                       ),
@@ -9023,7 +9027,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
             "button",
             {
               onClick: toggleExpand,
-              className: (0, import_utils17.cn)(
+              className: (0, import_utils21.cn)(
                 "ml-[-10px] z-20 w-6 h-6 rounded-full flex items-center justify-center",
                 "bg-background border border-border shadow-sm hover:scale-110 transition-transform",
                 "text-xs font-bold text-muted-foreground hover:text-foreground cursor-pointer"
@@ -9055,7 +9059,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
             "div",
             {
               ref: childrenRef,
-              className: (0, import_utils17.cn)(
+              className: (0, import_utils21.cn)(
                 "flex",
                 isHorizontal ? "flex-col gap-4 py-2" : "flex-row gap-4"
               ),
@@ -9099,7 +9103,7 @@ var MindMap = (0, import_react93.memo)(function MindMap2({
     /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
       "div",
       {
-        className: (0, import_utils17.cn)(
+        className: (0, import_utils21.cn)(
           "flex p-4 sm:p-6 lg:p-8 gap-6 sm:gap-8 lg:gap-12 overflow-auto glass-subtle rounded-lg sm:rounded-2xl min-h-[250px] sm:min-h-[350px] lg:min-h-[400px] touch-pan-x touch-pan-y",
           isHorizontal ? "flex-col" : "flex-row"
         ),
@@ -9198,7 +9202,7 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
                   /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
                     "div",
                     {
-                      className: (0, import_utils17.cn)(
+                      className: (0, import_utils21.cn)(
                         "flex-1 relative h-full rounded",
                         isMilestone ? "bg-transparent" : "bg-muted/30"
                       ),
@@ -9474,7 +9478,7 @@ var MessageDefinition = {
 
 // src/communication/Email/component.tsx
 var import_react99 = require("react");
-var import_utils18 = require("@onegenui/utils");
+var import_utils22 = require("@onegenui/utils");
 var import_lucide_react49 = require("lucide-react");
 
 // src/communication/Email/components/unread-dot.tsx
@@ -9964,7 +9968,7 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
 
 // src/communication/Email/component.tsx
 var import_jsx_runtime62 = require("react/jsx-runtime");
-var log = (0, import_utils18.createLogger)({ prefix: "email" });
+var log = (0, import_utils22.createLogger)({ prefix: "email" });
 var Email = (0, import_react99.memo)(function Email2({
   element,
   children

@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { ExternalLink, Globe } from "lucide-react";
+import { sanitizeUrl } from "@onegenui/utils";
 import type { Source } from "./types";
 
 interface SourceCardProps {
@@ -13,7 +14,7 @@ export const SourceCard = memo(function SourceCard({
 }: SourceCardProps) {
   return (
     <a
-      href={source.url}
+      href={sanitizeUrl(source.url)}
       target="_blank"
       rel="noopener noreferrer"
       className="group flex items-center gap-3 p-3 rounded-xl bg-zinc-800/50 border border-white/5 hover:border-sky-500/30 hover:bg-zinc-800 transition-all"
