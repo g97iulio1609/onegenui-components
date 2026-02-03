@@ -846,9 +846,9 @@ var CalendarAgendaDefinition = {
 };
 
 // src/domain/Workout/component.tsx
-var import_react13 = require("react");
+var import_react14 = require("react");
 var import_lucide_react9 = require("lucide-react");
-var import_react14 = require("@onegenui/react");
+var import_react15 = require("@onegenui/react");
 
 // src/domain/Workout/components/session-timer.tsx
 var import_react7 = require("react");
@@ -1550,6 +1550,18 @@ function ensureSeriesGenerated(exercise) {
   }
   return exercise;
 }
+function ensureSeriesGeneratedDeep(items) {
+  return items.map((item) => {
+    const withSeries = ensureSeriesGenerated(item);
+    if (withSeries.items && withSeries.items.length > 0) {
+      return {
+        ...withSeries,
+        items: ensureSeriesGeneratedDeep(withSeries.items)
+      };
+    }
+    return withSeries;
+  });
+}
 function createWorkoutAdapter() {
   return {
     findExerciseById(items, id) {
@@ -1642,20 +1654,24 @@ function getWorkoutStateAdapter() {
 
 // src/domain/Workout/hooks/useWorkoutLogic.ts
 var import_react12 = require("react");
+var import_react13 = require("@onegenui/react");
 function useWorkoutLogic(workoutAdapter, stateAdapter, options) {
-  const { initialItems, lock: initialLock = false } = options;
-  const [edits, setEdits] = (0, import_react12.useState)({});
+  const { initialItems, lock: initialLock = false, elementKey } = options;
+  const [state, updateState] = (0, import_react13.useElementState)(
+    elementKey,
+    {
+      items: initialItems,
+      isLocked: !!initialLock
+    }
+  );
   const [expandedIds, setExpandedIds] = (0, import_react12.useState)(/* @__PURE__ */ new Set());
-  const [isLocked, setIsLocked] = (0, import_react12.useState)(!!initialLock);
   (0, import_react12.useEffect)(() => {
     if (initialItems.length > 0 && initialItems[0]?.id) {
       setExpandedIds(/* @__PURE__ */ new Set([initialItems[0].id]));
     }
   }, [initialItems]);
-  const displayItems = (0, import_react12.useMemo)(
-    () => workoutAdapter.mergeEdits(initialItems, edits),
-    [workoutAdapter, initialItems, edits]
-  );
+  const displayItems = state.items;
+  const isLocked = state.isLocked;
   const toggleExpand = (0, import_react12.useCallback)((id) => {
     setExpandedIds((prev) => {
       const next = new Set(prev);
@@ -1665,75 +1681,56 @@ function useWorkoutLogic(workoutAdapter, stateAdapter, options) {
     });
   }, []);
   const toggleLock = (0, import_react12.useCallback)(() => {
-    setIsLocked((prev) => !prev);
-  }, []);
+    updateState({ isLocked: !isLocked });
+  }, [isLocked, updateState]);
   const updateExercise = (0, import_react12.useCallback)(
     (id, field, value) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(displayItems, id);
-        if (!exercise) return prev;
-        return stateAdapter.updateExerciseField(prev, exercise, field, value);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, id);
+      if (!exercise) return;
+      const edits = stateAdapter.updateExerciseField({}, exercise, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const updateSeries = (0, import_react12.useCallback)(
     (exerciseId, seriesId, field, value) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        return stateAdapter.updateSetField(
-          prev,
-          exercise,
-          seriesId,
-          field,
-          value
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const edits = stateAdapter.updateSetField({}, exercise, seriesId, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const addSet = (0, import_react12.useCallback)(
     (exerciseId) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        const newSet = workoutAdapter.createNewSet(exercise.series || []);
-        return stateAdapter.addSetToExercise(prev, exercise, newSet);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const newSet = workoutAdapter.createNewSet(exercise.series || []);
+      const edits = stateAdapter.addSetToExercise({}, exercise, newSet);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const removeSet = (0, import_react12.useCallback)(
     (exerciseId, seriesId) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        const updatedSeries = workoutAdapter.removeSetAndRenumber(
-          exercise.series || [],
-          seriesId
-        );
-        return stateAdapter.removeSetFromExercise(
-          prev,
-          exercise,
-          updatedSeries
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const updatedSeries = workoutAdapter.removeSetAndRenumber(
+        exercise.series || [],
+        seriesId
+      );
+      const edits = stateAdapter.removeSetFromExercise({}, exercise, updatedSeries);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   return {
     displayItems,
@@ -1750,7 +1747,7 @@ function useWorkoutLogic(workoutAdapter, stateAdapter, options) {
 
 // src/domain/Workout/component.tsx
 var import_jsx_runtime11 = require("react/jsx-runtime");
-var Workout = (0, import_react13.memo)(function Workout2({
+var Workout = (0, import_react14.memo)(function Workout2({
   element,
   children
 }) {
@@ -1760,9 +1757,10 @@ var Workout = (0, import_react13.memo)(function Workout2({
     exercises,
     lock: initialLock = false
   } = element.props;
-  const resolvedItems = (0, import_react13.useMemo)(() => {
+  const resolvedItems = (0, import_react14.useMemo)(() => {
     const raw = items || exercises || [];
-    return Array.isArray(raw) ? raw : [];
+    const arr = Array.isArray(raw) ? raw : [];
+    return ensureSeriesGeneratedDeep(arr);
   }, [items, exercises]);
   const workoutAdapter = getWorkoutAdapter();
   const stateAdapter = getWorkoutStateAdapter();
@@ -1778,14 +1776,10 @@ var Workout = (0, import_react13.memo)(function Workout2({
     removeSet
   } = useWorkoutLogic(workoutAdapter, stateAdapter, {
     initialItems: resolvedItems,
-    lock: initialLock
+    lock: initialLock,
+    elementKey: element.key
   });
-  (0, import_react14.useTreeSync)(
-    element.key,
-    (0, import_react13.useMemo)(() => ({ items: displayItems }), [displayItems]),
-    { skipMount: true }
-  );
-  (0, import_react14.useDomainAutoSave)("workout", element.key, {
+  (0, import_react15.useDomainAutoSave)("workout", element.key, {
     title,
     date: (/* @__PURE__ */ new Date()).toISOString(),
     items: displayItems,
@@ -1869,8 +1863,8 @@ var WorkoutDefinition = {
 };
 
 // src/domain/Nutrition/component.tsx
-var import_react17 = require("react");
-var import_react18 = require("@onegenui/react");
+var import_react18 = require("react");
+var import_react19 = require("@onegenui/react");
 var import_lucide_react11 = require("lucide-react");
 var import_framer_motion8 = require("framer-motion");
 
@@ -1878,10 +1872,10 @@ var import_framer_motion8 = require("framer-motion");
 var MACRO_TARGETS = { p: 180, c: 250, f: 70, cal: 2400 };
 
 // src/domain/Nutrition/components/macro-metric.tsx
-var import_react15 = require("react");
+var import_react16 = require("react");
 var import_framer_motion6 = require("framer-motion");
 var import_jsx_runtime12 = require("react/jsx-runtime");
-var MacroMetric = (0, import_react15.memo)(function MacroMetric2({
+var MacroMetric = (0, import_react16.memo)(function MacroMetric2({
   label,
   value,
   max,
@@ -1909,11 +1903,11 @@ var MacroMetric = (0, import_react15.memo)(function MacroMetric2({
 });
 
 // src/domain/Nutrition/components/meal-ticket.tsx
-var import_react16 = require("react");
+var import_react17 = require("react");
 var import_framer_motion7 = require("framer-motion");
 var import_lucide_react10 = require("lucide-react");
 var import_jsx_runtime13 = require("react/jsx-runtime");
-var MealTicket = (0, import_react16.memo)(function MealTicket2({
+var MealTicket = (0, import_react17.memo)(function MealTicket2({
   meal,
   onToggleItem,
   lock,
@@ -2038,7 +2032,7 @@ var MealTicket = (0, import_react16.memo)(function MealTicket2({
 
 // src/domain/Nutrition/component.tsx
 var import_jsx_runtime14 = require("react/jsx-runtime");
-var Nutrition = (0, import_react17.memo)(function Nutrition2({
+var Nutrition = (0, import_react18.memo)(function Nutrition2({
   element,
   children
 }) {
@@ -2047,8 +2041,8 @@ var Nutrition = (0, import_react17.memo)(function Nutrition2({
     meals: initialMeals,
     lock = false
   } = element.props;
-  const [localEdits, setLocalEdits] = (0, import_react17.useState)({});
-  const displayMeals = (0, import_react17.useMemo)(() => {
+  const [localEdits, setLocalEdits] = (0, import_react18.useState)({});
+  const displayMeals = (0, import_react18.useMemo)(() => {
     return (initialMeals || []).map((meal) => {
       const mealEdits = localEdits[meal.id] || {};
       return {
@@ -2061,13 +2055,13 @@ var Nutrition = (0, import_react17.memo)(function Nutrition2({
       };
     });
   }, [initialMeals, localEdits]);
-  (0, import_react18.useDomainAutoSave)("meal", element.key, {
+  (0, import_react19.useDomainAutoSave)("meal", element.key, {
     type: "meal_plan",
     foods: displayMeals.flatMap((m) => m.items),
     meals: displayMeals,
     date: (/* @__PURE__ */ new Date()).toISOString()
   });
-  const toggleConsumed = (0, import_react17.useCallback)(
+  const toggleConsumed = (0, import_react18.useCallback)(
     (mealId, itemId) => {
       if (lock) return;
       setLocalEdits((prev) => {
@@ -2078,7 +2072,7 @@ var Nutrition = (0, import_react17.memo)(function Nutrition2({
     },
     [lock, displayMeals]
   );
-  const stats = (0, import_react17.useMemo)(() => {
+  const stats = (0, import_react18.useMemo)(() => {
     let p = 0, c = 0, f = 0, cal = 0;
     displayMeals.forEach(
       (m) => m.items.forEach((i) => {
@@ -2225,13 +2219,13 @@ var NutritionDefinition = {
 };
 
 // src/domain/Flight/component.tsx
-var import_react23 = require("react");
-var import_react24 = require("@onegenui/react");
+var import_react25 = require("react");
+var import_react26 = require("@onegenui/react");
 var import_lucide_react14 = require("lucide-react");
 var import_framer_motion11 = require("framer-motion");
 
 // src/domain/Flight/components/flight-segment.tsx
-var import_react19 = require("react");
+var import_react20 = require("react");
 var import_lucide_react12 = require("lucide-react");
 var import_framer_motion9 = require("framer-motion");
 
@@ -2246,7 +2240,7 @@ var STATUS_VARIANT_MAP = {
 
 // src/domain/Flight/components/flight-segment.tsx
 var import_jsx_runtime15 = require("react/jsx-runtime");
-var FlightStatus = (0, import_react19.memo)(function FlightStatus2({
+var FlightStatus = (0, import_react20.memo)(function FlightStatus2({
   status
 }) {
   const config = status ? STATUS_VARIANT_MAP[status] : null;
@@ -2259,7 +2253,7 @@ var FlightStatus = (0, import_react19.memo)(function FlightStatus2({
     }
   );
 });
-var FlightSegment = (0, import_react19.memo)(function FlightSegment2({
+var FlightSegment = (0, import_react20.memo)(function FlightSegment2({
   flight,
   label,
   isReturn = false,
@@ -2393,12 +2387,12 @@ var FlightSegment = (0, import_react19.memo)(function FlightSegment2({
 });
 
 // src/domain/Flight/components/flight-cards.tsx
-var import_react20 = require("react");
+var import_react21 = require("react");
 var import_lucide_react13 = require("lucide-react");
-var import_react21 = require("@onegenui/react");
+var import_react22 = require("@onegenui/react");
 var import_framer_motion10 = require("framer-motion");
 var import_jsx_runtime16 = require("react/jsx-runtime");
-var RoundTripCard = (0, import_react20.memo)(function RoundTripCard2({
+var RoundTripCard = (0, import_react21.memo)(function RoundTripCard2({
   trip,
   index,
   elementKey,
@@ -2413,7 +2407,7 @@ var RoundTripCard = (0, import_react20.memo)(function RoundTripCard2({
       animate: { opacity: 1, scale: 1, y: 0 },
       transition: { duration: 0.5, delay: index * 0.1 },
       children: /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
-        import_react21.SelectableItem,
+        import_react22.SelectableItem,
         {
           elementKey,
           itemId: trip.outbound.id,
@@ -2490,7 +2484,7 @@ var RoundTripCard = (0, import_react20.memo)(function RoundTripCard2({
     }
   );
 });
-var SingleFlightCard = (0, import_react20.memo)(function SingleFlightCard2({
+var SingleFlightCard = (0, import_react21.memo)(function SingleFlightCard2({
   flight,
   index,
   elementKey,
@@ -2503,7 +2497,7 @@ var SingleFlightCard = (0, import_react20.memo)(function SingleFlightCard2({
       animate: { opacity: 1, scale: 1, y: 0 },
       transition: { duration: 0.5, delay: index * 0.1 },
       children: /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
-        import_react21.SelectableItem,
+        import_react22.SelectableItem,
         {
           elementKey,
           itemId: flight.id,
@@ -2620,10 +2614,11 @@ function getFlightStateAdapter() {
 }
 
 // src/domain/Flight/hooks/useFlightLogic.ts
-var import_react22 = require("react");
-function useFlightLogic(flightAdapter, stateAdapter, options) {
+var import_react23 = require("react");
+var import_react24 = require("@onegenui/react");
+function useFlightLogic(elementKey, flightAdapter, stateAdapter, options) {
   const { trips, flights, lock = false } = options;
-  const displayTrips = (0, import_react22.useMemo)(
+  const computedTrips = (0, import_react23.useMemo)(
     () => stateAdapter.computeDisplayTrips(
       trips,
       flights,
@@ -2631,12 +2626,21 @@ function useFlightLogic(flightAdapter, stateAdapter, options) {
     ),
     [stateAdapter, flightAdapter, trips, flights]
   );
+  const [{ localTrips }, updateState] = (0, import_react24.useElementState)(elementKey, {
+    localTrips: null
+  });
+  const displayTrips = localTrips ?? computedTrips;
   const hasContent = displayTrips.length > 0;
+  const updateTrips = (newTrips) => {
+    if (lock) return;
+    updateState({ localTrips: newTrips });
+  };
   return {
     displayTrips,
     hasContent,
     getTripKey: flightAdapter.getTripKey.bind(flightAdapter),
-    isRoundTrip: flightAdapter.isRoundTrip.bind(flightAdapter)
+    isRoundTrip: flightAdapter.isRoundTrip.bind(flightAdapter),
+    updateTrips
   };
 }
 
@@ -2650,7 +2654,7 @@ var headerVariants = {
   hidden: { opacity: 0, y: "-0.625rem" },
   visible: { opacity: 1, y: 0 }
 };
-var Flight = (0, import_react23.memo)(function Flight2({
+var Flight = (0, import_react25.memo)(function Flight2({
   element,
   children
 }) {
@@ -2663,11 +2667,12 @@ var Flight = (0, import_react23.memo)(function Flight2({
   const flightAdapter = getFlightAdapter();
   const stateAdapter = getFlightStateAdapter();
   const { displayTrips, getTripKey, isRoundTrip } = useFlightLogic(
+    element.key,
     flightAdapter,
     stateAdapter,
     { trips, flights, lock }
   );
-  const totalPrice = (0, import_react23.useMemo)(() => {
+  const totalPrice = (0, import_react25.useMemo)(() => {
     return displayTrips.reduce((sum, trip) => {
       const outPrice = trip.outbound?.price?.amount || 0;
       const retPrice = trip.return?.price?.amount || 0;
@@ -2675,7 +2680,7 @@ var Flight = (0, import_react23.memo)(function Flight2({
     }, 0);
   }, [displayTrips]);
   const currency = displayTrips[0]?.outbound?.price?.currency || "EUR";
-  (0, import_react24.useDomainAutoSave)("flight", element.key, {
+  (0, import_react26.useDomainAutoSave)("flight", element.key, {
     title,
     trips: displayTrips,
     status: "search",
@@ -2784,8 +2789,8 @@ var FlightDefinition = {
 };
 
 // src/domain/Hotel/component.tsx
-var import_react25 = require("react");
-var import_react26 = require("@onegenui/react");
+var import_react27 = require("react");
+var import_react28 = require("@onegenui/react");
 var import_lucide_react15 = require("lucide-react");
 var import_framer_motion12 = require("framer-motion");
 
@@ -2848,7 +2853,7 @@ var HotelStatusBadge = ({ status }) => /* @__PURE__ */ (0, import_jsx_runtime18.
     pulse: true
   }
 );
-var Hotel = (0, import_react25.memo)(function Hotel2({
+var Hotel = (0, import_react27.memo)(function Hotel2({
   element,
   children
 }) {
@@ -2857,7 +2862,7 @@ var Hotel = (0, import_react25.memo)(function Hotel2({
     hotels,
     layout = "list"
   } = element.props;
-  const { checkIn, checkOut, totalPrice, currency } = (0, import_react25.useMemo)(() => {
+  const { checkIn, checkOut, totalPrice, currency } = (0, import_react27.useMemo)(() => {
     const hotelList = hotels || [];
     let minCheckIn = null;
     let maxCheckOut = null;
@@ -2884,7 +2889,7 @@ var Hotel = (0, import_react25.memo)(function Hotel2({
       currency: curr
     };
   }, [hotels]);
-  (0, import_react26.useDomainAutoSave)("hotel", element.key, {
+  (0, import_react28.useDomainAutoSave)("hotel", element.key, {
     title,
     hotels: hotels || [],
     status: "search",
@@ -2922,7 +2927,7 @@ var Hotel = (0, import_react25.memo)(function Hotel2({
                   animate: "visible",
                   exit: "exit",
                   children: /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
-                    import_react26.SelectableItem,
+                    import_react28.SelectableItem,
                     {
                       elementKey: element.key,
                       itemId: hotel.id,
@@ -3102,11 +3107,12 @@ var HotelDefinition = {
 };
 
 // src/domain/Hotel/hooks/useHotelLogic.ts
-var import_react27 = require("react");
+var import_react29 = require("react");
+var import_react30 = require("@onegenui/react");
 
 // src/domain/Trip/component.tsx
-var import_react28 = require("react");
-var import_react29 = require("@onegenui/react");
+var import_react31 = require("react");
+var import_react32 = require("@onegenui/react");
 var import_lucide_react16 = require("lucide-react");
 var import_framer_motion13 = require("framer-motion");
 var import_jsx_runtime19 = require("react/jsx-runtime");
@@ -3116,16 +3122,16 @@ var STATUS_TO_VARIANT = {
   Draft: "warning",
   Cancelled: "error"
 };
-var Trip = (0, import_react28.memo)(function Trip2({
+var Trip = (0, import_react31.memo)(function Trip2({
   element,
   children
 }) {
   const { title, trips, activeTripId } = element.props;
-  const activeTrip = (0, import_react28.useMemo)(
+  const activeTrip = (0, import_react31.useMemo)(
     () => trips?.find((t) => t.id === activeTripId),
     [trips, activeTripId]
   );
-  (0, import_react29.useDomainAutoSave)(
+  (0, import_react32.useDomainAutoSave)(
     "trip",
     element.key,
     activeTrip ? {
@@ -3276,7 +3282,7 @@ var TripDefinition = {
 };
 
 // src/domain/BookingForms/component.tsx
-var import_react31 = require("react");
+var import_react35 = require("react");
 var import_lucide_react17 = require("lucide-react");
 var import_framer_motion14 = require("framer-motion");
 
@@ -3382,62 +3388,68 @@ function getBookingFormsStateAdapter() {
 }
 
 // src/domain/BookingForms/hooks/useBookingFormsLogic.ts
-var import_react30 = require("react");
-function useBookingFormsLogic(validationAdapter, stateAdapter, options) {
+var import_react33 = require("react");
+var import_react34 = require("@onegenui/react");
+function useBookingFormsLogic(elementKey, validationAdapter, stateAdapter, options) {
   const { initialType = "flight", mode = "create" } = options;
-  const [activeTab, setActiveTab] = (0, import_react30.useState)(initialType);
-  const [flightForm, setFlightForm] = (0, import_react30.useState)(
-    () => stateAdapter.getDefaultFlightForm()
-  );
-  const [hotelForm, setHotelForm] = (0, import_react30.useState)(
-    () => stateAdapter.getDefaultHotelForm()
-  );
-  const [flightValidation, setFlightValidation] = (0, import_react30.useState)(null);
-  const [hotelValidation, setHotelValidation] = (0, import_react30.useState)(null);
+  const [state, updateState] = (0, import_react34.useElementState)(elementKey, {
+    activeTab: initialType,
+    flightForm: stateAdapter.getDefaultFlightForm(),
+    hotelForm: stateAdapter.getDefaultHotelForm()
+  });
+  const { activeTab, flightForm, hotelForm } = state;
+  const [flightValidation, setFlightValidation] = (0, import_react33.useState)(null);
+  const [hotelValidation, setHotelValidation] = (0, import_react33.useState)(null);
   const actionLabel = stateAdapter.getActionLabel(mode);
   const promoText = stateAdapter.getPromoText(activeTab);
-  const isFlightFormValid = (0, import_react30.useMemo)(
+  const isFlightFormValid = (0, import_react33.useMemo)(
     () => validationAdapter.validateFlightForm(flightForm).isValid,
     [validationAdapter, flightForm]
   );
-  const isHotelFormValid = (0, import_react30.useMemo)(
+  const isHotelFormValid = (0, import_react33.useMemo)(
     () => validationAdapter.validateHotelForm(hotelForm).isValid,
     [validationAdapter, hotelForm]
   );
-  const updateFlightField = (0, import_react30.useCallback)(
+  const setActiveTab = (0, import_react33.useCallback)(
+    (tab) => {
+      updateState({ activeTab: tab });
+    },
+    [updateState]
+  );
+  const updateFlightField = (0, import_react33.useCallback)(
     (field, value) => {
-      setFlightForm(
-        (prev) => stateAdapter.updateFlightField(prev, field, value)
-      );
+      const updated = stateAdapter.updateFlightField(flightForm, field, value);
+      updateState({ flightForm: updated });
       setFlightValidation(null);
     },
-    [stateAdapter]
+    [stateAdapter, flightForm, updateState]
   );
-  const updateHotelField = (0, import_react30.useCallback)(
+  const updateHotelField = (0, import_react33.useCallback)(
     (field, value) => {
-      setHotelForm((prev) => stateAdapter.updateHotelField(prev, field, value));
+      const updated = stateAdapter.updateHotelField(hotelForm, field, value);
+      updateState({ hotelForm: updated });
       setHotelValidation(null);
     },
-    [stateAdapter]
+    [stateAdapter, hotelForm, updateState]
   );
-  const validateFlight = (0, import_react30.useCallback)(() => {
+  const validateFlight = (0, import_react33.useCallback)(() => {
     const result = validationAdapter.validateFlightForm(flightForm);
     setFlightValidation(result);
     return result;
   }, [validationAdapter, flightForm]);
-  const validateHotel = (0, import_react30.useCallback)(() => {
+  const validateHotel = (0, import_react33.useCallback)(() => {
     const result = validationAdapter.validateHotelForm(hotelForm);
     setHotelValidation(result);
     return result;
   }, [validationAdapter, hotelForm]);
-  const resetFlightForm = (0, import_react30.useCallback)(() => {
-    setFlightForm(stateAdapter.getDefaultFlightForm());
+  const resetFlightForm = (0, import_react33.useCallback)(() => {
+    updateState({ flightForm: stateAdapter.getDefaultFlightForm() });
     setFlightValidation(null);
-  }, [stateAdapter]);
-  const resetHotelForm = (0, import_react30.useCallback)(() => {
-    setHotelForm(stateAdapter.getDefaultHotelForm());
+  }, [stateAdapter, updateState]);
+  const resetHotelForm = (0, import_react33.useCallback)(() => {
+    updateState({ hotelForm: stateAdapter.getDefaultHotelForm() });
     setHotelValidation(null);
-  }, [stateAdapter]);
+  }, [stateAdapter, updateState]);
   return {
     // State
     activeTab,
@@ -3463,7 +3475,7 @@ function useBookingFormsLogic(validationAdapter, stateAdapter, options) {
 
 // src/domain/BookingForms/component.tsx
 var import_jsx_runtime20 = require("react/jsx-runtime");
-var BookingForms = (0, import_react31.memo)(function BookingForms2({
+var BookingForms = (0, import_react35.memo)(function BookingForms2({
   element,
   children
 }) {
@@ -3483,7 +3495,7 @@ var BookingForms = (0, import_react31.memo)(function BookingForms2({
     updateHotelField,
     actionLabel,
     promoText
-  } = useBookingFormsLogic(validationAdapter, stateAdapter, {
+  } = useBookingFormsLogic(element.key, validationAdapter, stateAdapter, {
     initialType: type,
     mode
   });
@@ -3648,10 +3660,10 @@ var BookingFormsDefinition = {
 };
 
 // src/domain/social/profile-card.tsx
-var import_react32 = require("react");
+var import_react36 = require("react");
 var import_lucide_react18 = require("lucide-react");
 var import_jsx_runtime21 = require("react/jsx-runtime");
-var ProfileCard = (0, import_react32.memo)(function ProfileCard2({
+var ProfileCard = (0, import_react36.memo)(function ProfileCard2({
   element,
   children
 }) {
@@ -3760,10 +3772,10 @@ var ProfileCard = (0, import_react32.memo)(function ProfileCard2({
 });
 
 // src/domain/feed/activity-feed.tsx
-var import_react33 = require("react");
+var import_react37 = require("react");
 var import_lucide_react19 = require("lucide-react");
 var import_jsx_runtime22 = require("react/jsx-runtime");
-var ActivityFeed = (0, import_react33.memo)(function ActivityFeed2({
+var ActivityFeed = (0, import_react37.memo)(function ActivityFeed2({
   element,
   children,
   renderText
@@ -3860,10 +3872,10 @@ var ActivityFeed = (0, import_react33.memo)(function ActivityFeed2({
 });
 
 // src/domain/commerce/pricing.tsx
-var import_react34 = require("react");
+var import_react38 = require("react");
 var import_lucide_react20 = require("lucide-react");
 var import_jsx_runtime23 = require("react/jsx-runtime");
-var Pricing = (0, import_react34.memo)(function Pricing2({
+var Pricing = (0, import_react38.memo)(function Pricing2({
   element,
   children,
   renderText
@@ -3960,10 +3972,10 @@ var Pricing = (0, import_react34.memo)(function Pricing2({
 });
 
 // src/domain/content/article-card.tsx
-var import_react35 = require("react");
+var import_react39 = require("react");
 var import_lucide_react21 = require("lucide-react");
 var import_jsx_runtime24 = require("react/jsx-runtime");
-var ArticleCard = (0, import_react35.memo)(function ArticleCard2({
+var ArticleCard = (0, import_react39.memo)(function ArticleCard2({
   element,
   children,
   renderText
@@ -4022,8 +4034,8 @@ var ArticleCard = (0, import_react35.memo)(function ArticleCard2({
 });
 
 // src/domain/Kanban/component.tsx
-var import_react40 = require("react");
-var import_react41 = require("@onegenui/react");
+var import_react45 = require("react");
+var import_react46 = require("@onegenui/react");
 var import_lucide_react24 = require("lucide-react");
 var import_framer_motion17 = require("framer-motion");
 
@@ -4035,11 +4047,11 @@ var PRIORITY_TO_VARIANT = {
 };
 
 // src/domain/Kanban/components/sub-items-list.tsx
-var import_react36 = require("react");
+var import_react40 = require("react");
 var import_lucide_react22 = require("lucide-react");
 var import_framer_motion15 = require("framer-motion");
 var import_jsx_runtime25 = require("react/jsx-runtime");
-var SubItemsList = (0, import_react36.memo)(function SubItemsList2({
+var SubItemsList = (0, import_react40.memo)(function SubItemsList2({
   item,
   lock,
   isSubItemCompleted,
@@ -4081,11 +4093,11 @@ var SubItemsList = (0, import_react36.memo)(function SubItemsList2({
 });
 
 // src/domain/Kanban/components/kanban-card.tsx
-var import_react37 = require("react");
+var import_react41 = require("react");
 var import_lucide_react23 = require("lucide-react");
 var import_framer_motion16 = require("framer-motion");
 var import_jsx_runtime26 = require("react/jsx-runtime");
-var KanbanCard = (0, import_react37.memo)(function KanbanCard2({
+var KanbanCard = (0, import_react41.memo)(function KanbanCard2({
   item,
   elementKey,
   colId,
@@ -4242,13 +4254,13 @@ function getKanbanDragAdapter() {
 }
 
 // src/domain/Kanban/hooks/useKanbanDrag.ts
-var import_react38 = require("react");
+var import_react42 = require("react");
 function useKanbanDrag(adapter, options) {
   const { lock, onMoveItem } = options;
-  const [draggedItem, setDraggedItem] = (0, import_react38.useState)(null);
-  const [dropTarget, setDropTarget] = (0, import_react38.useState)(null);
-  const dragCounter = (0, import_react38.useRef)({});
-  const handleDragStart = (0, import_react38.useCallback)(
+  const [draggedItem, setDraggedItem] = (0, import_react42.useState)(null);
+  const [dropTarget, setDropTarget] = (0, import_react42.useState)(null);
+  const dragCounter = (0, import_react42.useRef)({});
+  const handleDragStart = (0, import_react42.useCallback)(
     (e, item, fromColId) => {
       if (lock) {
         e.preventDefault();
@@ -4265,7 +4277,7 @@ function useKanbanDrag(adapter, options) {
     },
     [lock]
   );
-  const handleDragEnd = (0, import_react38.useCallback)((e) => {
+  const handleDragEnd = (0, import_react42.useCallback)((e) => {
     e.stopPropagation();
     if (e.currentTarget instanceof HTMLElement) {
       e.currentTarget.style.opacity = "1";
@@ -4274,7 +4286,7 @@ function useKanbanDrag(adapter, options) {
     setDropTarget(null);
     dragCounter.current = {};
   }, []);
-  const handleDragEnter = (0, import_react38.useCallback)(
+  const handleDragEnter = (0, import_react42.useCallback)(
     (e, colId) => {
       e.preventDefault();
       e.stopPropagation();
@@ -4285,7 +4297,7 @@ function useKanbanDrag(adapter, options) {
     },
     [adapter, draggedItem]
   );
-  const handleDragLeave = (0, import_react38.useCallback)(
+  const handleDragLeave = (0, import_react42.useCallback)(
     (e, colId) => {
       e.preventDefault();
       e.stopPropagation();
@@ -4299,14 +4311,14 @@ function useKanbanDrag(adapter, options) {
     },
     [dropTarget]
   );
-  const handleDragOver = (0, import_react38.useCallback)((e) => {
+  const handleDragOver = (0, import_react42.useCallback)((e) => {
     if (e.dataTransfer.types.includes("application/x-kanban-item")) {
       e.preventDefault();
       e.stopPropagation();
       e.dataTransfer.dropEffect = "move";
     }
   }, []);
-  const handleDrop = (0, import_react38.useCallback)(
+  const handleDrop = (0, import_react42.useCallback)(
     (e, targetColId) => {
       if (!e.dataTransfer.types.includes("application/x-kanban-item")) {
         return;
@@ -4335,37 +4347,41 @@ function useKanbanDrag(adapter, options) {
 }
 
 // src/domain/Kanban/hooks/useKanbanState.ts
-var import_react39 = require("react");
-function useKanbanState(adapter, options) {
+var import_react43 = require("react");
+var import_react44 = require("@onegenui/react");
+function useKanbanState(elementKey, adapter, options) {
   const { initialColumns, lock } = options;
-  const [itemMoves, setItemMoves] = (0, import_react39.useState)({});
-  const [subItemCompletions, setSubItemCompletions] = (0, import_react39.useState)({});
-  const displayColumns = (0, import_react39.useMemo)(
+  const [state, updateState] = (0, import_react44.useElementState)(elementKey, {
+    itemMoves: {},
+    subItemCompletions: {}
+  });
+  const { itemMoves, subItemCompletions } = state;
+  const displayColumns = (0, import_react43.useMemo)(
     () => adapter.buildDisplayColumns(initialColumns, itemMoves),
     [adapter, initialColumns, itemMoves]
   );
-  const moveItem = (0, import_react39.useCallback)(
+  const moveItem = (0, import_react43.useCallback)(
     (itemId, targetColId) => {
       if (lock) return;
-      setItemMoves((prev) => ({ ...prev, [itemId]: targetColId }));
+      updateState({ itemMoves: { ...itemMoves, [itemId]: targetColId } });
     },
-    [lock]
+    [lock, itemMoves, updateState]
   );
-  const toggleSubItem = (0, import_react39.useCallback)(
+  const toggleSubItem = (0, import_react43.useCallback)(
     (itemId, subItemId) => {
       if (lock) return;
-      setSubItemCompletions((prev) => {
-        const itemCompletions = prev[itemId] || {};
-        const current = itemCompletions[subItemId] ?? false;
-        return {
-          ...prev,
+      const itemCompletions = subItemCompletions[itemId] || {};
+      const current = itemCompletions[subItemId] ?? false;
+      updateState({
+        subItemCompletions: {
+          ...subItemCompletions,
           [itemId]: { ...itemCompletions, [subItemId]: !current }
-        };
+        }
       });
     },
-    [lock]
+    [lock, subItemCompletions, updateState]
   );
-  const isSubItemCompleted = (0, import_react39.useCallback)(
+  const isSubItemCompleted = (0, import_react43.useCallback)(
     (itemId, subItemId) => {
       return subItemCompletions[itemId]?.[subItemId] ?? false;
     },
@@ -4391,7 +4407,7 @@ var columnVariants = {
   hidden: { opacity: 0, x: "1rem" },
   visible: { opacity: 1, x: 0 }
 };
-var Kanban = (0, import_react40.memo)(function Kanban2({
+var Kanban = (0, import_react45.memo)(function Kanban2({
   element,
   children
 }) {
@@ -4400,9 +4416,9 @@ var Kanban = (0, import_react40.memo)(function Kanban2({
     columns: initialColumns,
     lock = false
   } = element.props;
-  const adapter = (0, import_react40.useMemo)(() => getKanbanAdapter(), []);
-  const dragAdapter = (0, import_react40.useMemo)(() => getKanbanDragAdapter(), []);
-  const { displayColumns, moveItem, toggleSubItem, isSubItemCompleted } = useKanbanState(adapter, {
+  const adapter = (0, import_react45.useMemo)(() => getKanbanAdapter(), []);
+  const dragAdapter = (0, import_react45.useMemo)(() => getKanbanDragAdapter(), []);
+  const { displayColumns, moveItem, toggleSubItem, isSubItemCompleted } = useKanbanState(element.key, adapter, {
     initialColumns: initialColumns || [],
     lock
   });
@@ -4416,7 +4432,7 @@ var Kanban = (0, import_react40.memo)(function Kanban2({
     handleDragOver,
     handleDrop
   } = useKanbanDrag(dragAdapter, { lock, onMoveItem: moveItem });
-  (0, import_react41.useDomainAutoSave)("project", element.key, {
+  (0, import_react46.useDomainAutoSave)("project", element.key, {
     title: title || "Kanban Board",
     viewType: "kanban",
     status: "active",
@@ -4557,8 +4573,8 @@ var KanbanDefinition = {
 };
 
 // src/domain/TodoList/component.tsx
-var import_react43 = require("react");
-var import_react44 = require("@onegenui/react");
+var import_react49 = require("react");
+var import_react50 = require("@onegenui/react");
 var import_lucide_react25 = require("lucide-react");
 var import_framer_motion18 = require("framer-motion");
 
@@ -4620,26 +4636,23 @@ function getTodoListAdapter() {
 }
 
 // src/domain/TodoList/hooks/useTodoListLogic.ts
-var import_react42 = require("react");
-function useTodoListLogic(adapter, options) {
+var import_react47 = require("react");
+var import_react48 = require("@onegenui/react");
+function useTodoListLogic(elementKey, adapter, options) {
   const { initialItems } = options;
-  const [items, setItems] = (0, import_react42.useState)(initialItems);
-  (0, import_react42.useEffect)(() => {
-    if (initialItems) {
-      setItems(initialItems);
-    }
-  }, [initialItems]);
-  const toggleItem = (0, import_react42.useCallback)(
+  const [state, updateState] = (0, import_react48.useElementState)(elementKey, { items: initialItems });
+  const items = state.items;
+  const toggleItem = (0, import_react47.useCallback)(
     (id) => {
-      setItems((prev) => adapter.toggleItemStatus(prev, id));
+      updateState({ items: adapter.toggleItemStatus(items, id) });
     },
-    [adapter]
+    [adapter, items, updateState]
   );
-  const completedCount = (0, import_react42.useMemo)(
+  const completedCount = (0, import_react47.useMemo)(
     () => adapter.countCompleted(items),
     [adapter, items]
   );
-  const totalCount = (0, import_react42.useMemo)(() => adapter.countTotal(items), [adapter, items]);
+  const totalCount = (0, import_react47.useMemo)(() => adapter.countTotal(items), [adapter, items]);
   return {
     items,
     completedCount,
@@ -4664,17 +4677,18 @@ var checkVariants = {
   visible: { scale: 1, rotate: 0 },
   exit: { scale: 0, rotate: 45 }
 };
-var TodoList = (0, import_react43.memo)(function TodoList2({
+var TodoList = (0, import_react49.memo)(function TodoList2({
   element,
   children
 }) {
   const { title, items: initialItems } = element.props;
-  const adapter = (0, import_react43.useMemo)(() => getTodoListAdapter(), []);
+  const adapter = (0, import_react49.useMemo)(() => getTodoListAdapter(), []);
   const { items, completedCount, totalCount, toggleItem } = useTodoListLogic(
+    element.key,
     adapter,
     { initialItems: initialItems || [] }
   );
-  (0, import_react44.useDomainAutoSave)("task", element.key, {
+  (0, import_react50.useDomainAutoSave)("task", element.key, {
     title: title || "Todo List",
     items: items.map((item) => ({
       id: item.id,
@@ -4840,13 +4854,12 @@ var TodoListDefinition = {
 };
 
 // src/domain/RoutineScheduler/component.tsx
-var import_react48 = require("react");
-var import_react49 = require("@onegenui/react");
+var import_react55 = require("react");
 var import_lucide_react28 = require("lucide-react");
 var import_framer_motion20 = require("framer-motion");
 
 // src/domain/RoutineScheduler/components/time-block-card.tsx
-var import_react45 = require("react");
+var import_react51 = require("react");
 var import_lucide_react27 = require("lucide-react");
 var import_framer_motion19 = require("framer-motion");
 
@@ -4925,7 +4938,7 @@ function getBlockTop(startTime, dayStart, granularity) {
 
 // src/domain/RoutineScheduler/components/time-block-card.tsx
 var import_jsx_runtime29 = require("react/jsx-runtime");
-var TimeBlockCard = (0, import_react45.memo)(function TimeBlockCard2({
+var TimeBlockCard = (0, import_react51.memo)(function TimeBlockCard2({
   block,
   onToggle,
   lock,
@@ -4982,9 +4995,9 @@ var TimeBlockCard = (0, import_react45.memo)(function TimeBlockCard2({
 });
 
 // src/domain/RoutineScheduler/components/day-column.tsx
-var import_react46 = require("react");
+var import_react52 = require("react");
 var import_jsx_runtime30 = require("react/jsx-runtime");
-var DayColumn = (0, import_react46.memo)(function DayColumn2({
+var DayColumn = (0, import_react52.memo)(function DayColumn2({
   day,
   blocks,
   timeSlots,
@@ -5193,8 +5206,9 @@ function getRoutineSchedulerStateAdapter() {
 }
 
 // src/domain/RoutineScheduler/hooks/useRoutineSchedulerLogic.ts
-var import_react47 = require("react");
-function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
+var import_react53 = require("react");
+var import_react54 = require("@onegenui/react");
+function useRoutineSchedulerLogic(elementKey, adapter, stateAdapter, options) {
   const {
     initialDate,
     initialView = "day",
@@ -5204,57 +5218,75 @@ function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
     showCategories,
     lock = false
   } = options;
-  const [localEdits, setLocalEdits] = (0, import_react47.useState)({});
-  const [currentView, setCurrentView] = (0, import_react47.useState)(initialView);
-  const [selectedDate, setSelectedDate] = (0, import_react47.useState)(
-    initialDate ?? adapter.getTodayString()
+  const [state, updateState] = (0, import_react54.useElementState)(
+    elementKey,
+    {
+      localEdits: {},
+      currentView: initialView,
+      selectedDate: initialDate ?? adapter.getTodayString()
+    }
   );
+  const { localEdits, currentView, selectedDate } = state;
   const dayStart = timeRange?.start || "06:00";
   const dayEnd = timeRange?.end || "22:00";
   const todayStr = adapter.getTodayString();
   const slotHeight = adapter.getSlotHeight(granularity);
-  const timeSlots = (0, import_react47.useMemo)(
+  const timeSlots = (0, import_react53.useMemo)(
     () => adapter.generateTimeSlots(dayStart, dayEnd, granularity),
     [adapter, dayStart, dayEnd, granularity]
   );
-  const displayDays = (0, import_react47.useMemo)(
+  const displayDays = (0, import_react53.useMemo)(
     () => stateAdapter.mergeEdits(initialDays, localEdits),
     [stateAdapter, initialDays, localEdits]
   );
-  const filteredDays = (0, import_react47.useMemo)(
+  const filteredDays = (0, import_react53.useMemo)(
     () => stateAdapter.filterByCategories(displayDays, showCategories),
     [stateAdapter, displayDays, showCategories]
   );
-  const visibleDays = (0, import_react47.useMemo)(
+  const visibleDays = (0, import_react53.useMemo)(
     () => stateAdapter.getVisibleDays(filteredDays, selectedDate, currentView),
     [stateAdapter, filteredDays, selectedDate, currentView]
   );
-  const navigateDate = (0, import_react47.useCallback)(
-    (direction) => {
-      setSelectedDate(
-        (prev) => stateAdapter.navigateDate(prev, direction, currentView)
-      );
+  const setCurrentView = (0, import_react53.useCallback)(
+    (view) => {
+      updateState({ currentView: view });
     },
-    [stateAdapter, currentView]
+    [updateState]
   );
-  const goToToday = (0, import_react47.useCallback)(() => {
-    setSelectedDate(adapter.getTodayString());
-  }, [adapter]);
-  const handleToggleBlock = (0, import_react47.useCallback)(
+  const setSelectedDate = (0, import_react53.useCallback)(
+    (date) => {
+      updateState({ selectedDate: date });
+    },
+    [updateState]
+  );
+  const navigateDate = (0, import_react53.useCallback)(
+    (direction) => {
+      const newDate = stateAdapter.navigateDate(
+        selectedDate,
+        direction,
+        currentView
+      );
+      updateState({ selectedDate: newDate });
+    },
+    [stateAdapter, currentView, selectedDate, updateState]
+  );
+  const goToToday = (0, import_react53.useCallback)(() => {
+    updateState({ selectedDate: adapter.getTodayString() });
+  }, [adapter, updateState]);
+  const handleToggleBlock = (0, import_react53.useCallback)(
     (blockId) => {
       if (lock) return;
       const allBlocks = displayDays.flatMap((d) => d.blocks);
       const block = allBlocks.find((b) => b.id === blockId);
       if (!block) return;
-      setLocalEdits(
-        (prev) => stateAdapter.toggleBlockCompletion(
-          prev,
-          blockId,
-          block.completed ?? false
-        )
+      const newEdits = stateAdapter.toggleBlockCompletion(
+        localEdits,
+        blockId,
+        block.completed ?? false
       );
+      updateState({ localEdits: newEdits });
     },
-    [lock, displayDays, stateAdapter]
+    [lock, displayDays, stateAdapter, localEdits, updateState]
   );
   return {
     // State
@@ -5280,7 +5312,7 @@ function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
 
 // src/domain/RoutineScheduler/component.tsx
 var import_jsx_runtime31 = require("react/jsx-runtime");
-var RoutineScheduler = (0, import_react48.memo)(function RoutineScheduler2({
+var RoutineScheduler = (0, import_react55.memo)(function RoutineScheduler2({
   element,
   children
 }) {
@@ -5309,7 +5341,7 @@ var RoutineScheduler = (0, import_react48.memo)(function RoutineScheduler2({
     navigateDate,
     handleToggleBlock,
     displayDays
-  } = useRoutineSchedulerLogic(adapter, stateAdapter, {
+  } = useRoutineSchedulerLogic(element.key, adapter, stateAdapter, {
     initialDate: initialSelectedDate ?? void 0,
     initialView: view === "timeline" ? "day" : view,
     initialDays: initialDays || [],
@@ -5317,12 +5349,6 @@ var RoutineScheduler = (0, import_react48.memo)(function RoutineScheduler2({
     granularity,
     showCategories: showCategories ?? void 0,
     lock: lock ?? false
-  });
-  (0, import_react49.useDomainAutoSave)("schedule", element.key, {
-    type: "routine_schedule",
-    days: displayDays,
-    selectedDate,
-    view: currentView
   });
   return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "flex flex-col gap-3 sm:gap-4 w-full", children: [
     /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
@@ -5499,14 +5525,14 @@ var RoutineSchedulerDefinition = {
 };
 
 // src/domain/SupplementTracker/component.tsx
-var import_react55 = require("react");
-var import_react56 = require("@onegenui/react");
+var import_react62 = require("react");
+var import_react63 = require("@onegenui/react");
 var import_lucide_react32 = require("lucide-react");
 var import_framer_motion23 = require("framer-motion");
 
 // src/domain/SupplementTracker/components/supplement-card.tsx
-var import_react50 = require("react");
-var import_react51 = require("@onegenui/react");
+var import_react56 = require("react");
+var import_react57 = require("@onegenui/react");
 var import_lucide_react30 = require("lucide-react");
 
 // src/domain/SupplementTracker/components/utils.ts
@@ -5559,7 +5585,7 @@ function getTimingConfig(timing) {
 
 // src/domain/SupplementTracker/components/supplement-card.tsx
 var import_jsx_runtime32 = require("react/jsx-runtime");
-var SupplementCard = (0, import_react50.memo)(function SupplementCard2({
+var SupplementCard = (0, import_react56.memo)(function SupplementCard2({
   supplement,
   dose,
   onToggle,
@@ -5571,7 +5597,7 @@ var SupplementCard = (0, import_react50.memo)(function SupplementCard2({
   const isSkipped = dose?.skipped ?? false;
   const categoryStyle = CATEGORY_COLORS[supplement.category] || CATEGORY_COLORS.other;
   return /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(
-    import_react51.SelectableItem,
+    import_react57.SelectableItem,
     {
       elementKey,
       itemId: supplement.id,
@@ -5647,10 +5673,10 @@ var SupplementCard = (0, import_react50.memo)(function SupplementCard2({
 });
 
 // src/domain/SupplementTracker/components/timing-group.tsx
-var import_react52 = require("react");
+var import_react58 = require("react");
 var import_framer_motion21 = require("framer-motion");
 var import_jsx_runtime33 = require("react/jsx-runtime");
-var TimingGroup = (0, import_react52.memo)(function TimingGroup2({
+var TimingGroup = (0, import_react58.memo)(function TimingGroup2({
   timing,
   items,
   onToggle,
@@ -5697,11 +5723,11 @@ var TimingGroup = (0, import_react52.memo)(function TimingGroup2({
 });
 
 // src/domain/SupplementTracker/components/progress-dashboard.tsx
-var import_react53 = require("react");
+var import_react59 = require("react");
 var import_framer_motion22 = require("framer-motion");
 var import_lucide_react31 = require("lucide-react");
 var import_jsx_runtime34 = require("react/jsx-runtime");
-var ProgressDashboard = (0, import_react53.memo)(function ProgressDashboard2({
+var ProgressDashboard = (0, import_react59.memo)(function ProgressDashboard2({
   stats
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)(
@@ -5816,8 +5842,9 @@ function getSupplementStateAdapter() {
 }
 
 // src/domain/SupplementTracker/hooks/useSupplementTrackerLogic.ts
-var import_react54 = require("react");
-function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
+var import_react60 = require("react");
+var import_react61 = require("@onegenui/react");
+function useSupplementTrackerLogic(elementKey, trackerAdapter, stateAdapter, options) {
   const {
     initialSupplements,
     initialSchedule,
@@ -5825,48 +5852,56 @@ function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
     lock: rawLock
   } = options;
   const lock = rawLock ?? false;
-  const [localEdits, setLocalEdits] = (0, import_react54.useState)({});
-  const [selectedDate] = (0, import_react54.useState)(
+  const [editsState, setEditsState] = (0, import_react61.useElementState)(
+    elementKey,
+    { localEdits: {} }
+  );
+  const localEdits = editsState.localEdits;
+  const [selectedDate] = (0, import_react60.useState)(
     initialSelectedDate ?? trackerAdapter.getTodayDate()
   );
-  const supplements = (0, import_react54.useMemo)(
+  const supplements = (0, import_react60.useMemo)(
     () => initialSupplements || [],
     [initialSupplements]
   );
-  const schedule = (0, import_react54.useMemo)(() => initialSchedule || [], [initialSchedule]);
-  const todaySchedule = (0, import_react54.useMemo)(() => {
+  const schedule = (0, import_react60.useMemo)(() => initialSchedule || [], [initialSchedule]);
+  const todaySchedule = (0, import_react60.useMemo)(() => {
     return schedule.find((s) => s.date === selectedDate);
   }, [schedule, selectedDate]);
-  const displayDoses = (0, import_react54.useMemo)(() => {
+  const displayDoses = (0, import_react60.useMemo)(() => {
     const doses = todaySchedule?.doses || [];
     return stateAdapter.mergeEdits(doses, localEdits);
   }, [stateAdapter, todaySchedule, localEdits]);
-  const groupedByTiming = (0, import_react54.useMemo)(() => {
+  const groupedByTiming = (0, import_react60.useMemo)(() => {
     return trackerAdapter.groupByTiming(supplements, displayDoses);
   }, [trackerAdapter, supplements, displayDoses]);
-  const stats = (0, import_react54.useMemo)(() => {
+  const stats = (0, import_react60.useMemo)(() => {
     return trackerAdapter.calculateStats(supplements, displayDoses);
   }, [trackerAdapter, supplements, displayDoses]);
-  const formattedDate = (0, import_react54.useMemo)(() => {
+  const formattedDate = (0, import_react60.useMemo)(() => {
     return trackerAdapter.formatDisplayDate(selectedDate);
   }, [trackerAdapter, selectedDate]);
-  const handleToggle = (0, import_react54.useCallback)(
+  const handleToggle = (0, import_react60.useCallback)(
     (suppId, doseId) => {
       if (lock) return;
       const key = doseId || `temp-${suppId}`;
       const current = displayDoses.find((d) => d.id === key);
       const isTaken = current?.taken ?? false;
-      setLocalEdits((prev) => stateAdapter.toggleDose(prev, key, isTaken));
+      setEditsState({
+        localEdits: stateAdapter.toggleDose(localEdits, key, isTaken)
+      });
     },
-    [lock, displayDoses, stateAdapter]
+    [lock, displayDoses, stateAdapter, localEdits, setEditsState]
   );
-  const handleSkip = (0, import_react54.useCallback)(
+  const handleSkip = (0, import_react60.useCallback)(
     (suppId, doseId) => {
       if (lock) return;
       const key = doseId || `temp-${suppId}`;
-      setLocalEdits((prev) => stateAdapter.skipDose(prev, key));
+      setEditsState({
+        localEdits: stateAdapter.skipDose(localEdits, key)
+      });
     },
-    [lock, stateAdapter]
+    [lock, stateAdapter, localEdits, setEditsState]
   );
   return {
     // State
@@ -5885,7 +5920,7 @@ function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
 
 // src/domain/SupplementTracker/component.tsx
 var import_jsx_runtime35 = require("react/jsx-runtime");
-var SupplementTracker = (0, import_react55.memo)(function SupplementTracker2({
+var SupplementTracker = (0, import_react62.memo)(function SupplementTracker2({
   element,
   children
 }) {
@@ -5897,8 +5932,8 @@ var SupplementTracker = (0, import_react55.memo)(function SupplementTracker2({
     lock: rawLock = false
   } = element.props;
   const lock = rawLock ?? false;
-  const trackerAdapter = (0, import_react55.useMemo)(() => getSupplementTrackerAdapter(), []);
-  const stateAdapter = (0, import_react55.useMemo)(() => getSupplementStateAdapter(), []);
+  const trackerAdapter = (0, import_react62.useMemo)(() => getSupplementTrackerAdapter(), []);
+  const stateAdapter = (0, import_react62.useMemo)(() => getSupplementStateAdapter(), []);
   const {
     selectedDate,
     supplements,
@@ -5908,13 +5943,13 @@ var SupplementTracker = (0, import_react55.memo)(function SupplementTracker2({
     formattedDate,
     handleToggle,
     handleSkip
-  } = useSupplementTrackerLogic(trackerAdapter, stateAdapter, {
+  } = useSupplementTrackerLogic(element.key, trackerAdapter, stateAdapter, {
     initialSupplements,
     initialSchedule,
     initialSelectedDate,
     lock
   });
-  (0, import_react56.useDomainAutoSave)("supplement", element.key, {
+  (0, import_react63.useDomainAutoSave)("supplement", element.key, {
     type: "supplement_schedule",
     supplements,
     schedule: [{ date: selectedDate, doses: displayDoses }]
@@ -6031,15 +6066,15 @@ var SupplementTrackerDefinition = {
 };
 
 // src/domain/Calendar/component.tsx
-var import_react61 = require("react");
-var import_react62 = require("@onegenui/react");
+var import_react69 = require("react");
+var import_react70 = require("@onegenui/react");
 var import_lucide_react35 = require("lucide-react");
 var import_framer_motion24 = require("framer-motion");
 
 // src/domain/Calendar/components/event-card.tsx
-var import_react57 = require("react");
+var import_react64 = require("react");
 var import_lucide_react34 = require("lucide-react");
-var import_react58 = require("@onegenui/react");
+var import_react65 = require("@onegenui/react");
 
 // src/domain/Calendar/components/utils.ts
 var import_lucide_react33 = require("lucide-react");
@@ -6087,7 +6122,7 @@ function formatTime(isoString) {
 
 // src/domain/Calendar/components/event-card.tsx
 var import_jsx_runtime36 = require("react/jsx-runtime");
-var EventDot = (0, import_react57.memo)(function EventDot2({
+var EventDot = (0, import_react64.memo)(function EventDot2({
   event
 }) {
   const config = getCategoryConfig2(event.category);
@@ -6099,7 +6134,7 @@ var EventDot = (0, import_react57.memo)(function EventDot2({
     }
   );
 });
-var EventCard3 = (0, import_react57.memo)(function EventCard4({
+var EventCard3 = (0, import_react64.memo)(function EventCard4({
   event,
   compact,
   onToggle,
@@ -6125,7 +6160,7 @@ var EventCard3 = (0, import_react57.memo)(function EventCard4({
     );
   }
   return /* @__PURE__ */ (0, import_jsx_runtime36.jsx)(
-    import_react58.SelectableItem,
+    import_react65.SelectableItem,
     {
       elementKey,
       itemId: event.id,
@@ -6182,9 +6217,9 @@ var EventCard3 = (0, import_react57.memo)(function EventCard4({
 });
 
 // src/domain/Calendar/components/day-cell.tsx
-var import_react59 = require("react");
+var import_react66 = require("react");
 var import_jsx_runtime37 = require("react/jsx-runtime");
-var DayCell = (0, import_react59.memo)(function DayCell2({
+var DayCell = (0, import_react66.memo)(function DayCell2({
   date,
   events,
   isToday,
@@ -6334,8 +6369,9 @@ function getCalendarStateAdapter() {
 }
 
 // src/domain/Calendar/hooks/useCalendarLogic.ts
-var import_react60 = require("react");
-function useCalendarLogic(calendarAdapter, stateAdapter, options) {
+var import_react67 = require("react");
+var import_react68 = require("@onegenui/react");
+function useCalendarLogic(elementKey, calendarAdapter, stateAdapter, options) {
   const {
     initialDate,
     initialView = "month",
@@ -6343,19 +6379,21 @@ function useCalendarLogic(calendarAdapter, stateAdapter, options) {
     firstDayOfWeek = 1,
     lock = false
   } = options;
-  const [localEdits, setLocalEdits] = (0, import_react60.useState)({});
-  const [currentView, setCurrentView] = (0, import_react60.useState)(initialView);
-  const [selectedDate, setSelectedDate] = (0, import_react60.useState)(() => {
+  const [{ localEdits }, updateEdits] = (0, import_react68.useElementState)(elementKey, {
+    localEdits: {}
+  });
+  const [currentView, setCurrentView] = (0, import_react67.useState)(initialView);
+  const [selectedDate, setSelectedDate] = (0, import_react67.useState)(() => {
     if (initialDate) return new Date(initialDate);
     return /* @__PURE__ */ new Date();
   });
-  const displayEvents = (0, import_react60.useMemo)(
+  const displayEvents = (0, import_react67.useMemo)(
     () => stateAdapter.mergeEdits(initialEvents, localEdits),
     [stateAdapter, initialEvents, localEdits]
   );
   const currentMonth = selectedDate.getMonth();
   const currentYear = selectedDate.getFullYear();
-  const calendarDays = (0, import_react60.useMemo)(
+  const calendarDays = (0, import_react67.useMemo)(
     () => calendarAdapter.getCalendarDays(
       currentYear,
       currentMonth,
@@ -6363,39 +6401,39 @@ function useCalendarLogic(calendarAdapter, stateAdapter, options) {
     ),
     [calendarAdapter, currentYear, currentMonth, firstDayOfWeek]
   );
-  const eventsByDate = (0, import_react60.useMemo)(
+  const eventsByDate = (0, import_react67.useMemo)(
     () => calendarAdapter.groupEventsByDate(displayEvents),
     [calendarAdapter, displayEvents]
   );
   const todayStr = calendarAdapter.toDateString(/* @__PURE__ */ new Date());
   const selectedDateStr = calendarAdapter.toDateString(selectedDate);
-  const selectedDayEvents = (0, import_react60.useMemo)(
+  const selectedDayEvents = (0, import_react67.useMemo)(
     () => eventsByDate.get(selectedDateStr) || [],
     [eventsByDate, selectedDateStr]
   );
-  const navigateMonth = (0, import_react60.useCallback)(
+  const navigateMonth = (0, import_react67.useCallback)(
     (direction) => {
       setSelectedDate((prev) => stateAdapter.navigateMonth(prev, direction));
     },
     [stateAdapter]
   );
-  const goToToday = (0, import_react60.useCallback)(() => {
+  const goToToday = (0, import_react67.useCallback)(() => {
     setSelectedDate(/* @__PURE__ */ new Date());
   }, []);
-  const handleToggleEvent = (0, import_react60.useCallback)(
+  const handleToggleEvent = (0, import_react67.useCallback)(
     (eventId) => {
       if (lock) return;
       const event = displayEvents.find((e) => e.id === eventId);
       if (!event) return;
-      setLocalEdits(
-        (prev) => stateAdapter.toggleEventCompletion(
-          prev,
+      updateEdits({
+        localEdits: stateAdapter.toggleEventCompletion(
+          localEdits,
           eventId,
           event.completed ?? false
         )
-      );
+      });
     },
-    [lock, displayEvents, stateAdapter]
+    [lock, displayEvents, stateAdapter, localEdits, updateEdits]
   );
   return {
     // State
@@ -6430,7 +6468,7 @@ var eventVariants = {
   visible: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: "-0.625rem" }
 };
-var Calendar9 = (0, import_react61.memo)(function Calendar10({
+var Calendar9 = (0, import_react69.memo)(function Calendar10({
   element,
   children
 }) {
@@ -6444,8 +6482,8 @@ var Calendar9 = (0, import_react61.memo)(function Calendar10({
     lock: rawLock = false
   } = element.props;
   const lock = rawLock ?? false;
-  const calendarAdapter = (0, import_react61.useMemo)(() => getCalendarAdapter(), []);
-  const stateAdapter = (0, import_react61.useMemo)(() => getCalendarStateAdapter(), []);
+  const calendarAdapter = (0, import_react69.useMemo)(() => getCalendarAdapter(), []);
+  const stateAdapter = (0, import_react69.useMemo)(() => getCalendarStateAdapter(), []);
   const {
     currentView,
     selectedDate,
@@ -6462,20 +6500,20 @@ var Calendar9 = (0, import_react61.memo)(function Calendar10({
     navigateMonth,
     goToToday,
     handleToggleEvent
-  } = useCalendarLogic(calendarAdapter, stateAdapter, {
+  } = useCalendarLogic(element.key, calendarAdapter, stateAdapter, {
     initialDate: initialSelectedDate ?? void 0,
     initialView,
     initialEvents,
     firstDayOfWeek,
     lock
   });
-  (0, import_react62.useDomainAutoSave)("calendar", element.key, {
+  (0, import_react70.useDomainAutoSave)("calendar", element.key, {
     type: "calendar",
     events: displayEvents,
     selectedDate: selectedDateStr,
     view: currentView
   });
-  const orderedDays = (0, import_react61.useMemo)(() => {
+  const orderedDays = (0, import_react69.useMemo)(() => {
     const days = [...DAYS_SHORT2];
     const shifted = days.splice(0, firstDayOfWeek);
     return [...days, ...shifted];
@@ -6707,18 +6745,18 @@ var CalendarDefinition = {
 };
 
 // src/domain/Diary/component.tsx
-var import_react67 = require("react");
-var import_react68 = require("@onegenui/react");
+var import_react76 = require("react");
+var import_react77 = require("@onegenui/react");
 var import_lucide_react39 = require("lucide-react");
 var import_framer_motion25 = require("framer-motion");
 
 // src/domain/Diary/components/diary-entry-card.tsx
-var import_react64 = require("react");
-var import_react65 = require("@onegenui/react");
+var import_react72 = require("react");
+var import_react73 = require("@onegenui/react");
 var import_lucide_react38 = require("lucide-react");
 
 // src/domain/Diary/components/sub-components.tsx
-var import_react63 = require("react");
+var import_react71 = require("react");
 var import_lucide_react37 = require("lucide-react");
 
 // src/domain/Diary/components/utils.ts
@@ -6776,7 +6814,7 @@ function formatShortDate(dateStr) {
 
 // src/domain/Diary/components/sub-components.tsx
 var import_jsx_runtime39 = require("react/jsx-runtime");
-var MoodBadge = (0, import_react63.memo)(function MoodBadge2({ mood }) {
+var MoodBadge = (0, import_react71.memo)(function MoodBadge2({ mood }) {
   const config = getMoodConfig(mood);
   const Icon = config.icon;
   return /* @__PURE__ */ (0, import_jsx_runtime39.jsxs)(
@@ -6793,7 +6831,7 @@ var MoodBadge = (0, import_react63.memo)(function MoodBadge2({ mood }) {
     }
   );
 });
-var EnergyBar = (0, import_react63.memo)(function EnergyBar2({ level }) {
+var EnergyBar = (0, import_react71.memo)(function EnergyBar2({ level }) {
   return /* @__PURE__ */ (0, import_jsx_runtime39.jsxs)("div", { className: "flex items-center gap-2", children: [
     /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(import_lucide_react37.Zap, { size: 14, className: "text-amber-400" }),
     /* @__PURE__ */ (0, import_jsx_runtime39.jsx)("div", { className: "flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
@@ -6809,7 +6847,7 @@ var EnergyBar = (0, import_react63.memo)(function EnergyBar2({ level }) {
     ] })
   ] });
 });
-var SleepInfo = (0, import_react63.memo)(function SleepInfo2({
+var SleepInfo = (0, import_react71.memo)(function SleepInfo2({
   sleep
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime39.jsxs)("div", { className: "flex items-center gap-2 text-xs text-white/50", children: [
@@ -6833,7 +6871,7 @@ var SleepInfo = (0, import_react63.memo)(function SleepInfo2({
     )
   ] });
 });
-var GoalItem = (0, import_react63.memo)(function GoalItem2({
+var GoalItem = (0, import_react71.memo)(function GoalItem2({
   goal,
   onToggle,
   lock
@@ -6871,7 +6909,7 @@ var GoalItem = (0, import_react63.memo)(function GoalItem2({
     }
   );
 });
-var LinkedEntityBadge = (0, import_react63.memo)(function LinkedEntityBadge2({
+var LinkedEntityBadge = (0, import_react71.memo)(function LinkedEntityBadge2({
   entity
 }) {
   const Icon = ENTITY_ICONS[entity.type] || import_lucide_react37.Link;
@@ -6883,7 +6921,7 @@ var LinkedEntityBadge = (0, import_react63.memo)(function LinkedEntityBadge2({
 
 // src/domain/Diary/components/diary-entry-card.tsx
 var import_jsx_runtime40 = require("react/jsx-runtime");
-var DiaryEntryCard = (0, import_react64.memo)(function DiaryEntryCard2({
+var DiaryEntryCard = (0, import_react72.memo)(function DiaryEntryCard2({
   entry,
   onToggleGoal,
   lock,
@@ -6896,7 +6934,7 @@ var DiaryEntryCard = (0, import_react64.memo)(function DiaryEntryCard2({
 }) {
   if (compact) {
     return /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(
-      import_react65.SelectableItem,
+      import_react73.SelectableItem,
       {
         elementKey,
         itemId: entry.id,
@@ -6912,7 +6950,7 @@ var DiaryEntryCard = (0, import_react64.memo)(function DiaryEntryCard2({
     );
   }
   return /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)(
-    import_react65.SelectableItem,
+    import_react73.SelectableItem,
     {
       elementKey,
       itemId: entry.id,
@@ -7065,42 +7103,48 @@ function getDiaryStateAdapter() {
 }
 
 // src/domain/Diary/hooks/useDiaryLogic.ts
-var import_react66 = require("react");
-function useDiaryLogic(diaryAdapter, stateAdapter, options) {
+var import_react74 = require("react");
+var import_react75 = require("@onegenui/react");
+function useDiaryLogic(elementKey, diaryAdapter, stateAdapter, options) {
   const { initialEntries = [], initialSelectedDate, lock = false } = options;
-  const [localEdits, setLocalEdits] = (0, import_react66.useState)({});
-  const [selectedDate, setSelectedDate] = (0, import_react66.useState)(
+  const [editsState, setEditsState] = (0, import_react75.useElementState)(
+    elementKey,
+    { localEdits: {} }
+  );
+  const localEdits = editsState.localEdits;
+  const [selectedDate, setSelectedDate] = (0, import_react74.useState)(
     initialSelectedDate ?? diaryAdapter.getTodayString()
   );
-  const displayEntries = (0, import_react66.useMemo)(
+  const displayEntries = (0, import_react74.useMemo)(
     () => stateAdapter.mergeEdits(initialEntries, localEdits),
     [stateAdapter, initialEntries, localEdits]
   );
-  const selectedEntry = (0, import_react66.useMemo)(
+  const selectedEntry = (0, import_react74.useMemo)(
     () => diaryAdapter.findEntryByDate(displayEntries, selectedDate),
     [diaryAdapter, displayEntries, selectedDate]
   );
-  const sortedEntries = (0, import_react66.useMemo)(
+  const sortedEntries = (0, import_react74.useMemo)(
     () => diaryAdapter.sortEntriesByDate(displayEntries),
     [diaryAdapter, displayEntries]
   );
-  const navigateDate = (0, import_react66.useCallback)(
+  const navigateDate = (0, import_react74.useCallback)(
     (direction) => {
       setSelectedDate((prev) => diaryAdapter.navigateDate(prev, direction));
     },
     [diaryAdapter]
   );
-  const goToToday = (0, import_react66.useCallback)(() => {
+  const goToToday = (0, import_react74.useCallback)(() => {
     setSelectedDate(diaryAdapter.getTodayString());
   }, [diaryAdapter]);
-  const handleToggleGoal = (0, import_react66.useCallback)(
+  const handleToggleGoal = (0, import_react74.useCallback)(
     (entryId, goalId) => {
       if (lock) return;
       const entry = displayEntries.find((e) => e.id === entryId);
       if (!entry || !entry.goals) return;
-      setLocalEdits((prev) => stateAdapter.toggleGoal(prev, entry, goalId));
+      const newEdits = stateAdapter.toggleGoal(localEdits, entry, goalId);
+      setEditsState({ localEdits: newEdits });
     },
-    [lock, displayEntries, stateAdapter]
+    [lock, displayEntries, stateAdapter, localEdits, setEditsState]
   );
   return {
     // State
@@ -7118,7 +7162,7 @@ function useDiaryLogic(diaryAdapter, stateAdapter, options) {
 
 // src/domain/Diary/component.tsx
 var import_jsx_runtime41 = require("react/jsx-runtime");
-var Diary = (0, import_react67.memo)(function Diary2({
+var Diary = (0, import_react76.memo)(function Diary2({
   element,
   children
 }) {
@@ -7134,8 +7178,8 @@ var Diary = (0, import_react67.memo)(function Diary2({
     lock: rawLock = false
   } = element.props;
   const lock = rawLock ?? false;
-  const diaryAdapter = (0, import_react67.useMemo)(() => getDiaryAdapter(), []);
-  const stateAdapter = (0, import_react67.useMemo)(() => getDiaryStateAdapter(), []);
+  const diaryAdapter = (0, import_react76.useMemo)(() => getDiaryAdapter(), []);
+  const stateAdapter = (0, import_react76.useMemo)(() => getDiaryStateAdapter(), []);
   const {
     selectedDate,
     displayEntries,
@@ -7145,13 +7189,13 @@ var Diary = (0, import_react67.memo)(function Diary2({
     navigateDate,
     goToToday,
     handleToggleGoal
-  } = useDiaryLogic(diaryAdapter, stateAdapter, {
+  } = useDiaryLogic(element.key, diaryAdapter, stateAdapter, {
     initialEntries,
     initialSelectedDate,
     view,
     lock
   });
-  (0, import_react68.useDomainAutoSave)("diary", element.key, {
+  (0, import_react77.useDomainAutoSave)("diary", element.key, {
     type: "diary",
     entries: displayEntries,
     selectedDate
@@ -7315,7 +7359,7 @@ var DiaryDefinition = {
 };
 
 // src/domain/research/ResearchReport.tsx
-var import_react73 = require("react");
+var import_react82 = require("react");
 var import_lucide_react42 = require("lucide-react");
 
 // src/domain/research/components/types.ts
@@ -7350,14 +7394,14 @@ function detectVideoEmbed(url) {
 }
 
 // src/domain/research/components/video-player.tsx
-var import_react69 = require("react");
+var import_react78 = require("react");
 var import_lucide_react40 = require("lucide-react");
 var import_jsx_runtime42 = require("react/jsx-runtime");
-var VideoPlayer = (0, import_react69.memo)(function VideoPlayer2({
+var VideoPlayer = (0, import_react78.memo)(function VideoPlayer2({
   video,
   title
 }) {
-  const [isPlaying, setIsPlaying] = (0, import_react69.useState)(false);
+  const [isPlaying, setIsPlaying] = (0, import_react78.useState)(false);
   const embedInfo = detectVideoEmbed(video.url);
   if (isPlaying) {
     return /* @__PURE__ */ (0, import_jsx_runtime42.jsx)("div", { className: "mt-4 rounded-xl overflow-hidden border border-white/10 aspect-video bg-black", children: embedInfo ? /* @__PURE__ */ (0, import_jsx_runtime42.jsx)(
@@ -7403,9 +7447,9 @@ var VideoPlayer = (0, import_react69.memo)(function VideoPlayer2({
 });
 
 // src/domain/research/components/citation-badge.tsx
-var import_react70 = require("react");
+var import_react79 = require("react");
 var import_jsx_runtime43 = require("react/jsx-runtime");
-var CitationBadge = (0, import_react70.memo)(function CitationBadge2({
+var CitationBadge = (0, import_react79.memo)(function CitationBadge2({
   id,
   source
 }) {
@@ -7445,10 +7489,10 @@ function renderContentWithCitations(content, sources, renderText) {
 }
 
 // src/domain/research/components/source-card.tsx
-var import_react71 = require("react");
+var import_react80 = require("react");
 var import_lucide_react41 = require("lucide-react");
 var import_jsx_runtime44 = require("react/jsx-runtime");
-var SourceCard = (0, import_react71.memo)(function SourceCard2({
+var SourceCard = (0, import_react80.memo)(function SourceCard2({
   source
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime44.jsxs)(
@@ -7471,9 +7515,9 @@ var SourceCard = (0, import_react71.memo)(function SourceCard2({
 });
 
 // src/domain/research/components/report-section.tsx
-var import_react72 = require("react");
+var import_react81 = require("react");
 var import_jsx_runtime45 = require("react/jsx-runtime");
-var ReportSectionComponent = (0, import_react72.memo)(function ReportSectionComponent2({
+var ReportSectionComponent = (0, import_react81.memo)(function ReportSectionComponent2({
   section,
   sources,
   renderText
@@ -7502,7 +7546,7 @@ var ReportSectionComponent = (0, import_react72.memo)(function ReportSectionComp
 
 // src/domain/research/ResearchReport.tsx
 var import_jsx_runtime46 = require("react/jsx-runtime");
-var ResearchReport = (0, import_react73.memo)(function ResearchReport2({
+var ResearchReport = (0, import_react82.memo)(function ResearchReport2({
   element,
   children,
   renderText
@@ -7567,25 +7611,25 @@ var ResearchReport = (0, import_react73.memo)(function ResearchReport2({
 });
 
 // src/domain/DocumentIndex/component.tsx
-var import_react74 = require("react");
+var import_react83 = require("react");
 var import_lucide_react43 = require("lucide-react");
 var import_framer_motion26 = require("framer-motion");
 var import_jsx_runtime47 = require("react/jsx-runtime");
-var TreeNodeItem = (0, import_react74.memo)(function TreeNodeItem2({
+var TreeNodeItem = (0, import_react83.memo)(function TreeNodeItem2({
   node,
   depth,
   accentColor,
   onNodeClick
 }) {
-  const [expanded, setExpanded] = (0, import_react74.useState)(depth > 0);
-  const [showFullSummary, setShowFullSummary] = (0, import_react74.useState)(false);
+  const [expanded, setExpanded] = (0, import_react83.useState)(depth > 0);
+  const [showFullSummary, setShowFullSummary] = (0, import_react83.useState)(false);
   const hasChildren = node.children && node.children.length > 0;
-  const toggle = (0, import_react74.useCallback)(() => {
+  const toggle = (0, import_react83.useCallback)(() => {
     if (hasChildren) {
       setExpanded((prev) => !prev);
     }
   }, [hasChildren]);
-  const handleNodeClick = (0, import_react74.useCallback)(
+  const handleNodeClick = (0, import_react83.useCallback)(
     (e) => {
       e.stopPropagation();
       setShowFullSummary((prev) => !prev);
@@ -7689,7 +7733,7 @@ var TreeNodeItem = (0, import_react74.memo)(function TreeNodeItem2({
     ) })
   ] });
 });
-var DocumentIndex = (0, import_react74.memo)(function DocumentIndex2({
+var DocumentIndex = (0, import_react83.memo)(function DocumentIndex2({
   element,
   onAction
 }) {
@@ -7701,8 +7745,8 @@ var DocumentIndex = (0, import_react74.memo)(function DocumentIndex2({
     accentColor = "#3b82f6",
     collapsed: initialCollapsed = false
   } = element.props;
-  const [collapsed, setCollapsed] = (0, import_react74.useState)(initialCollapsed);
-  const handleNodeClick = (0, import_react74.useCallback)(
+  const [collapsed, setCollapsed] = (0, import_react83.useState)(initialCollapsed);
+  const handleNodeClick = (0, import_react83.useCallback)(
     (node) => {
       onAction?.({
         name: "view_section",
@@ -7811,11 +7855,11 @@ var DocumentIndexDefinition = {
 };
 
 // src/domain/SourceCitation/component.tsx
-var import_react75 = require("react");
+var import_react84 = require("react");
 var import_lucide_react44 = require("lucide-react");
 var import_framer_motion27 = require("framer-motion");
 var import_jsx_runtime48 = require("react/jsx-runtime");
-var SourceCitation = (0, import_react75.memo)(function SourceCitation2({
+var SourceCitation = (0, import_react84.memo)(function SourceCitation2({
   element
 }) {
   const {
@@ -7824,7 +7868,7 @@ var SourceCitation = (0, import_react75.memo)(function SourceCitation2({
     collapsed: initialCollapsed = true,
     accentColor = "#3b82f6"
   } = element.props;
-  const [expanded, setExpanded] = (0, import_react75.useState)(!initialCollapsed);
+  const [expanded, setExpanded] = (0, import_react84.useState)(!initialCollapsed);
   const visibleCitations = expanded ? citations : citations.slice(0, 4);
   if (citations.length === 0) return null;
   return /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)("div", { className: "flex flex-col gap-2", children: [
@@ -7873,12 +7917,12 @@ var SourceCitation = (0, import_react75.memo)(function SourceCitation2({
     )
   ] });
 });
-var CompactCitation = (0, import_react75.memo)(function CompactCitation2({
+var CompactCitation = (0, import_react84.memo)(function CompactCitation2({
   citation,
   index,
   accentColor
 }) {
-  const [showExcerpt, setShowExcerpt] = (0, import_react75.useState)(false);
+  const [showExcerpt, setShowExcerpt] = (0, import_react84.useState)(false);
   return /* @__PURE__ */ (0, import_jsx_runtime48.jsxs)(
     import_framer_motion27.motion.div,
     {
@@ -7972,8 +8016,8 @@ var SourceCitationDefinition = {
 };
 
 // src/visualization/charts/Chart/component.tsx
-var import_react76 = require("react");
-var import_react77 = require("@onegenui/react");
+var import_react85 = require("react");
+var import_react86 = require("@onegenui/react");
 
 // src/visualization/utils/data-utils.ts
 var import_utils16 = require("@onegenui/utils");
@@ -8044,13 +8088,13 @@ function hexToRgba(hex, alpha) {
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-var Chart = (0, import_react76.memo)(function Chart2({
+var Chart = (0, import_react85.memo)(function Chart2({
   element,
   children
 }) {
   const { title, data, dataPath, height, series, categories } = element.props;
-  const { data: globalData } = (0, import_react77.useData)();
-  const chartData = (0, import_react76.useMemo)(() => {
+  const { data: globalData } = (0, import_react86.useData)();
+  const chartData = (0, import_react85.useMemo)(() => {
     if (series && series.length > 0 && categories && categories.length > 0) {
       const firstSeries = series[0];
       return categories.map((label, i) => ({
@@ -8062,9 +8106,9 @@ var Chart = (0, import_react76.memo)(function Chart2({
     return (0, import_utils16.resolveArrayProp)(globalData, data, dataPath);
   }, [series, categories, globalData, data, dataPath]);
   const chartHeight = Math.max(height || DEFAULT_HEIGHT, MIN_HEIGHT);
-  const { selectedItems, isItemSelected } = (0, import_react77.useItemSelection)(element.key);
-  const [hoveredIndex, setHoveredIndex] = (0, import_react76.useState)(null);
-  const { ticks, normalizedData } = (0, import_react76.useMemo)(() => {
+  const { selectedItems, isItemSelected } = (0, import_react86.useItemSelection)(element.key);
+  const [hoveredIndex, setHoveredIndex] = (0, import_react85.useState)(null);
+  const { ticks, normalizedData } = (0, import_react85.useMemo)(() => {
     if (!chartData || chartData.length === 0) {
       return { maxValue: 0, minValue: 0, ticks: [], normalizedData: [] };
     }
@@ -8216,7 +8260,7 @@ var ChartDefinition = {
 };
 
 // src/visualization/charts/StockChart/component.tsx
-var import_react78 = require("react");
+var import_react87 = require("react");
 var import_jsx_runtime50 = require("react/jsx-runtime");
 var chartsModule = null;
 var getTimeframeDays = (tf) => {
@@ -8248,7 +8292,7 @@ var filterDataByTimeframe = (data, timeframe) => {
   if (!cutoffStr) return data;
   return data.filter((d) => d.time >= cutoffStr);
 };
-var StockChart = (0, import_react78.memo)(function StockChart2({
+var StockChart = (0, import_react87.memo)(function StockChart2({
   element
 }) {
   const props = element.props;
@@ -8258,14 +8302,14 @@ var StockChart = (0, import_react78.memo)(function StockChart2({
   const height = props.height ?? 400;
   const upColor = "#22c55e";
   const downColor = "#ef4444";
-  const containerRef = (0, import_react78.useRef)(null);
-  const chartRef = (0, import_react78.useRef)(null);
-  const seriesRef = (0, import_react78.useRef)(null);
-  const [timeframe, setTimeframe] = (0, import_react78.useState)(
+  const containerRef = (0, import_react87.useRef)(null);
+  const chartRef = (0, import_react87.useRef)(null);
+  const seriesRef = (0, import_react87.useRef)(null);
+  const [timeframe, setTimeframe] = (0, import_react87.useState)(
     props.timeframe || "3M"
   );
   const filteredData = filterDataByTimeframe(initialData, timeframe);
-  (0, import_react78.useEffect)(() => {
+  (0, import_react87.useEffect)(() => {
     if (!chartsModule) {
       import("lightweight-charts").then((mod) => {
         chartsModule = mod;
@@ -8281,7 +8325,7 @@ var StockChart = (0, import_react78.memo)(function StockChart2({
       }
     };
   }, []);
-  (0, import_react78.useEffect)(() => {
+  (0, import_react87.useEffect)(() => {
     if (seriesRef.current && filteredData.length > 0) {
       seriesRef.current.setData(filteredData);
       if (chartRef.current) {
@@ -8289,7 +8333,7 @@ var StockChart = (0, import_react78.memo)(function StockChart2({
       }
     }
   }, [filteredData]);
-  (0, import_react78.useEffect)(() => {
+  (0, import_react87.useEffect)(() => {
     const handleResize = () => {
       if (chartRef.current && containerRef.current) {
         chartRef.current.applyOptions({
@@ -8426,8 +8470,8 @@ var StockChartDefinition = {
 };
 
 // src/visualization/graphs/Graph/component.tsx
-var import_react81 = require("react");
-var import_react82 = require("@onegenui/react");
+var import_react90 = require("react");
+var import_react91 = require("@onegenui/react");
 
 // src/visualization/graphs/Graph/components/types.ts
 var MAG = (v) => Math.sqrt(v.x * v.x + v.y * v.y);
@@ -8478,9 +8522,9 @@ var DT = 0.1;
 var MAX_ITERATIONS = 300;
 
 // src/visualization/graphs/Graph/components/edges-renderer.tsx
-var import_react79 = require("react");
+var import_react88 = require("react");
 var import_jsx_runtime51 = require("react/jsx-runtime");
-var EdgesRenderer = (0, import_react79.memo)(function EdgesRenderer2({
+var EdgesRenderer = (0, import_react88.memo)(function EdgesRenderer2({
   edges,
   nodeStates
 }) {
@@ -8507,9 +8551,9 @@ var EdgesRenderer = (0, import_react79.memo)(function EdgesRenderer2({
 });
 
 // src/visualization/graphs/Graph/components/nodes-renderer.tsx
-var import_react80 = require("react");
+var import_react89 = require("react");
 var import_jsx_runtime52 = require("react/jsx-runtime");
-var NodesRenderer = (0, import_react80.memo)(function NodesRenderer2({
+var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
   nodes,
   nodeStates,
   elementKey,
@@ -8567,7 +8611,7 @@ var NodesRenderer = (0, import_react80.memo)(function NodesRenderer2({
 
 // src/visualization/graphs/Graph/component.tsx
 var import_jsx_runtime53 = require("react/jsx-runtime");
-var Graph = (0, import_react81.memo)(function Graph2({
+var Graph = (0, import_react90.memo)(function Graph2({
   element,
   children
 }) {
@@ -8577,27 +8621,27 @@ var Graph = (0, import_react81.memo)(function Graph2({
     edges: propsEdges,
     height
   } = element.props;
-  const nodes = (0, import_react81.useMemo)(
+  const nodes = (0, import_react90.useMemo)(
     () => (propsNodes || []).filter((n) => !!n?.id),
     [propsNodes]
   );
-  const edges = (0, import_react81.useMemo)(
+  const edges = (0, import_react90.useMemo)(
     () => (propsEdges || []).filter((e) => !!e.source && !!e.target),
     [propsEdges]
   );
-  const containerRef = (0, import_react81.useRef)(null);
-  const [dimensions, setDimensions] = (0, import_react81.useState)({ w: 800, h: DEFAULT_H });
-  const nodeStates = (0, import_react81.useRef)(/* @__PURE__ */ new Map());
-  const rafRef = (0, import_react81.useRef)(void 0);
-  const [bump, setBump] = (0, import_react81.useState)(0);
-  const iterationCount = (0, import_react81.useRef)(0);
-  const { isSelected, toggleSelection } = (0, import_react82.useSelection)();
-  const [pan, setPan] = (0, import_react81.useState)({ x: 0, y: 0 });
-  const [zoom, setZoom] = (0, import_react81.useState)(1);
-  const isDragging = (0, import_react81.useRef)(false);
-  const dragNodeId = (0, import_react81.useRef)(null);
-  const lastMousePos = (0, import_react81.useRef)({ x: 0, y: 0 });
-  (0, import_react81.useEffect)(() => {
+  const containerRef = (0, import_react90.useRef)(null);
+  const [dimensions, setDimensions] = (0, import_react90.useState)({ w: 800, h: DEFAULT_H });
+  const nodeStates = (0, import_react90.useRef)(/* @__PURE__ */ new Map());
+  const rafRef = (0, import_react90.useRef)(void 0);
+  const [bump, setBump] = (0, import_react90.useState)(0);
+  const iterationCount = (0, import_react90.useRef)(0);
+  const { isSelected, toggleSelection } = (0, import_react91.useSelection)();
+  const [pan, setPan] = (0, import_react90.useState)({ x: 0, y: 0 });
+  const [zoom, setZoom] = (0, import_react90.useState)(1);
+  const isDragging = (0, import_react90.useRef)(false);
+  const dragNodeId = (0, import_react90.useRef)(null);
+  const lastMousePos = (0, import_react90.useRef)({ x: 0, y: 0 });
+  (0, import_react90.useEffect)(() => {
     const w = containerRef.current?.clientWidth || 800;
     const h = Math.max(240, height ?? DEFAULT_H);
     setDimensions({ w, h });
@@ -8627,7 +8671,7 @@ var Graph = (0, import_react81.memo)(function Graph2({
     iterationCount.current = 0;
     setBump((b) => b + 1);
   }, [nodes, height]);
-  (0, import_react81.useEffect)(() => {
+  (0, import_react90.useEffect)(() => {
     const center = { x: dimensions.w / 2, y: dimensions.h / 2 };
     const step = () => {
       if (iterationCount.current > MAX_ITERATIONS && !isDragging.current) {
@@ -8692,18 +8736,18 @@ var Graph = (0, import_react81.memo)(function Graph2({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [edges, dimensions, nodes]);
-  const handleWheel = (0, import_react81.useCallback)((e) => {
+  const handleWheel = (0, import_react90.useCallback)((e) => {
     e.stopPropagation();
     const d = e.deltaY > 0 ? 0.9 : 1.1;
     setZoom((z23) => Math.max(0.1, Math.min(5, z23 * d)));
   }, []);
-  const handlePointerDown = (0, import_react81.useCallback)((e) => {
+  const handlePointerDown = (0, import_react90.useCallback)((e) => {
     e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDragging.current = true;
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   }, []);
-  const handlePointerMove = (0, import_react81.useCallback)(
+  const handlePointerMove = (0, import_react90.useCallback)(
     (e) => {
       if (!isDragging.current) return;
       e.stopPropagation();
@@ -8724,13 +8768,13 @@ var Graph = (0, import_react81.memo)(function Graph2({
     },
     [zoom]
   );
-  const handlePointerUp = (0, import_react81.useCallback)((e) => {
+  const handlePointerUp = (0, import_react90.useCallback)((e) => {
     e.stopPropagation();
     e.currentTarget.releasePointerCapture(e.pointerId);
     isDragging.current = false;
     dragNodeId.current = null;
   }, []);
-  const handleNodeDragStart = (0, import_react81.useCallback)(
+  const handleNodeDragStart = (0, import_react90.useCallback)(
     (nodeId, e) => {
       isDragging.current = true;
       dragNodeId.current = nodeId;
@@ -8738,11 +8782,11 @@ var Graph = (0, import_react81.memo)(function Graph2({
     },
     []
   );
-  const renderedEdges = (0, import_react81.useMemo)(
+  const renderedEdges = (0, import_react90.useMemo)(
     () => /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(EdgesRenderer, { edges, nodeStates: nodeStates.current }),
     [edges, bump]
   );
-  const renderedNodes = (0, import_react81.useMemo)(
+  const renderedNodes = (0, import_react90.useMemo)(
     () => /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
       NodesRenderer,
       {
@@ -8841,7 +8885,7 @@ var GraphDefinition = {
 };
 
 // src/visualization/graphs/MindMap/component.tsx
-var import_react84 = require("react");
+var import_react93 = require("react");
 
 // src/visualization/graphs/MindMap/components/types.ts
 var DEPTH_COLORS = [
@@ -8876,23 +8920,23 @@ function buildTreeFromFlat(nodes) {
 }
 
 // src/visualization/graphs/MindMap/components/node-renderer.tsx
-var import_react83 = require("react");
+var import_react92 = require("react");
 var import_jsx_runtime54 = require("react/jsx-runtime");
-var NodeRenderer = (0, import_react83.memo)(function NodeRenderer2({
+var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
   node,
   depth,
   isHorizontal,
   expandedByDefault,
   elementKey
 }) {
-  const [expanded, setExpanded] = (0, import_react83.useState)(expandedByDefault);
+  const [expanded, setExpanded] = (0, import_react92.useState)(expandedByDefault);
   const hasChildren = node.children && node.children.length > 0;
   const defaultColors = getColorForDepth(depth);
   const colors = node.color ? { bg: `${node.color}15`, border: node.color, text: node.color } : defaultColors;
-  const nodeRef = (0, import_react83.useRef)(null);
-  const childrenRef = (0, import_react83.useRef)(null);
-  const [paths, setPaths] = (0, import_react83.useState)([]);
-  const updatePaths = (0, import_react83.useCallback)(() => {
+  const nodeRef = (0, import_react92.useRef)(null);
+  const childrenRef = (0, import_react92.useRef)(null);
+  const [paths, setPaths] = (0, import_react92.useState)([]);
+  const updatePaths = (0, import_react92.useCallback)(() => {
     if (!expanded || !hasChildren || !nodeRef.current || !childrenRef.current) {
       setPaths([]);
       return;
@@ -8920,7 +8964,7 @@ var NodeRenderer = (0, import_react83.memo)(function NodeRenderer2({
     });
     setPaths(newPaths);
   }, [expanded, hasChildren]);
-  (0, import_react83.useLayoutEffect)(() => {
+  (0, import_react92.useLayoutEffect)(() => {
     updatePaths();
     window.addEventListener("resize", updatePaths);
     return () => window.removeEventListener("resize", updatePaths);
@@ -9036,14 +9080,14 @@ var NodeRenderer = (0, import_react83.memo)(function NodeRenderer2({
 
 // src/visualization/graphs/MindMap/component.tsx
 var import_jsx_runtime55 = require("react/jsx-runtime");
-var MindMap = (0, import_react84.memo)(function MindMap2({
+var MindMap = (0, import_react93.memo)(function MindMap2({
   element,
   children
 }) {
   const { title, nodes, layout, expandedByDefault } = element.props;
   const isHorizontal = layout !== "vertical";
   const defaultExpanded = expandedByDefault !== false;
-  const rootNodes = (0, import_react84.useMemo)(() => {
+  const rootNodes = (0, import_react93.useMemo)(() => {
     if (!nodes || !Array.isArray(nodes)) return [];
     return buildTreeFromFlat(nodes);
   }, [nodes]);
@@ -9092,9 +9136,9 @@ var MindMapDefinition = {
 };
 
 // src/visualization/graphs/Gantt/component.tsx
-var import_react85 = require("react");
+var import_react94 = require("react");
 var import_jsx_runtime56 = require("react/jsx-runtime");
-var Gantt = (0, import_react85.memo)(function Gantt2({
+var Gantt = (0, import_react94.memo)(function Gantt2({
   element,
   children
 }) {
@@ -9227,10 +9271,10 @@ var GanttDefinition = {
 var import_ui = require("@onegenui/ui");
 
 // src/communication/Message/component.tsx
-var import_react86 = require("react");
+var import_react95 = require("react");
 var import_lucide_react45 = require("lucide-react");
 var import_jsx_runtime57 = require("react/jsx-runtime");
-var Message = (0, import_react86.memo)(function Message2({
+var Message = (0, import_react95.memo)(function Message2({
   element,
   children
 }) {
@@ -9241,15 +9285,15 @@ var Message = (0, import_react86.memo)(function Message2({
     activeAgents = [],
     lock = false
   } = element.props;
-  const [messages, setMessages] = (0, import_react86.useState)(
+  const [messages, setMessages] = (0, import_react95.useState)(
     initialMessages || []
   );
-  (0, import_react86.useEffect)(() => {
+  (0, import_react95.useEffect)(() => {
     if (initialMessages) {
       setMessages(initialMessages);
     }
   }, [initialMessages]);
-  const [replyText, setReplyText] = (0, import_react86.useState)("");
+  const [replyText, setReplyText] = (0, import_react95.useState)("");
   const handleSendReply = () => {
     if (lock || !replyText.trim()) return;
     const newMessage = {
@@ -9429,7 +9473,8 @@ var MessageDefinition = {
 };
 
 // src/communication/Email/component.tsx
-var import_react90 = require("react");
+var import_react99 = require("react");
+var import_utils18 = require("@onegenui/utils");
 var import_lucide_react49 = require("lucide-react");
 
 // src/communication/Email/components/unread-dot.tsx
@@ -9439,7 +9484,7 @@ function UnreadDot() {
 }
 
 // src/communication/Email/components/compose-modal.tsx
-var import_react87 = require("react");
+var import_react96 = require("react");
 var import_lucide_react46 = require("lucide-react");
 
 // src/communication/Email/components/types.ts
@@ -9492,12 +9537,12 @@ function ComposeModal({
   onClose,
   onSend
 }) {
-  const [to, setTo] = (0, import_react87.useState)("");
-  const [cc, setCc] = (0, import_react87.useState)("");
-  const [subject, setSubject] = (0, import_react87.useState)("");
-  const [body, setBody] = (0, import_react87.useState)("");
-  const [sending, setSending] = (0, import_react87.useState)(false);
-  (0, import_react87.useEffect)(() => {
+  const [to, setTo] = (0, import_react96.useState)("");
+  const [cc, setCc] = (0, import_react96.useState)("");
+  const [subject, setSubject] = (0, import_react96.useState)("");
+  const [body, setBody] = (0, import_react96.useState)("");
+  const [sending, setSending] = (0, import_react96.useState)(false);
+  (0, import_react96.useEffect)(() => {
     if (mode === "reply" && originalEmail) {
       setTo(extractEmailAddress(originalEmail.from));
       setSubject(`Re: ${originalEmail.subject.replace(/^Re:\s*/i, "")}`);
@@ -9666,10 +9711,10 @@ ${originalEmail.body}`
 }
 
 // src/communication/Email/components/email-list.tsx
-var import_react88 = require("react");
+var import_react97 = require("react");
 var import_lucide_react47 = require("lucide-react");
 var import_jsx_runtime60 = require("react/jsx-runtime");
-var EmailList = (0, import_react88.memo)(function EmailList2({
+var EmailList = (0, import_react97.memo)(function EmailList2({
   emails,
   elementKey,
   hoveredId,
@@ -9760,10 +9805,10 @@ var EmailList = (0, import_react88.memo)(function EmailList2({
 });
 
 // src/communication/Email/components/email-detail.tsx
-var import_react89 = require("react");
+var import_react98 = require("react");
 var import_lucide_react48 = require("lucide-react");
 var import_jsx_runtime61 = require("react/jsx-runtime");
-var EmailDetail = (0, import_react89.memo)(function EmailDetail2({
+var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
   email,
   lock,
   onBack,
@@ -9919,7 +9964,8 @@ var EmailDetail = (0, import_react89.memo)(function EmailDetail2({
 
 // src/communication/Email/component.tsx
 var import_jsx_runtime62 = require("react/jsx-runtime");
-var Email = (0, import_react90.memo)(function Email2({
+var log = (0, import_utils18.createLogger)({ prefix: "email" });
+var Email = (0, import_react99.memo)(function Email2({
   element,
   children
 }) {
@@ -9930,13 +9976,13 @@ var Email = (0, import_react90.memo)(function Email2({
     lock = false,
     onSendEmail
   } = element.props;
-  const isInitialMount = (0, import_react90.useRef)(true);
-  const [localEmails, setLocalEmails] = (0, import_react90.useState)([]);
-  const [selectedEmailId, setSelectedEmailId] = (0, import_react90.useState)(null);
-  const [composeMode, setComposeMode] = (0, import_react90.useState)("none");
-  const [hoveredId, setHoveredId] = (0, import_react90.useState)(null);
+  const isInitialMount = (0, import_react99.useRef)(true);
+  const [localEmails, setLocalEmails] = (0, import_react99.useState)([]);
+  const [selectedEmailId, setSelectedEmailId] = (0, import_react99.useState)(null);
+  const [composeMode, setComposeMode] = (0, import_react99.useState)("none");
+  const [hoveredId, setHoveredId] = (0, import_react99.useState)(null);
   const emailsKey = JSON.stringify(initialEmails);
-  (0, import_react90.useEffect)(() => {
+  (0, import_react99.useEffect)(() => {
     const newEmails = initialEmails || [];
     setLocalEmails(newEmails);
     if (newEmails.length === 1 && isInitialMount.current) {
@@ -9946,7 +9992,7 @@ var Email = (0, import_react90.memo)(function Email2({
   }, [emailsKey]);
   const emails = localEmails;
   const selectedEmail = emails.find((e) => e.id === selectedEmailId);
-  const handleDelete = (0, import_react90.useCallback)(
+  const handleDelete = (0, import_react99.useCallback)(
     (id, e) => {
       e?.stopPropagation();
       if (lock) return;
@@ -9955,7 +10001,7 @@ var Email = (0, import_react90.memo)(function Email2({
     },
     [lock, selectedEmailId]
   );
-  const handleArchive = (0, import_react90.useCallback)(
+  const handleArchive = (0, import_react99.useCallback)(
     (id, e) => {
       e?.stopPropagation();
       if (lock) return;
@@ -9964,12 +10010,12 @@ var Email = (0, import_react90.memo)(function Email2({
     },
     [lock, selectedEmailId]
   );
-  const handleMarkAsRead = (0, import_react90.useCallback)((id) => {
+  const handleMarkAsRead = (0, import_react99.useCallback)((id) => {
     setLocalEmails(
       (prev) => prev.map((email) => email.id === id ? { ...email, read: true } : email)
     );
   }, []);
-  const handleToggleStar = (0, import_react90.useCallback)((id, e) => {
+  const handleToggleStar = (0, import_react99.useCallback)((id, e) => {
     e?.stopPropagation();
     setLocalEmails(
       (prev) => prev.map(
@@ -9977,20 +10023,20 @@ var Email = (0, import_react90.memo)(function Email2({
       )
     );
   }, []);
-  const handleSelectEmail = (0, import_react90.useCallback)(
+  const handleSelectEmail = (0, import_react99.useCallback)(
     (id) => {
       setSelectedEmailId(id);
       handleMarkAsRead(id);
     },
     [handleMarkAsRead]
   );
-  const handleSendEmail = (0, import_react90.useCallback)(
+  const handleSendEmail = (0, import_react99.useCallback)(
     async (draft) => {
-      console.log("[Email] Sending email:", draft);
+      log.debug("[Email] Sending email:", draft);
       if (onSendEmail) {
         await onSendEmail(draft);
       } else {
-        console.log("[Email] Email sent (simulated):", draft);
+        log.debug("[Email] Email sent (simulated):", draft);
       }
     },
     [onSendEmail]
@@ -10074,9 +10120,9 @@ var EmailDefinition = {
 };
 
 // src/document/DocumentExplorer.tsx
-var import_react91 = require("react");
+var import_react100 = require("react");
 var import_jsx_runtime63 = require("react/jsx-runtime");
-var TreeNodeItem3 = (0, import_react91.memo)(function TreeNodeItem4({
+var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
   node,
   depth,
   onSelect,
@@ -10132,13 +10178,13 @@ var TreeNodeItem3 = (0, import_react91.memo)(function TreeNodeItem4({
     )) })
   ] });
 });
-var DocumentExplorer = (0, import_react91.memo)(function DocumentExplorer2({
+var DocumentExplorer = (0, import_react100.memo)(function DocumentExplorer2({
   tree,
   onNodeSelect,
   selectedNodeId,
   expandedByDefault = true
 }) {
-  const [expanded, setExpanded] = (0, import_react91.useState)(() => {
+  const [expanded, setExpanded] = (0, import_react100.useState)(() => {
     if (!expandedByDefault) return /* @__PURE__ */ new Set();
     const ids = /* @__PURE__ */ new Set();
     const collect = (node) => {
@@ -10148,7 +10194,7 @@ var DocumentExplorer = (0, import_react91.memo)(function DocumentExplorer2({
     collect(tree);
     return ids;
   });
-  const handleToggle = (0, import_react91.useCallback)((id) => {
+  const handleToggle = (0, import_react100.useCallback)((id) => {
     setExpanded((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -10159,7 +10205,7 @@ var DocumentExplorer = (0, import_react91.memo)(function DocumentExplorer2({
       return next;
     });
   }, []);
-  const handleSelect = (0, import_react91.useCallback)(
+  const handleSelect = (0, import_react100.useCallback)(
     (node) => {
       onNodeSelect?.(node);
     },
@@ -10182,16 +10228,16 @@ var DocumentExplorer = (0, import_react91.memo)(function DocumentExplorer2({
 });
 
 // src/document/KnowledgeGraph.tsx
-var import_react92 = require("react");
+var import_react101 = require("react");
 var import_jsx_runtime64 = require("react/jsx-runtime");
-var KnowledgeGraph = (0, import_react92.memo)(function KnowledgeGraph2({
+var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
   entities,
   relations,
   width = 600,
   height = 400,
   onEntityClick
 }) {
-  const { nodes, edges } = (0, import_react92.useMemo)(() => {
+  const { nodes, edges } = (0, import_react101.useMemo)(() => {
     const topEntities = entities.slice(0, 30);
     const graphNodes = topEntities.map((entity, i) => {
       const angle = i / topEntities.length * 2 * Math.PI;
@@ -10314,7 +10360,7 @@ var KnowledgeGraph = (0, import_react92.memo)(function KnowledgeGraph2({
 });
 
 // src/document/DocumentTimeline.tsx
-var import_react93 = require("react");
+var import_react102 = require("react");
 var import_jsx_runtime65 = require("react/jsx-runtime");
 function parseDate(value) {
   if (!value) return null;
@@ -10322,7 +10368,7 @@ function parseDate(value) {
   if (yearMatch?.[1]) return parseInt(yearMatch[1], 10);
   return null;
 }
-var DocumentTimeline = (0, import_react93.memo)(function DocumentTimeline2({
+var DocumentTimeline = (0, import_react102.memo)(function DocumentTimeline2({
   entities,
   onEntityClick
 }) {
@@ -10390,9 +10436,9 @@ var DocumentTimeline = (0, import_react93.memo)(function DocumentTimeline2({
 });
 
 // src/document/DeepAnalysisPanel.tsx
-var import_react94 = require("react");
+var import_react103 = require("react");
 var import_jsx_runtime66 = require("react/jsx-runtime");
-var DeepAnalysisPanel = (0, import_react94.memo)(function DeepAnalysisPanel2({
+var DeepAnalysisPanel = (0, import_react103.memo)(function DeepAnalysisPanel2({
   node,
   quotes = [],
   onQuoteClick
@@ -10476,7 +10522,7 @@ var DeepAnalysisPanel = (0, import_react94.memo)(function DeepAnalysisPanel2({
 });
 
 // src/document/CitationViewer.tsx
-var import_react95 = require("react");
+var import_react104 = require("react");
 var import_jsx_runtime67 = require("react/jsx-runtime");
 var typeIcons = {
   book: "B",
@@ -10486,7 +10532,7 @@ var typeIcons = {
   thesis: "T",
   other: "O"
 };
-var CitationViewer = (0, import_react95.memo)(function CitationViewer2({
+var CitationViewer = (0, import_react104.memo)(function CitationViewer2({
   citations,
   onCitationClick
 }) {
@@ -10547,7 +10593,7 @@ var CitationViewer = (0, import_react95.memo)(function CitationViewer2({
 });
 
 // src/document/EntityExplorer.tsx
-var import_react96 = require("react");
+var import_react105 = require("react");
 var import_jsx_runtime68 = require("react/jsx-runtime");
 var typeColorClasses = {
   person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
@@ -10559,18 +10605,18 @@ var typeColorClasses = {
   number: { bg: "bg-stone-500", text: "text-stone-400", dot: "bg-stone-500" },
   term: { bg: "bg-slate-500", text: "text-slate-400", dot: "bg-slate-500" }
 };
-var EntityExplorer = (0, import_react96.memo)(function EntityExplorer2({
+var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
   entities,
   onEntityClick,
   filterTypes
 }) {
-  const [selectedType, setSelectedType] = (0, import_react96.useState)(null);
-  const [searchQuery, setSearchQuery] = (0, import_react96.useState)("");
-  const types = (0, import_react96.useMemo)(() => {
+  const [selectedType, setSelectedType] = (0, import_react105.useState)(null);
+  const [searchQuery, setSearchQuery] = (0, import_react105.useState)("");
+  const types = (0, import_react105.useMemo)(() => {
     const typeSet = new Set(entities.map((e) => e.type));
     return Array.from(typeSet).sort();
   }, [entities]);
-  const filteredEntities = (0, import_react96.useMemo)(() => {
+  const filteredEntities = (0, import_react105.useMemo)(() => {
     let result = entities;
     if (filterTypes && filterTypes.length > 0) {
       result = result.filter((e) => filterTypes.includes(e.type));
@@ -10586,7 +10632,7 @@ var EntityExplorer = (0, import_react96.memo)(function EntityExplorer2({
     }
     return result;
   }, [entities, filterTypes, selectedType, searchQuery]);
-  const groupedEntities = (0, import_react96.useMemo)(() => {
+  const groupedEntities = (0, import_react105.useMemo)(() => {
     const groups = {};
     for (const entity of filteredEntities) {
       const type = entity.type;
@@ -10672,35 +10718,35 @@ var EntityExplorer = (0, import_react96.memo)(function EntityExplorer2({
 });
 
 // src/document/hooks/useKnowledgeBase.ts
-var import_react97 = require("react");
+var import_react106 = require("react");
 function useKnowledgeBase(options = {}) {
-  const [knowledgeBase, setKnowledgeBase] = (0, import_react97.useState)(
+  const [knowledgeBase, setKnowledgeBase] = (0, import_react106.useState)(
     options.initialKnowledgeBase ?? null
   );
-  const entities = (0, import_react97.useMemo)(
+  const entities = (0, import_react106.useMemo)(
     () => knowledgeBase?.entities ?? [],
     [knowledgeBase]
   );
-  const relations = (0, import_react97.useMemo)(
+  const relations = (0, import_react106.useMemo)(
     () => knowledgeBase?.relations ?? [],
     [knowledgeBase]
   );
-  const quotes = (0, import_react97.useMemo)(() => knowledgeBase?.quotes ?? [], [knowledgeBase]);
-  const getEntityById = (0, import_react97.useCallback)(
+  const quotes = (0, import_react106.useMemo)(() => knowledgeBase?.quotes ?? [], [knowledgeBase]);
+  const getEntityById = (0, import_react106.useCallback)(
     (id) => entities.find((e) => e.id === id),
     [entities]
   );
-  const getRelationsByNode = (0, import_react97.useCallback)(
+  const getRelationsByNode = (0, import_react106.useCallback)(
     (nodeId) => relations.filter(
       (r) => r.sourceNodeId === nodeId || r.targetNodeId === nodeId
     ),
     [relations]
   );
-  const getQuotesByNode = (0, import_react97.useCallback)(
+  const getQuotesByNode = (0, import_react106.useCallback)(
     (nodeId) => quotes.filter((q) => q.nodeId === nodeId),
     [quotes]
   );
-  const searchEntities = (0, import_react97.useCallback)(
+  const searchEntities = (0, import_react106.useCallback)(
     (query) => {
       const q = query.toLowerCase();
       return entities.filter(
@@ -10709,7 +10755,7 @@ function useKnowledgeBase(options = {}) {
     },
     [entities]
   );
-  const filterEntitiesByType = (0, import_react97.useCallback)(
+  const filterEntitiesByType = (0, import_react106.useCallback)(
     (type) => entities.filter((e) => e.type === type),
     [entities]
   );
@@ -10728,7 +10774,7 @@ function useKnowledgeBase(options = {}) {
 }
 
 // src/document/hooks/useDocumentExplorer.ts
-var import_react98 = require("react");
+var import_react107 = require("react");
 function collectAllNodeIds(node, ids) {
   ids.add(node.id);
   if (node.children) {
@@ -10761,19 +10807,19 @@ function searchTree(node, query, results = []) {
   return results;
 }
 function useDocumentExplorer(options = {}) {
-  const [tree, setTree] = (0, import_react98.useState)(
+  const [tree, setTree] = (0, import_react107.useState)(
     options.initialTree ?? null
   );
-  const [selectedNode, setSelectedNode] = (0, import_react98.useState)(null);
-  const [expandedNodes, setExpandedNodes] = (0, import_react98.useState)(/* @__PURE__ */ new Set());
-  const selectNode = (0, import_react98.useCallback)(
+  const [selectedNode, setSelectedNode] = (0, import_react107.useState)(null);
+  const [expandedNodes, setExpandedNodes] = (0, import_react107.useState)(/* @__PURE__ */ new Set());
+  const selectNode = (0, import_react107.useCallback)(
     (node) => {
       setSelectedNode(node);
       options.onNodeSelect?.(node);
     },
     [options]
   );
-  const toggleNode = (0, import_react98.useCallback)((nodeId) => {
+  const toggleNode = (0, import_react107.useCallback)((nodeId) => {
     setExpandedNodes((prev) => {
       const next = new Set(prev);
       if (next.has(nodeId)) {
@@ -10784,23 +10830,23 @@ function useDocumentExplorer(options = {}) {
       return next;
     });
   }, []);
-  const expandAll = (0, import_react98.useCallback)(() => {
+  const expandAll = (0, import_react107.useCallback)(() => {
     if (!tree) return;
     const ids = /* @__PURE__ */ new Set();
     collectAllNodeIds(tree, ids);
     setExpandedNodes(ids);
   }, [tree]);
-  const collapseAll = (0, import_react98.useCallback)(() => {
+  const collapseAll = (0, import_react107.useCallback)(() => {
     setExpandedNodes(/* @__PURE__ */ new Set());
   }, []);
-  const searchNodes = (0, import_react98.useCallback)(
+  const searchNodes = (0, import_react107.useCallback)(
     (query) => {
       if (!tree || !query) return [];
       return searchTree(tree, query);
     },
     [tree]
   );
-  const getNodePath = (0, import_react98.useCallback)(
+  const getNodePath = (0, import_react107.useCallback)(
     (nodeId) => {
       if (!tree) return [];
       return findPath(tree, nodeId) ?? [];
@@ -10822,14 +10868,14 @@ function useDocumentExplorer(options = {}) {
 }
 
 // src/document/hooks/useQuestionAnswer.ts
-var import_react99 = require("react");
+var import_react108 = require("react");
 function useQuestionAnswer(options = {}) {
-  const [question, setQuestion] = (0, import_react99.useState)("");
-  const [answer, setAnswer] = (0, import_react99.useState)(null);
-  const [isLoading, setIsLoading] = (0, import_react99.useState)(false);
-  const [error, setError] = (0, import_react99.useState)(null);
-  const [history, setHistory] = (0, import_react99.useState)([]);
-  const askQuestion = (0, import_react99.useCallback)(
+  const [question, setQuestion] = (0, import_react108.useState)("");
+  const [answer, setAnswer] = (0, import_react108.useState)(null);
+  const [isLoading, setIsLoading] = (0, import_react108.useState)(false);
+  const [error, setError] = (0, import_react108.useState)(null);
+  const [history, setHistory] = (0, import_react108.useState)([]);
+  const askQuestion = (0, import_react108.useCallback)(
     async (knowledgeBaseId, q) => {
       setIsLoading(true);
       setError(null);
@@ -10857,12 +10903,12 @@ function useQuestionAnswer(options = {}) {
     },
     [options]
   );
-  const clearAnswer = (0, import_react99.useCallback)(() => {
+  const clearAnswer = (0, import_react108.useCallback)(() => {
     setAnswer(null);
     setError(null);
     setQuestion("");
   }, []);
-  const clearHistory = (0, import_react99.useCallback)(() => {
+  const clearHistory = (0, import_react108.useCallback)(() => {
     setHistory([]);
   }, []);
   return {

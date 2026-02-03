@@ -39,7 +39,7 @@ export const Kanban = memo(function Kanban({
   const dragAdapter = useMemo(() => getKanbanDragAdapter(), []);
 
   const { displayColumns, moveItem, toggleSubItem, isSubItemCompleted } =
-    useKanbanState(adapter, {
+    useKanbanState(element.key, adapter, {
       initialColumns: initialColumns || [],
       lock,
     });

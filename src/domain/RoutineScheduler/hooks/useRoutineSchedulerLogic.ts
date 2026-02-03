@@ -3,9 +3,16 @@
  * Separates business logic from presentation
  */
 
-import { useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type { RoutineSchedulerPort, RoutineSchedulerStatePort } from "../ports";
 import type { TimeBlock, DaySchedule } from "../schema";
+
+interface RoutineSchedulerState extends Record<string, unknown> {
+  localEdits: Record<string, Partial<TimeBlock>>;
+  currentView: "day" | "week";
+  selectedDate: string;
+}
 
 export interface UseRoutineSchedulerLogicOptions {
   initialDate?: string;
@@ -42,6 +49,7 @@ export interface UseRoutineSchedulerLogicReturn {
 }
 
 export function useRoutineSchedulerLogic(
+  elementKey: string,
   adapter: RoutineSchedulerPort,
   stateAdapter: RoutineSchedulerStatePort,
   options: UseRoutineSchedulerLogicOptions,
@@ -56,18 +64,17 @@ export function useRoutineSchedulerLogic(
     lock = false,
   } = options;
 
-  // Local edits state
-  const [localEdits, setLocalEdits] = useState<
-    Record<string, Partial<TimeBlock>>
-  >({});
-
-  // View state
-  const [currentView, setCurrentView] = useState<"day" | "week">(initialView);
-
-  // Selected date state
-  const [selectedDate, setSelectedDate] = useState<string>(
-    initialDate ?? adapter.getTodayString(),
+  // AI-synced state via Zustand
+  const [state, updateState] = useElementState<RoutineSchedulerState>(
+    elementKey,
+    {
+      localEdits: {},
+      currentView: initialView,
+      selectedDate: initialDate ?? adapter.getTodayString(),
+    },
   );
+
+  const { localEdits, currentView, selectedDate } = state;
 
   // Time range
   const dayStart = timeRange?.start || "06:00";
@@ -104,18 +111,35 @@ export function useRoutineSchedulerLogic(
   );
 
   // Actions
+  const setCurrentView = useCallback(
+    (view: "day" | "week") => {
+      updateState({ currentView: view });
+    },
+    [updateState],
+  );
+
+  const setSelectedDate = useCallback(
+    (date: string) => {
+      updateState({ selectedDate: date });
+    },
+    [updateState],
+  );
+
   const navigateDate = useCallback(
     (direction: -1 | 1) => {
-      setSelectedDate((prev) =>
-        stateAdapter.navigateDate(prev, direction, currentView),
+      const newDate = stateAdapter.navigateDate(
+        selectedDate,
+        direction,
+        currentView,
       );
+      updateState({ selectedDate: newDate });
     },
-    [stateAdapter, currentView],
+    [stateAdapter, currentView, selectedDate, updateState],
   );
 
   const goToToday = useCallback(() => {
-    setSelectedDate(adapter.getTodayString());
-  }, [adapter]);
+    updateState({ selectedDate: adapter.getTodayString() });
+  }, [adapter, updateState]);
 
   const handleToggleBlock = useCallback(
     (blockId: string) => {
@@ -125,15 +149,14 @@ export function useRoutineSchedulerLogic(
       const block = allBlocks.find((b) => b.id === blockId);
       if (!block) return;
 
-      setLocalEdits((prev) =>
-        stateAdapter.toggleBlockCompletion(
-          prev,
-          blockId,
-          block.completed ?? false,
-        ),
+      const newEdits = stateAdapter.toggleBlockCompletion(
+        localEdits,
+        blockId,
+        block.completed ?? false,
       );
+      updateState({ localEdits: newEdits });
     },
-    [lock, displayDays, stateAdapter],
+    [lock, displayDays, stateAdapter, localEdits, updateState],
   );
 
   return {

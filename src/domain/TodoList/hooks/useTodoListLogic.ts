@@ -1,7 +1,8 @@
 /**
  * useTodoListLogic - Custom hook for TodoList state management
  */
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useElementState } from "@onegenui/react";
 import type { TodoListPort, TodoItem } from "../ports";
 
 export interface UseTodoListLogicOptions {
@@ -16,24 +17,20 @@ export interface UseTodoListLogicReturn {
 }
 
 export function useTodoListLogic(
+  elementKey: string,
   adapter: TodoListPort,
   options: UseTodoListLogicOptions,
 ): UseTodoListLogicReturn {
   const { initialItems } = options;
-  const [items, setItems] = useState<TodoItem[]>(initialItems);
+  const [state, updateState] = useElementState(elementKey, { items: initialItems });
 
-  // Sync with prop changes
-  useEffect(() => {
-    if (initialItems) {
-      setItems(initialItems);
-    }
-  }, [initialItems]);
+  const items = state.items as TodoItem[];
 
   const toggleItem = useCallback(
     (id: string) => {
-      setItems((prev) => adapter.toggleItemStatus(prev, id));
+      updateState({ items: adapter.toggleItemStatus(items, id) });
     },
-    [adapter],
+    [adapter, items, updateState],
   );
 
   const completedCount = useMemo(

@@ -44,6 +44,7 @@ export const Flight = memo(function Flight({
   const stateAdapter = getFlightStateAdapter();
 
   const { displayTrips, getTripKey, isRoundTrip } = useFlightLogic(
+    element.key,
     flightAdapter,
     stateAdapter,
     { trips, flights, lock },

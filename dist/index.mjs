@@ -744,7 +744,7 @@ var CalendarAgenda = memo4(function CalendarAgenda2({
 // src/domain/Workout/component.tsx
 import { memo as memo9, useMemo as useMemo4 } from "react";
 import { Lock, Unlock, Activity as Activity2, BicepsFlexed } from "lucide-react";
-import { useDomainAutoSave, useTreeSync } from "@onegenui/react";
+import { useDomainAutoSave } from "@onegenui/react";
 
 // src/domain/Workout/components/session-timer.tsx
 import { memo as memo5, useState as useState3, useEffect } from "react";
@@ -1455,6 +1455,18 @@ function ensureSeriesGenerated(exercise) {
   }
   return exercise;
 }
+function ensureSeriesGeneratedDeep(items) {
+  return items.map((item) => {
+    const withSeries = ensureSeriesGenerated(item);
+    if (withSeries.items && withSeries.items.length > 0) {
+      return {
+        ...withSeries,
+        items: ensureSeriesGeneratedDeep(withSeries.items)
+      };
+    }
+    return withSeries;
+  });
+}
 function createWorkoutAdapter() {
   return {
     findExerciseById(items, id) {
@@ -1546,21 +1558,25 @@ function getWorkoutStateAdapter() {
 }
 
 // src/domain/Workout/hooks/useWorkoutLogic.ts
-import { useState as useState4, useMemo as useMemo3, useCallback as useCallback2, useEffect as useEffect2 } from "react";
+import { useState as useState4, useCallback as useCallback2, useEffect as useEffect2 } from "react";
+import { useElementState } from "@onegenui/react";
 function useWorkoutLogic(workoutAdapter, stateAdapter, options) {
-  const { initialItems, lock: initialLock = false } = options;
-  const [edits, setEdits] = useState4({});
+  const { initialItems, lock: initialLock = false, elementKey } = options;
+  const [state, updateState] = useElementState(
+    elementKey,
+    {
+      items: initialItems,
+      isLocked: !!initialLock
+    }
+  );
   const [expandedIds, setExpandedIds] = useState4(/* @__PURE__ */ new Set());
-  const [isLocked, setIsLocked] = useState4(!!initialLock);
   useEffect2(() => {
     if (initialItems.length > 0 && initialItems[0]?.id) {
       setExpandedIds(/* @__PURE__ */ new Set([initialItems[0].id]));
     }
   }, [initialItems]);
-  const displayItems = useMemo3(
-    () => workoutAdapter.mergeEdits(initialItems, edits),
-    [workoutAdapter, initialItems, edits]
-  );
+  const displayItems = state.items;
+  const isLocked = state.isLocked;
   const toggleExpand = useCallback2((id) => {
     setExpandedIds((prev) => {
       const next = new Set(prev);
@@ -1570,75 +1586,56 @@ function useWorkoutLogic(workoutAdapter, stateAdapter, options) {
     });
   }, []);
   const toggleLock = useCallback2(() => {
-    setIsLocked((prev) => !prev);
-  }, []);
+    updateState({ isLocked: !isLocked });
+  }, [isLocked, updateState]);
   const updateExercise = useCallback2(
     (id, field, value) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(displayItems, id);
-        if (!exercise) return prev;
-        return stateAdapter.updateExerciseField(prev, exercise, field, value);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, id);
+      if (!exercise) return;
+      const edits = stateAdapter.updateExerciseField({}, exercise, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const updateSeries = useCallback2(
     (exerciseId, seriesId, field, value) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        return stateAdapter.updateSetField(
-          prev,
-          exercise,
-          seriesId,
-          field,
-          value
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const edits = stateAdapter.updateSetField({}, exercise, seriesId, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const addSet = useCallback2(
     (exerciseId) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        const newSet = workoutAdapter.createNewSet(exercise.series || []);
-        return stateAdapter.addSetToExercise(prev, exercise, newSet);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const newSet = workoutAdapter.createNewSet(exercise.series || []);
+      const edits = stateAdapter.addSetToExercise({}, exercise, newSet);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   const removeSet = useCallback2(
     (exerciseId, seriesId) => {
       if (isLocked) return;
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId
-        );
-        if (!exercise) return prev;
-        const updatedSeries = workoutAdapter.removeSetAndRenumber(
-          exercise.series || [],
-          seriesId
-        );
-        return stateAdapter.removeSetFromExercise(
-          prev,
-          exercise,
-          updatedSeries
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      const updatedSeries = workoutAdapter.removeSetAndRenumber(
+        exercise.series || [],
+        seriesId
+      );
+      const edits = stateAdapter.removeSetFromExercise({}, exercise, updatedSeries);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems]
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState]
   );
   return {
     displayItems,
@@ -1667,7 +1664,8 @@ var Workout = memo9(function Workout2({
   } = element.props;
   const resolvedItems = useMemo4(() => {
     const raw = items || exercises || [];
-    return Array.isArray(raw) ? raw : [];
+    const arr = Array.isArray(raw) ? raw : [];
+    return ensureSeriesGeneratedDeep(arr);
   }, [items, exercises]);
   const workoutAdapter = getWorkoutAdapter();
   const stateAdapter = getWorkoutStateAdapter();
@@ -1683,13 +1681,9 @@ var Workout = memo9(function Workout2({
     removeSet
   } = useWorkoutLogic(workoutAdapter, stateAdapter, {
     initialItems: resolvedItems,
-    lock: initialLock
+    lock: initialLock,
+    elementKey: element.key
   });
-  useTreeSync(
-    element.key,
-    useMemo4(() => ({ items: displayItems }), [displayItems]),
-    { skipMount: true }
-  );
   useDomainAutoSave("workout", element.key, {
     title,
     date: (/* @__PURE__ */ new Date()).toISOString(),
@@ -2455,9 +2449,10 @@ function getFlightStateAdapter() {
 
 // src/domain/Flight/hooks/useFlightLogic.ts
 import { useMemo as useMemo6 } from "react";
-function useFlightLogic(flightAdapter, stateAdapter, options) {
+import { useElementState as useElementState2 } from "@onegenui/react";
+function useFlightLogic(elementKey, flightAdapter, stateAdapter, options) {
   const { trips, flights, lock = false } = options;
-  const displayTrips = useMemo6(
+  const computedTrips = useMemo6(
     () => stateAdapter.computeDisplayTrips(
       trips,
       flights,
@@ -2465,12 +2460,21 @@ function useFlightLogic(flightAdapter, stateAdapter, options) {
     ),
     [stateAdapter, flightAdapter, trips, flights]
   );
+  const [{ localTrips }, updateState] = useElementState2(elementKey, {
+    localTrips: null
+  });
+  const displayTrips = localTrips ?? computedTrips;
   const hasContent = displayTrips.length > 0;
+  const updateTrips = (newTrips) => {
+    if (lock) return;
+    updateState({ localTrips: newTrips });
+  };
   return {
     displayTrips,
     hasContent,
     getTripKey: flightAdapter.getTripKey.bind(flightAdapter),
-    isRoundTrip: flightAdapter.isRoundTrip.bind(flightAdapter)
+    isRoundTrip: flightAdapter.isRoundTrip.bind(flightAdapter),
+    updateTrips
   };
 }
 
@@ -2497,6 +2501,7 @@ var Flight = memo15(function Flight2({
   const flightAdapter = getFlightAdapter();
   const stateAdapter = getFlightStateAdapter();
   const { displayTrips, getTripKey, isRoundTrip } = useFlightLogic(
+    element.key,
     flightAdapter,
     stateAdapter,
     { trips, flights, lock }
@@ -2860,6 +2865,7 @@ var Hotel = memo16(function Hotel2({
 
 // src/domain/Hotel/hooks/useHotelLogic.ts
 import { useState as useState6, useMemo as useMemo9, useCallback as useCallback4 } from "react";
+import { useElementState as useElementState3 } from "@onegenui/react";
 
 // src/domain/Trip/component.tsx
 import { memo as memo17, useMemo as useMemo10 } from "react";
@@ -3138,15 +3144,15 @@ function getBookingFormsStateAdapter() {
 
 // src/domain/BookingForms/hooks/useBookingFormsLogic.ts
 import { useState as useState7, useCallback as useCallback5, useMemo as useMemo11 } from "react";
-function useBookingFormsLogic(validationAdapter, stateAdapter, options) {
+import { useElementState as useElementState4 } from "@onegenui/react";
+function useBookingFormsLogic(elementKey, validationAdapter, stateAdapter, options) {
   const { initialType = "flight", mode = "create" } = options;
-  const [activeTab, setActiveTab] = useState7(initialType);
-  const [flightForm, setFlightForm] = useState7(
-    () => stateAdapter.getDefaultFlightForm()
-  );
-  const [hotelForm, setHotelForm] = useState7(
-    () => stateAdapter.getDefaultHotelForm()
-  );
+  const [state, updateState] = useElementState4(elementKey, {
+    activeTab: initialType,
+    flightForm: stateAdapter.getDefaultFlightForm(),
+    hotelForm: stateAdapter.getDefaultHotelForm()
+  });
+  const { activeTab, flightForm, hotelForm } = state;
   const [flightValidation, setFlightValidation] = useState7(null);
   const [hotelValidation, setHotelValidation] = useState7(null);
   const actionLabel = stateAdapter.getActionLabel(mode);
@@ -3159,21 +3165,27 @@ function useBookingFormsLogic(validationAdapter, stateAdapter, options) {
     () => validationAdapter.validateHotelForm(hotelForm).isValid,
     [validationAdapter, hotelForm]
   );
+  const setActiveTab = useCallback5(
+    (tab) => {
+      updateState({ activeTab: tab });
+    },
+    [updateState]
+  );
   const updateFlightField = useCallback5(
     (field, value) => {
-      setFlightForm(
-        (prev) => stateAdapter.updateFlightField(prev, field, value)
-      );
+      const updated = stateAdapter.updateFlightField(flightForm, field, value);
+      updateState({ flightForm: updated });
       setFlightValidation(null);
     },
-    [stateAdapter]
+    [stateAdapter, flightForm, updateState]
   );
   const updateHotelField = useCallback5(
     (field, value) => {
-      setHotelForm((prev) => stateAdapter.updateHotelField(prev, field, value));
+      const updated = stateAdapter.updateHotelField(hotelForm, field, value);
+      updateState({ hotelForm: updated });
       setHotelValidation(null);
     },
-    [stateAdapter]
+    [stateAdapter, hotelForm, updateState]
   );
   const validateFlight = useCallback5(() => {
     const result = validationAdapter.validateFlightForm(flightForm);
@@ -3186,13 +3198,13 @@ function useBookingFormsLogic(validationAdapter, stateAdapter, options) {
     return result;
   }, [validationAdapter, hotelForm]);
   const resetFlightForm = useCallback5(() => {
-    setFlightForm(stateAdapter.getDefaultFlightForm());
+    updateState({ flightForm: stateAdapter.getDefaultFlightForm() });
     setFlightValidation(null);
-  }, [stateAdapter]);
+  }, [stateAdapter, updateState]);
   const resetHotelForm = useCallback5(() => {
-    setHotelForm(stateAdapter.getDefaultHotelForm());
+    updateState({ hotelForm: stateAdapter.getDefaultHotelForm() });
     setHotelValidation(null);
-  }, [stateAdapter]);
+  }, [stateAdapter, updateState]);
   return {
     // State
     activeTab,
@@ -3238,7 +3250,7 @@ var BookingForms = memo18(function BookingForms2({
     updateHotelField,
     actionLabel,
     promoText
-  } = useBookingFormsLogic(validationAdapter, stateAdapter, {
+  } = useBookingFormsLogic(element.key, validationAdapter, stateAdapter, {
     initialType: type,
     mode
   });
@@ -4094,11 +4106,15 @@ function useKanbanDrag(adapter, options) {
 }
 
 // src/domain/Kanban/hooks/useKanbanState.ts
-import { useState as useState9, useMemo as useMemo12, useCallback as useCallback7 } from "react";
-function useKanbanState(adapter, options) {
+import { useMemo as useMemo12, useCallback as useCallback7 } from "react";
+import { useElementState as useElementState5 } from "@onegenui/react";
+function useKanbanState(elementKey, adapter, options) {
   const { initialColumns, lock } = options;
-  const [itemMoves, setItemMoves] = useState9({});
-  const [subItemCompletions, setSubItemCompletions] = useState9({});
+  const [state, updateState] = useElementState5(elementKey, {
+    itemMoves: {},
+    subItemCompletions: {}
+  });
+  const { itemMoves, subItemCompletions } = state;
   const displayColumns = useMemo12(
     () => adapter.buildDisplayColumns(initialColumns, itemMoves),
     [adapter, initialColumns, itemMoves]
@@ -4106,23 +4122,23 @@ function useKanbanState(adapter, options) {
   const moveItem = useCallback7(
     (itemId, targetColId) => {
       if (lock) return;
-      setItemMoves((prev) => ({ ...prev, [itemId]: targetColId }));
+      updateState({ itemMoves: { ...itemMoves, [itemId]: targetColId } });
     },
-    [lock]
+    [lock, itemMoves, updateState]
   );
   const toggleSubItem = useCallback7(
     (itemId, subItemId) => {
       if (lock) return;
-      setSubItemCompletions((prev) => {
-        const itemCompletions = prev[itemId] || {};
-        const current = itemCompletions[subItemId] ?? false;
-        return {
-          ...prev,
+      const itemCompletions = subItemCompletions[itemId] || {};
+      const current = itemCompletions[subItemId] ?? false;
+      updateState({
+        subItemCompletions: {
+          ...subItemCompletions,
           [itemId]: { ...itemCompletions, [subItemId]: !current }
-        };
+        }
       });
     },
-    [lock]
+    [lock, subItemCompletions, updateState]
   );
   const isSubItemCompleted = useCallback7(
     (itemId, subItemId) => {
@@ -4161,7 +4177,7 @@ var Kanban = memo25(function Kanban2({
   } = element.props;
   const adapter = useMemo13(() => getKanbanAdapter(), []);
   const dragAdapter = useMemo13(() => getKanbanDragAdapter(), []);
-  const { displayColumns, moveItem, toggleSubItem, isSubItemCompleted } = useKanbanState(adapter, {
+  const { displayColumns, moveItem, toggleSubItem, isSubItemCompleted } = useKanbanState(element.key, adapter, {
     initialColumns: initialColumns || [],
     lock
   });
@@ -4365,20 +4381,17 @@ function getTodoListAdapter() {
 }
 
 // src/domain/TodoList/hooks/useTodoListLogic.ts
-import { useState as useState10, useCallback as useCallback8, useEffect as useEffect3, useMemo as useMemo14 } from "react";
-function useTodoListLogic(adapter, options) {
+import { useCallback as useCallback8, useMemo as useMemo14 } from "react";
+import { useElementState as useElementState6 } from "@onegenui/react";
+function useTodoListLogic(elementKey, adapter, options) {
   const { initialItems } = options;
-  const [items, setItems] = useState10(initialItems);
-  useEffect3(() => {
-    if (initialItems) {
-      setItems(initialItems);
-    }
-  }, [initialItems]);
+  const [state, updateState] = useElementState6(elementKey, { items: initialItems });
+  const items = state.items;
   const toggleItem = useCallback8(
     (id) => {
-      setItems((prev) => adapter.toggleItemStatus(prev, id));
+      updateState({ items: adapter.toggleItemStatus(items, id) });
     },
-    [adapter]
+    [adapter, items, updateState]
   );
   const completedCount = useMemo14(
     () => adapter.countCompleted(items),
@@ -4416,6 +4429,7 @@ var TodoList = memo26(function TodoList2({
   const { title, items: initialItems } = element.props;
   const adapter = useMemo15(() => getTodoListAdapter(), []);
   const { items, completedCount, totalCount, toggleItem } = useTodoListLogic(
+    element.key,
     adapter,
     { initialItems: initialItems || [] }
   );
@@ -4576,7 +4590,6 @@ var TodoList = memo26(function TodoList2({
 
 // src/domain/RoutineScheduler/component.tsx
 import { memo as memo29 } from "react";
-import { useDomainAutoSave as useDomainAutoSave8 } from "@onegenui/react";
 import { Calendar as Calendar8, ChevronLeft, ChevronRight as ChevronRight2 } from "lucide-react";
 import { AnimatePresence as AnimatePresence9 } from "framer-motion";
 
@@ -4937,8 +4950,9 @@ function getRoutineSchedulerStateAdapter() {
 }
 
 // src/domain/RoutineScheduler/hooks/useRoutineSchedulerLogic.ts
-import { useState as useState11, useMemo as useMemo16, useCallback as useCallback9 } from "react";
-function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
+import { useMemo as useMemo16, useCallback as useCallback9 } from "react";
+import { useElementState as useElementState7 } from "@onegenui/react";
+function useRoutineSchedulerLogic(elementKey, adapter, stateAdapter, options) {
   const {
     initialDate,
     initialView = "day",
@@ -4948,11 +4962,15 @@ function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
     showCategories,
     lock = false
   } = options;
-  const [localEdits, setLocalEdits] = useState11({});
-  const [currentView, setCurrentView] = useState11(initialView);
-  const [selectedDate, setSelectedDate] = useState11(
-    initialDate ?? adapter.getTodayString()
+  const [state, updateState] = useElementState7(
+    elementKey,
+    {
+      localEdits: {},
+      currentView: initialView,
+      selectedDate: initialDate ?? adapter.getTodayString()
+    }
   );
+  const { localEdits, currentView, selectedDate } = state;
   const dayStart = timeRange?.start || "06:00";
   const dayEnd = timeRange?.end || "22:00";
   const todayStr = adapter.getTodayString();
@@ -4973,32 +4991,46 @@ function useRoutineSchedulerLogic(adapter, stateAdapter, options) {
     () => stateAdapter.getVisibleDays(filteredDays, selectedDate, currentView),
     [stateAdapter, filteredDays, selectedDate, currentView]
   );
+  const setCurrentView = useCallback9(
+    (view) => {
+      updateState({ currentView: view });
+    },
+    [updateState]
+  );
+  const setSelectedDate = useCallback9(
+    (date) => {
+      updateState({ selectedDate: date });
+    },
+    [updateState]
+  );
   const navigateDate = useCallback9(
     (direction) => {
-      setSelectedDate(
-        (prev) => stateAdapter.navigateDate(prev, direction, currentView)
+      const newDate = stateAdapter.navigateDate(
+        selectedDate,
+        direction,
+        currentView
       );
+      updateState({ selectedDate: newDate });
     },
-    [stateAdapter, currentView]
+    [stateAdapter, currentView, selectedDate, updateState]
   );
   const goToToday = useCallback9(() => {
-    setSelectedDate(adapter.getTodayString());
-  }, [adapter]);
+    updateState({ selectedDate: adapter.getTodayString() });
+  }, [adapter, updateState]);
   const handleToggleBlock = useCallback9(
     (blockId) => {
       if (lock) return;
       const allBlocks = displayDays.flatMap((d) => d.blocks);
       const block = allBlocks.find((b) => b.id === blockId);
       if (!block) return;
-      setLocalEdits(
-        (prev) => stateAdapter.toggleBlockCompletion(
-          prev,
-          blockId,
-          block.completed ?? false
-        )
+      const newEdits = stateAdapter.toggleBlockCompletion(
+        localEdits,
+        blockId,
+        block.completed ?? false
       );
+      updateState({ localEdits: newEdits });
     },
-    [lock, displayDays, stateAdapter]
+    [lock, displayDays, stateAdapter, localEdits, updateState]
   );
   return {
     // State
@@ -5053,7 +5085,7 @@ var RoutineScheduler = memo29(function RoutineScheduler2({
     navigateDate,
     handleToggleBlock,
     displayDays
-  } = useRoutineSchedulerLogic(adapter, stateAdapter, {
+  } = useRoutineSchedulerLogic(element.key, adapter, stateAdapter, {
     initialDate: initialSelectedDate ?? void 0,
     initialView: view === "timeline" ? "day" : view,
     initialDays: initialDays || [],
@@ -5061,12 +5093,6 @@ var RoutineScheduler = memo29(function RoutineScheduler2({
     granularity,
     showCategories: showCategories ?? void 0,
     lock: lock ?? false
-  });
-  useDomainAutoSave8("schedule", element.key, {
-    type: "routine_schedule",
-    days: displayDays,
-    selectedDate,
-    view: currentView
   });
   return /* @__PURE__ */ jsxs30("div", { className: "flex flex-col gap-3 sm:gap-4 w-full", children: [
     /* @__PURE__ */ jsxs30("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
@@ -5178,7 +5204,7 @@ var RoutineScheduler = memo29(function RoutineScheduler2({
 
 // src/domain/SupplementTracker/component.tsx
 import { memo as memo33, useMemo as useMemo18 } from "react";
-import { useDomainAutoSave as useDomainAutoSave9 } from "@onegenui/react";
+import { useDomainAutoSave as useDomainAutoSave8 } from "@onegenui/react";
 import { Pill as Pill3, Package } from "lucide-react";
 import { AnimatePresence as AnimatePresence10 } from "framer-motion";
 
@@ -5494,8 +5520,9 @@ function getSupplementStateAdapter() {
 }
 
 // src/domain/SupplementTracker/hooks/useSupplementTrackerLogic.ts
-import { useState as useState12, useMemo as useMemo17, useCallback as useCallback10 } from "react";
-function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
+import { useState as useState9, useMemo as useMemo17, useCallback as useCallback10 } from "react";
+import { useElementState as useElementState8 } from "@onegenui/react";
+function useSupplementTrackerLogic(elementKey, trackerAdapter, stateAdapter, options) {
   const {
     initialSupplements,
     initialSchedule,
@@ -5503,8 +5530,12 @@ function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
     lock: rawLock
   } = options;
   const lock = rawLock ?? false;
-  const [localEdits, setLocalEdits] = useState12({});
-  const [selectedDate] = useState12(
+  const [editsState, setEditsState] = useElementState8(
+    elementKey,
+    { localEdits: {} }
+  );
+  const localEdits = editsState.localEdits;
+  const [selectedDate] = useState9(
     initialSelectedDate ?? trackerAdapter.getTodayDate()
   );
   const supplements = useMemo17(
@@ -5534,17 +5565,21 @@ function useSupplementTrackerLogic(trackerAdapter, stateAdapter, options) {
       const key = doseId || `temp-${suppId}`;
       const current = displayDoses.find((d) => d.id === key);
       const isTaken = current?.taken ?? false;
-      setLocalEdits((prev) => stateAdapter.toggleDose(prev, key, isTaken));
+      setEditsState({
+        localEdits: stateAdapter.toggleDose(localEdits, key, isTaken)
+      });
     },
-    [lock, displayDoses, stateAdapter]
+    [lock, displayDoses, stateAdapter, localEdits, setEditsState]
   );
   const handleSkip = useCallback10(
     (suppId, doseId) => {
       if (lock) return;
       const key = doseId || `temp-${suppId}`;
-      setLocalEdits((prev) => stateAdapter.skipDose(prev, key));
+      setEditsState({
+        localEdits: stateAdapter.skipDose(localEdits, key)
+      });
     },
-    [lock, stateAdapter]
+    [lock, stateAdapter, localEdits, setEditsState]
   );
   return {
     // State
@@ -5586,13 +5621,13 @@ var SupplementTracker = memo33(function SupplementTracker2({
     formattedDate,
     handleToggle,
     handleSkip
-  } = useSupplementTrackerLogic(trackerAdapter, stateAdapter, {
+  } = useSupplementTrackerLogic(element.key, trackerAdapter, stateAdapter, {
     initialSupplements,
     initialSchedule,
     initialSelectedDate,
     lock
   });
-  useDomainAutoSave9("supplement", element.key, {
+  useDomainAutoSave8("supplement", element.key, {
     type: "supplement_schedule",
     supplements,
     schedule: [{ date: selectedDate, doses: displayDoses }]
@@ -5634,7 +5669,7 @@ var SupplementTracker = memo33(function SupplementTracker2({
 
 // src/domain/Calendar/component.tsx
 import { memo as memo36, useMemo as useMemo20 } from "react";
-import { useDomainAutoSave as useDomainAutoSave10 } from "@onegenui/react";
+import { useDomainAutoSave as useDomainAutoSave9 } from "@onegenui/react";
 import {
   Calendar as CalendarIcon4,
   ChevronLeft as ChevronLeft2,
@@ -5950,8 +5985,9 @@ function getCalendarStateAdapter() {
 }
 
 // src/domain/Calendar/hooks/useCalendarLogic.ts
-import { useState as useState13, useMemo as useMemo19, useCallback as useCallback11 } from "react";
-function useCalendarLogic(calendarAdapter, stateAdapter, options) {
+import { useState as useState10, useMemo as useMemo19, useCallback as useCallback11 } from "react";
+import { useElementState as useElementState9 } from "@onegenui/react";
+function useCalendarLogic(elementKey, calendarAdapter, stateAdapter, options) {
   const {
     initialDate,
     initialView = "month",
@@ -5959,9 +5995,11 @@ function useCalendarLogic(calendarAdapter, stateAdapter, options) {
     firstDayOfWeek = 1,
     lock = false
   } = options;
-  const [localEdits, setLocalEdits] = useState13({});
-  const [currentView, setCurrentView] = useState13(initialView);
-  const [selectedDate, setSelectedDate] = useState13(() => {
+  const [{ localEdits }, updateEdits] = useElementState9(elementKey, {
+    localEdits: {}
+  });
+  const [currentView, setCurrentView] = useState10(initialView);
+  const [selectedDate, setSelectedDate] = useState10(() => {
     if (initialDate) return new Date(initialDate);
     return /* @__PURE__ */ new Date();
   });
@@ -6003,15 +6041,15 @@ function useCalendarLogic(calendarAdapter, stateAdapter, options) {
       if (lock) return;
       const event = displayEvents.find((e) => e.id === eventId);
       if (!event) return;
-      setLocalEdits(
-        (prev) => stateAdapter.toggleEventCompletion(
-          prev,
+      updateEdits({
+        localEdits: stateAdapter.toggleEventCompletion(
+          localEdits,
           eventId,
           event.completed ?? false
         )
-      );
+      });
     },
-    [lock, displayEvents, stateAdapter]
+    [lock, displayEvents, stateAdapter, localEdits, updateEdits]
   );
   return {
     // State
@@ -6078,14 +6116,14 @@ var Calendar9 = memo36(function Calendar10({
     navigateMonth,
     goToToday,
     handleToggleEvent
-  } = useCalendarLogic(calendarAdapter, stateAdapter, {
+  } = useCalendarLogic(element.key, calendarAdapter, stateAdapter, {
     initialDate: initialSelectedDate ?? void 0,
     initialView,
     initialEvents,
     firstDayOfWeek,
     lock
   });
-  useDomainAutoSave10("calendar", element.key, {
+  useDomainAutoSave9("calendar", element.key, {
     type: "calendar",
     events: displayEvents,
     selectedDate: selectedDateStr,
@@ -6237,7 +6275,7 @@ var Calendar9 = memo36(function Calendar10({
 
 // src/domain/Diary/component.tsx
 import { memo as memo39, useMemo as useMemo22 } from "react";
-import { useDomainAutoSave as useDomainAutoSave11 } from "@onegenui/react";
+import { useDomainAutoSave as useDomainAutoSave10 } from "@onegenui/react";
 import { BookOpen, ChevronLeft as ChevronLeft3, ChevronRight as ChevronRight4 } from "lucide-react";
 import { motion as motion23, AnimatePresence as AnimatePresence12 } from "framer-motion";
 
@@ -6602,11 +6640,16 @@ function getDiaryStateAdapter() {
 }
 
 // src/domain/Diary/hooks/useDiaryLogic.ts
-import { useState as useState14, useMemo as useMemo21, useCallback as useCallback12 } from "react";
-function useDiaryLogic(diaryAdapter, stateAdapter, options) {
+import { useState as useState11, useMemo as useMemo21, useCallback as useCallback12 } from "react";
+import { useElementState as useElementState10 } from "@onegenui/react";
+function useDiaryLogic(elementKey, diaryAdapter, stateAdapter, options) {
   const { initialEntries = [], initialSelectedDate, lock = false } = options;
-  const [localEdits, setLocalEdits] = useState14({});
-  const [selectedDate, setSelectedDate] = useState14(
+  const [editsState, setEditsState] = useElementState10(
+    elementKey,
+    { localEdits: {} }
+  );
+  const localEdits = editsState.localEdits;
+  const [selectedDate, setSelectedDate] = useState11(
     initialSelectedDate ?? diaryAdapter.getTodayString()
   );
   const displayEntries = useMemo21(
@@ -6635,9 +6678,10 @@ function useDiaryLogic(diaryAdapter, stateAdapter, options) {
       if (lock) return;
       const entry = displayEntries.find((e) => e.id === entryId);
       if (!entry || !entry.goals) return;
-      setLocalEdits((prev) => stateAdapter.toggleGoal(prev, entry, goalId));
+      const newEdits = stateAdapter.toggleGoal(localEdits, entry, goalId);
+      setEditsState({ localEdits: newEdits });
     },
-    [lock, displayEntries, stateAdapter]
+    [lock, displayEntries, stateAdapter, localEdits, setEditsState]
   );
   return {
     // State
@@ -6682,13 +6726,13 @@ var Diary = memo39(function Diary2({
     navigateDate,
     goToToday,
     handleToggleGoal
-  } = useDiaryLogic(diaryAdapter, stateAdapter, {
+  } = useDiaryLogic(element.key, diaryAdapter, stateAdapter, {
     initialEntries,
     initialSelectedDate,
     view,
     lock
   });
-  useDomainAutoSave11("diary", element.key, {
+  useDomainAutoSave10("diary", element.key, {
     type: "diary",
     entries: displayEntries,
     selectedDate
@@ -6821,14 +6865,14 @@ function detectVideoEmbed(url) {
 }
 
 // src/domain/research/components/video-player.tsx
-import { memo as memo40, useState as useState15 } from "react";
+import { memo as memo40, useState as useState12 } from "react";
 import { PlayCircle, Play as Play2 } from "lucide-react";
 import { jsx as jsx42, jsxs as jsxs41 } from "react/jsx-runtime";
 var VideoPlayer = memo40(function VideoPlayer2({
   video,
   title
 }) {
-  const [isPlaying, setIsPlaying] = useState15(false);
+  const [isPlaying, setIsPlaying] = useState12(false);
   const embedInfo = detectVideoEmbed(video.url);
   if (isPlaying) {
     return /* @__PURE__ */ jsx42("div", { className: "mt-4 rounded-xl overflow-hidden border border-white/10 aspect-video bg-black", children: embedInfo ? /* @__PURE__ */ jsx42(
@@ -7038,7 +7082,7 @@ var ResearchReport = memo44(function ResearchReport2({
 });
 
 // src/domain/DocumentIndex/component.tsx
-import { memo as memo45, useState as useState16, useCallback as useCallback13 } from "react";
+import { memo as memo45, useState as useState13, useCallback as useCallback13 } from "react";
 import {
   FileText as FileText3,
   ChevronRight as ChevronRight5,
@@ -7055,8 +7099,8 @@ var TreeNodeItem = memo45(function TreeNodeItem2({
   accentColor,
   onNodeClick
 }) {
-  const [expanded, setExpanded] = useState16(depth > 0);
-  const [showFullSummary, setShowFullSummary] = useState16(false);
+  const [expanded, setExpanded] = useState13(depth > 0);
+  const [showFullSummary, setShowFullSummary] = useState13(false);
   const hasChildren = node.children && node.children.length > 0;
   const toggle = useCallback13(() => {
     if (hasChildren) {
@@ -7179,7 +7223,7 @@ var DocumentIndex = memo45(function DocumentIndex2({
     accentColor = "#3b82f6",
     collapsed: initialCollapsed = false
   } = element.props;
-  const [collapsed, setCollapsed] = useState16(initialCollapsed);
+  const [collapsed, setCollapsed] = useState13(initialCollapsed);
   const handleNodeClick = useCallback13(
     (node) => {
       onAction?.({
@@ -7268,7 +7312,7 @@ var DocumentIndexDefinition = {
 };
 
 // src/domain/SourceCitation/component.tsx
-import { memo as memo46, useState as useState17 } from "react";
+import { memo as memo46, useState as useState14 } from "react";
 import { FileText as FileText4, ChevronDown as ChevronDown4, BookOpen as BookOpen3 } from "lucide-react";
 import { motion as motion25 } from "framer-motion";
 import { jsx as jsx48, jsxs as jsxs47 } from "react/jsx-runtime";
@@ -7281,7 +7325,7 @@ var SourceCitation = memo46(function SourceCitation2({
     collapsed: initialCollapsed = true,
     accentColor = "#3b82f6"
   } = element.props;
-  const [expanded, setExpanded] = useState17(!initialCollapsed);
+  const [expanded, setExpanded] = useState14(!initialCollapsed);
   const visibleCitations = expanded ? citations : citations.slice(0, 4);
   if (citations.length === 0) return null;
   return /* @__PURE__ */ jsxs47("div", { className: "flex flex-col gap-2", children: [
@@ -7335,7 +7379,7 @@ var CompactCitation = memo46(function CompactCitation2({
   index,
   accentColor
 }) {
-  const [showExcerpt, setShowExcerpt] = useState17(false);
+  const [showExcerpt, setShowExcerpt] = useState14(false);
   return /* @__PURE__ */ jsxs47(
     motion25.div,
     {
@@ -7409,7 +7453,7 @@ var SourceCitationDefinition = {
 };
 
 // src/visualization/charts/Chart/component.tsx
-import { memo as memo47, useMemo as useMemo23, useState as useState18 } from "react";
+import { memo as memo47, useMemo as useMemo23, useState as useState15 } from "react";
 import {
   useData,
   useItemSelection
@@ -7507,7 +7551,7 @@ var Chart = memo47(function Chart2({
   }, [series, categories, globalData, data, dataPath]);
   const chartHeight = Math.max(height || DEFAULT_HEIGHT, MIN_HEIGHT);
   const { selectedItems, isItemSelected } = useItemSelection(element.key);
-  const [hoveredIndex, setHoveredIndex] = useState18(null);
+  const [hoveredIndex, setHoveredIndex] = useState15(null);
   const { ticks, normalizedData } = useMemo23(() => {
     if (!chartData || chartData.length === 0) {
       return { maxValue: 0, minValue: 0, ticks: [], normalizedData: [] };
@@ -7632,7 +7676,7 @@ var Chart = memo47(function Chart2({
 });
 
 // src/visualization/charts/StockChart/component.tsx
-import { memo as memo48, useEffect as useEffect4, useRef as useRef2, useState as useState19 } from "react";
+import { memo as memo48, useEffect as useEffect3, useRef as useRef2, useState as useState16 } from "react";
 import { jsx as jsx50, jsxs as jsxs49 } from "react/jsx-runtime";
 var chartsModule = null;
 var getTimeframeDays = (tf) => {
@@ -7677,11 +7721,11 @@ var StockChart = memo48(function StockChart2({
   const containerRef = useRef2(null);
   const chartRef = useRef2(null);
   const seriesRef = useRef2(null);
-  const [timeframe, setTimeframe] = useState19(
+  const [timeframe, setTimeframe] = useState16(
     props.timeframe || "3M"
   );
   const filteredData = filterDataByTimeframe(initialData, timeframe);
-  useEffect4(() => {
+  useEffect3(() => {
     if (!chartsModule) {
       import("lightweight-charts").then((mod) => {
         chartsModule = mod;
@@ -7697,7 +7741,7 @@ var StockChart = memo48(function StockChart2({
       }
     };
   }, []);
-  useEffect4(() => {
+  useEffect3(() => {
     if (seriesRef.current && filteredData.length > 0) {
       seriesRef.current.setData(filteredData);
       if (chartRef.current) {
@@ -7705,7 +7749,7 @@ var StockChart = memo48(function StockChart2({
       }
     }
   }, [filteredData]);
-  useEffect4(() => {
+  useEffect3(() => {
     const handleResize = () => {
       if (chartRef.current && containerRef.current) {
         chartRef.current.applyOptions({
@@ -7802,7 +7846,7 @@ var StockChart = memo48(function StockChart2({
 });
 
 // src/visualization/graphs/Graph/component.tsx
-import { memo as memo51, useCallback as useCallback14, useEffect as useEffect5, useMemo as useMemo24, useRef as useRef3, useState as useState20 } from "react";
+import { memo as memo51, useCallback as useCallback14, useEffect as useEffect4, useMemo as useMemo24, useRef as useRef3, useState as useState17 } from "react";
 import { useSelection } from "@onegenui/react";
 
 // src/visualization/graphs/Graph/components/types.ts
@@ -7962,18 +8006,18 @@ var Graph = memo51(function Graph2({
     [propsEdges]
   );
   const containerRef = useRef3(null);
-  const [dimensions, setDimensions] = useState20({ w: 800, h: DEFAULT_H });
+  const [dimensions, setDimensions] = useState17({ w: 800, h: DEFAULT_H });
   const nodeStates = useRef3(/* @__PURE__ */ new Map());
   const rafRef = useRef3(void 0);
-  const [bump, setBump] = useState20(0);
+  const [bump, setBump] = useState17(0);
   const iterationCount = useRef3(0);
   const { isSelected, toggleSelection } = useSelection();
-  const [pan, setPan] = useState20({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState20(1);
+  const [pan, setPan] = useState17({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState17(1);
   const isDragging = useRef3(false);
   const dragNodeId = useRef3(null);
   const lastMousePos = useRef3({ x: 0, y: 0 });
-  useEffect5(() => {
+  useEffect4(() => {
     const w = containerRef.current?.clientWidth || 800;
     const h = Math.max(240, height ?? DEFAULT_H);
     setDimensions({ w, h });
@@ -8003,7 +8047,7 @@ var Graph = memo51(function Graph2({
     iterationCount.current = 0;
     setBump((b) => b + 1);
   }, [nodes, height]);
-  useEffect5(() => {
+  useEffect4(() => {
     const center = { x: dimensions.w / 2, y: dimensions.h / 2 };
     const step = () => {
       if (iterationCount.current > MAX_ITERATIONS && !isDragging.current) {
@@ -8231,7 +8275,7 @@ function buildTreeFromFlat(nodes) {
 }
 
 // src/visualization/graphs/MindMap/components/node-renderer.tsx
-import { memo as memo52, useState as useState21, useCallback as useCallback15, useRef as useRef4, useLayoutEffect } from "react";
+import { memo as memo52, useState as useState18, useCallback as useCallback15, useRef as useRef4, useLayoutEffect } from "react";
 import { jsx as jsx54, jsxs as jsxs52 } from "react/jsx-runtime";
 var NodeRenderer = memo52(function NodeRenderer2({
   node,
@@ -8240,13 +8284,13 @@ var NodeRenderer = memo52(function NodeRenderer2({
   expandedByDefault,
   elementKey
 }) {
-  const [expanded, setExpanded] = useState21(expandedByDefault);
+  const [expanded, setExpanded] = useState18(expandedByDefault);
   const hasChildren = node.children && node.children.length > 0;
   const defaultColors = getColorForDepth(depth);
   const colors = node.color ? { bg: `${node.color}15`, border: node.color, text: node.color } : defaultColors;
   const nodeRef = useRef4(null);
   const childrenRef = useRef4(null);
-  const [paths, setPaths] = useState21([]);
+  const [paths, setPaths] = useState18([]);
   const updatePaths = useCallback15(() => {
     if (!expanded || !hasChildren || !nodeRef.current || !childrenRef.current) {
       setPaths([]);
@@ -8610,7 +8654,7 @@ import {
 } from "@onegenui/ui";
 
 // src/communication/Message/component.tsx
-import { memo as memo55, useState as useState22, useEffect as useEffect6 } from "react";
+import { memo as memo55, useState as useState19, useEffect as useEffect5 } from "react";
 import { Send, User as User4 } from "lucide-react";
 import { jsx as jsx57, jsxs as jsxs55 } from "react/jsx-runtime";
 var Message = memo55(function Message2({
@@ -8624,15 +8668,15 @@ var Message = memo55(function Message2({
     activeAgents = [],
     lock = false
   } = element.props;
-  const [messages, setMessages] = useState22(
+  const [messages, setMessages] = useState19(
     initialMessages || []
   );
-  useEffect6(() => {
+  useEffect5(() => {
     if (initialMessages) {
       setMessages(initialMessages);
     }
   }, [initialMessages]);
-  const [replyText, setReplyText] = useState22("");
+  const [replyText, setReplyText] = useState19("");
   const handleSendReply = () => {
     if (lock || !replyText.trim()) return;
     const newMessage = {
@@ -8796,7 +8840,8 @@ var Message = memo55(function Message2({
 });
 
 // src/communication/Email/component.tsx
-import { memo as memo58, useState as useState24, useEffect as useEffect8, useRef as useRef5, useCallback as useCallback16 } from "react";
+import { memo as memo58, useState as useState21, useEffect as useEffect7, useRef as useRef5, useCallback as useCallback16 } from "react";
+import { createLogger } from "@onegenui/utils";
 import { PenSquare, Mail } from "lucide-react";
 
 // src/communication/Email/components/unread-dot.tsx
@@ -8806,7 +8851,7 @@ function UnreadDot() {
 }
 
 // src/communication/Email/components/compose-modal.tsx
-import { useState as useState23, useEffect as useEffect7 } from "react";
+import { useState as useState20, useEffect as useEffect6 } from "react";
 import { Send as Send2, X as X2, Paperclip } from "lucide-react";
 
 // src/communication/Email/components/types.ts
@@ -8859,12 +8904,12 @@ function ComposeModal({
   onClose,
   onSend
 }) {
-  const [to, setTo] = useState23("");
-  const [cc, setCc] = useState23("");
-  const [subject, setSubject] = useState23("");
-  const [body, setBody] = useState23("");
-  const [sending, setSending] = useState23(false);
-  useEffect7(() => {
+  const [to, setTo] = useState20("");
+  const [cc, setCc] = useState20("");
+  const [subject, setSubject] = useState20("");
+  const [body, setBody] = useState20("");
+  const [sending, setSending] = useState20(false);
+  useEffect6(() => {
     if (mode === "reply" && originalEmail) {
       setTo(extractEmailAddress(originalEmail.from));
       setSubject(`Re: ${originalEmail.subject.replace(/^Re:\s*/i, "")}`);
@@ -9295,6 +9340,7 @@ var EmailDetail = memo57(function EmailDetail2({
 
 // src/communication/Email/component.tsx
 import { jsx as jsx62, jsxs as jsxs59 } from "react/jsx-runtime";
+var log = createLogger({ prefix: "email" });
 var Email = memo58(function Email2({
   element,
   children
@@ -9307,12 +9353,12 @@ var Email = memo58(function Email2({
     onSendEmail
   } = element.props;
   const isInitialMount = useRef5(true);
-  const [localEmails, setLocalEmails] = useState24([]);
-  const [selectedEmailId, setSelectedEmailId] = useState24(null);
-  const [composeMode, setComposeMode] = useState24("none");
-  const [hoveredId, setHoveredId] = useState24(null);
+  const [localEmails, setLocalEmails] = useState21([]);
+  const [selectedEmailId, setSelectedEmailId] = useState21(null);
+  const [composeMode, setComposeMode] = useState21("none");
+  const [hoveredId, setHoveredId] = useState21(null);
   const emailsKey = JSON.stringify(initialEmails);
-  useEffect8(() => {
+  useEffect7(() => {
     const newEmails = initialEmails || [];
     setLocalEmails(newEmails);
     if (newEmails.length === 1 && isInitialMount.current) {
@@ -9362,11 +9408,11 @@ var Email = memo58(function Email2({
   );
   const handleSendEmail = useCallback16(
     async (draft) => {
-      console.log("[Email] Sending email:", draft);
+      log.debug("[Email] Sending email:", draft);
       if (onSendEmail) {
         await onSendEmail(draft);
       } else {
-        console.log("[Email] Email sent (simulated):", draft);
+        log.debug("[Email] Email sent (simulated):", draft);
       }
     },
     [onSendEmail]
@@ -9435,7 +9481,7 @@ var Email = memo58(function Email2({
 });
 
 // src/document/DocumentExplorer.tsx
-import { memo as memo59, useState as useState25, useCallback as useCallback17 } from "react";
+import { memo as memo59, useState as useState22, useCallback as useCallback17 } from "react";
 import { jsx as jsx63, jsxs as jsxs60 } from "react/jsx-runtime";
 var TreeNodeItem3 = memo59(function TreeNodeItem4({
   node,
@@ -9499,7 +9545,7 @@ var DocumentExplorer = memo59(function DocumentExplorer2({
   selectedNodeId,
   expandedByDefault = true
 }) {
-  const [expanded, setExpanded] = useState25(() => {
+  const [expanded, setExpanded] = useState22(() => {
     if (!expandedByDefault) return /* @__PURE__ */ new Set();
     const ids = /* @__PURE__ */ new Set();
     const collect = (node) => {
@@ -9908,7 +9954,7 @@ var CitationViewer = memo63(function CitationViewer2({
 });
 
 // src/document/EntityExplorer.tsx
-import { memo as memo64, useState as useState26, useMemo as useMemo27 } from "react";
+import { memo as memo64, useState as useState23, useMemo as useMemo27 } from "react";
 import { jsx as jsx68, jsxs as jsxs65 } from "react/jsx-runtime";
 var typeColorClasses = {
   person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
@@ -9925,8 +9971,8 @@ var EntityExplorer = memo64(function EntityExplorer2({
   onEntityClick,
   filterTypes
 }) {
-  const [selectedType, setSelectedType] = useState26(null);
-  const [searchQuery, setSearchQuery] = useState26("");
+  const [selectedType, setSelectedType] = useState23(null);
+  const [searchQuery, setSearchQuery] = useState23("");
   const types = useMemo27(() => {
     const typeSet = new Set(entities.map((e) => e.type));
     return Array.from(typeSet).sort();
@@ -10033,9 +10079,9 @@ var EntityExplorer = memo64(function EntityExplorer2({
 });
 
 // src/document/hooks/useKnowledgeBase.ts
-import { useState as useState27, useCallback as useCallback18, useMemo as useMemo28 } from "react";
+import { useState as useState24, useCallback as useCallback18, useMemo as useMemo28 } from "react";
 function useKnowledgeBase(options = {}) {
-  const [knowledgeBase, setKnowledgeBase] = useState27(
+  const [knowledgeBase, setKnowledgeBase] = useState24(
     options.initialKnowledgeBase ?? null
   );
   const entities = useMemo28(
@@ -10089,7 +10135,7 @@ function useKnowledgeBase(options = {}) {
 }
 
 // src/document/hooks/useDocumentExplorer.ts
-import { useState as useState28, useCallback as useCallback19 } from "react";
+import { useState as useState25, useCallback as useCallback19 } from "react";
 function collectAllNodeIds(node, ids) {
   ids.add(node.id);
   if (node.children) {
@@ -10122,11 +10168,11 @@ function searchTree(node, query, results = []) {
   return results;
 }
 function useDocumentExplorer(options = {}) {
-  const [tree, setTree] = useState28(
+  const [tree, setTree] = useState25(
     options.initialTree ?? null
   );
-  const [selectedNode, setSelectedNode] = useState28(null);
-  const [expandedNodes, setExpandedNodes] = useState28(/* @__PURE__ */ new Set());
+  const [selectedNode, setSelectedNode] = useState25(null);
+  const [expandedNodes, setExpandedNodes] = useState25(/* @__PURE__ */ new Set());
   const selectNode = useCallback19(
     (node) => {
       setSelectedNode(node);
@@ -10183,13 +10229,13 @@ function useDocumentExplorer(options = {}) {
 }
 
 // src/document/hooks/useQuestionAnswer.ts
-import { useState as useState29, useCallback as useCallback20 } from "react";
+import { useState as useState26, useCallback as useCallback20 } from "react";
 function useQuestionAnswer(options = {}) {
-  const [question, setQuestion] = useState29("");
-  const [answer, setAnswer] = useState29(null);
-  const [isLoading, setIsLoading] = useState29(false);
-  const [error, setError] = useState29(null);
-  const [history, setHistory] = useState29([]);
+  const [question, setQuestion] = useState26("");
+  const [answer, setAnswer] = useState26(null);
+  const [isLoading, setIsLoading] = useState26(false);
+  const [error, setError] = useState26(null);
+  const [history, setHistory] = useState26([]);
   const askQuestion = useCallback20(
     async (knowledgeBaseId, q) => {
       setIsLoading(true);

@@ -6,7 +6,7 @@ interface WorkoutSetRowProps {
   set: WorkoutSet;
   index: number;
   lock: boolean;
-  onUpdate: (field: keyof WorkoutSet, value: any) => void;
+  onUpdate: (field: keyof WorkoutSet, value: WorkoutSet[keyof WorkoutSet]) => void;
   onRemove: () => void;
 }
 

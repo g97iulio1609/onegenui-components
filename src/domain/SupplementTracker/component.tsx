@@ -41,7 +41,7 @@ export const SupplementTracker = memo(function SupplementTracker({
     formattedDate,
     handleToggle,
     handleSkip,
-  } = useSupplementTrackerLogic(trackerAdapter, stateAdapter, {
+  } = useSupplementTrackerLogic(element.key, trackerAdapter, stateAdapter, {
     initialSupplements,
     initialSchedule,
     initialSelectedDate,

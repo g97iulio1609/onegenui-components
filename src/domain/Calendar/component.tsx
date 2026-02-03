@@ -68,7 +68,7 @@ export const Calendar = memo(function Calendar({
     navigateMonth,
     goToToday,
     handleToggleEvent,
-  } = useCalendarLogic(calendarAdapter, stateAdapter, {
+  } = useCalendarLogic(element.key, calendarAdapter, stateAdapter, {
     initialDate: initialSelectedDate ?? undefined,
     initialView,
     initialEvents,

@@ -216,6 +216,82 @@ import { motion, AnimatePresence } from "framer-motion";
 
 ---
 
+## State Management
+
+### CRITICAL: Use useElementState for Domain State
+
+Components that manage data that should be visible to the AI (items, selections, form values) **MUST** use `useElementState` instead of `useState`. This ensures the state is:
+
+1. **Synced to the UI tree** - AI can see the current state
+2. **Persisted in Zustand store** - Survives re-renders
+3. **Included in AI requests** - Sent as context to the LLM
+
+```typescript
+// ❌ BAD: useState - AI cannot see changes
+const [items, setItems] = useState(props.items);
+
+// ✅ GOOD: useElementState - State syncs to AI context
+import { useElementState } from "@onegenui/react";
+
+// State interface MUST extend Record<string, unknown>
+interface WorkoutState extends Record<string, unknown> {
+  items: WorkoutItem[];
+}
+
+const [state, updateState] = useElementState<WorkoutState>(element.key, {
+  items: props.items ?? [],
+});
+
+// Update state (auto-syncs to tree with 300ms debounce)
+updateState({ items: [...state.items, newItem] });
+```
+
+### When to Use useElementState
+
+| Use Case | Hook |
+|----------|------|
+| Domain data (items, entries, records) | `useElementState` |
+| Form values that affect AI context | `useElementState` |
+| User selections that AI should know | `useElementState` |
+| Pure UI state (expanded, hover, pan/zoom) | `useState` |
+| Temporary input before submission | `useState` |
+
+### Standard Logic Hook Pattern
+
+Each domain component should have a single logic hook:
+
+```typescript
+// hooks/useComponentLogic.ts
+import { useCallback, useMemo } from "react";
+import { useElementState } from "@onegenui/react";
+
+interface ComponentState extends Record<string, unknown> {
+  items: Item[];
+}
+
+export function useComponentLogic(elementKey: string, initialProps: Props) {
+  const [state, updateState] = useElementState<ComponentState>(elementKey, {
+    items: initialProps.items ?? [],
+  });
+  
+  const addItem = useCallback((item: Item) => {
+    updateState({ items: [...state.items, item] });
+  }, [state.items, updateState]);
+  
+  const removeItem = useCallback((id: string) => {
+    updateState({ items: state.items.filter(i => i.id !== id) });
+  }, [state.items, updateState]);
+  
+  return {
+    ...state,
+    addItem,
+    removeItem,
+  };
+}
+```
+
+---
+
 ## KISS Principles
 
 ### Keep Components Focused
@@ -240,18 +316,20 @@ const BookingForm = () => { /* ... */ };
 ### Avoid Over-Engineering
 
 ```typescript
-// BAD: Unnecessary abstraction
+// BAD: Unnecessary abstraction with useReducer
 const useComplexStateManager = () => {
   const [state, dispatch] = useReducer(complexReducer, initialState);
   // ... 200 lines of logic
 };
 
-// GOOD: Simple state when sufficient
-const [items, setItems] = useState(initialItems);
+// GOOD: Use useElementState for domain data
+const [state, updateState] = useElementState(element.key, initialItems);
 const updateItem = (id, value) => {
-  setItems(prev => prev.map(item => 
-    item.id === id ? { ...item, ...value } : item
-  ));
+  updateState({ 
+    items: state.items.map(item => 
+      item.id === id ? { ...item, ...value } : item
+    )
+  });
 };
 ```
 

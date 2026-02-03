@@ -46,7 +46,7 @@ export const BookingForms = memo(function BookingForms({
     updateHotelField,
     actionLabel,
     promoText,
-  } = useBookingFormsLogic(validationAdapter, stateAdapter, {
+  } = useBookingFormsLogic(element.key, validationAdapter, stateAdapter, {
     initialType: type,
     mode,
   });

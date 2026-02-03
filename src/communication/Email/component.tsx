@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useState, useEffect, useRef, useCallback } from "react";
+import { createLogger } from "@onegenui/utils";
 import { type ComponentRenderProps } from "@onegenui/react";
 import { PenSquare, Mail } from "lucide-react";
 import {
@@ -11,6 +12,12 @@ import {
   type DraftEmail,
   type ComposeMode,
 } from "./components";
+
+// =============================================================================
+// Logger
+// =============================================================================
+
+const log = createLogger({ prefix: "email" });
 
 // =============================================================================
 // Main Component
@@ -103,11 +110,11 @@ export const Email = memo(function Email({
 
   const handleSendEmail = useCallback(
     async (draft: DraftEmail) => {
-      console.log("[Email] Sending email:", draft);
+      log.debug("[Email] Sending email:", draft);
       if (onSendEmail) {
         await onSendEmail(draft);
       } else {
-        console.log("[Email] Email sent (simulated):", draft);
+        log.debug("[Email] Email sent (simulated):", draft);
       }
     },
     [onSendEmail],

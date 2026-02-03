@@ -42,7 +42,7 @@ export const Diary = memo(function Diary({
     navigateDate,
     goToToday,
     handleToggleGoal,
-  } = useDiaryLogic(diaryAdapter, stateAdapter, {
+  } = useDiaryLogic(element.key, diaryAdapter, stateAdapter, {
     initialEntries,
     initialSelectedDate,
     view,

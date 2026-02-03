@@ -39,6 +39,7 @@ export const TodoList = memo(function TodoList({
 
   const adapter = useMemo(() => getTodoListAdapter(), []);
   const { items, completedCount, totalCount, toggleItem } = useTodoListLogic(
+    element.key,
     adapter,
     { initialItems: initialItems || [] },
   );

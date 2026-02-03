@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type { CalendarPort, CalendarStatePort } from "../ports";
 import type { CalendarEvent, CalendarView } from "../schema";
 
@@ -39,6 +40,7 @@ export interface UseCalendarLogicReturn {
 }
 
 export function useCalendarLogic(
+  elementKey: string,
   calendarAdapter: CalendarPort,
   stateAdapter: CalendarStatePort,
   options: UseCalendarLogicOptions,
@@ -51,10 +53,10 @@ export function useCalendarLogic(
     lock = false,
   } = options;
 
-  // Local edits state
-  const [localEdits, setLocalEdits] = useState<
-    Record<string, Partial<CalendarEvent>>
-  >({});
+  // Local edits state (syncs to AI via Zustand)
+  const [{ localEdits }, updateEdits] = useElementState(elementKey, {
+    localEdits: {} as Record<string, Partial<CalendarEvent>>,
+  });
 
   // View state
   const [currentView, setCurrentView] = useState<CalendarView>(initialView);
@@ -121,15 +123,15 @@ export function useCalendarLogic(
       const event = displayEvents.find((e) => e.id === eventId);
       if (!event) return;
 
-      setLocalEdits((prev) =>
-        stateAdapter.toggleEventCompletion(
-          prev,
+      updateEdits({
+        localEdits: stateAdapter.toggleEventCompletion(
+          localEdits,
           eventId,
           event.completed ?? false,
         ),
-      );
+      });
     },
-    [lock, displayEvents, stateAdapter],
+    [lock, displayEvents, stateAdapter, localEdits, updateEdits],
   );
 
   return {

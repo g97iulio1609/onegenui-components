@@ -1,7 +1,8 @@
 /**
  * useKanbanState - Custom hook for Kanban state management
  */
-import { useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type { KanbanPort, KanbanColumn, DisplayColumn } from "../ports";
 
 export interface UseKanbanStateOptions {
@@ -18,16 +19,24 @@ export interface UseKanbanStateReturn {
   isSubItemCompleted: (itemId: string, subItemId: string) => boolean;
 }
 
+interface KanbanStateData extends Record<string, unknown> {
+  itemMoves: Record<string, string>;
+  subItemCompletions: Record<string, Record<string, boolean>>;
+}
+
 export function useKanbanState(
+  elementKey: string,
   adapter: KanbanPort,
   options: UseKanbanStateOptions,
 ): UseKanbanStateReturn {
   const { initialColumns, lock } = options;
 
-  const [itemMoves, setItemMoves] = useState<Record<string, string>>({});
-  const [subItemCompletions, setSubItemCompletions] = useState<
-    Record<string, Record<string, boolean>>
-  >({});
+  const [state, updateState] = useElementState<KanbanStateData>(elementKey, {
+    itemMoves: {},
+    subItemCompletions: {},
+  });
+
+  const { itemMoves, subItemCompletions } = state;
 
   const displayColumns = useMemo(
     () => adapter.buildDisplayColumns(initialColumns, itemMoves),
@@ -37,24 +46,24 @@ export function useKanbanState(
   const moveItem = useCallback(
     (itemId: string, targetColId: string) => {
       if (lock) return;
-      setItemMoves((prev) => ({ ...prev, [itemId]: targetColId }));
+      updateState({ itemMoves: { ...itemMoves, [itemId]: targetColId } });
     },
-    [lock],
+    [lock, itemMoves, updateState],
   );
 
   const toggleSubItem = useCallback(
     (itemId: string, subItemId: string) => {
       if (lock) return;
-      setSubItemCompletions((prev) => {
-        const itemCompletions = prev[itemId] || {};
-        const current = itemCompletions[subItemId] ?? false;
-        return {
-          ...prev,
+      const itemCompletions = subItemCompletions[itemId] || {};
+      const current = itemCompletions[subItemId] ?? false;
+      updateState({
+        subItemCompletions: {
+          ...subItemCompletions,
           [itemId]: { ...itemCompletions, [subItemId]: !current },
-        };
+        },
       });
     },
-    [lock],
+    [lock, subItemCompletions, updateState],
   );
 
   const isSubItemCompleted = useCallback(

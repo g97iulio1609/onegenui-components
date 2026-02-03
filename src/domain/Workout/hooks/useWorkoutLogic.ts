@@ -1,15 +1,28 @@
 /**
  * useWorkoutLogic - Custom hook for workout state management
- * Separates business logic from presentation
+ * 
+ * Uses useElementState for centralized state management.
+ * All state modifications are automatically synced to:
+ * 1. Zustand store (immediate)
+ * 2. UI tree (debounced)
+ * 3. Supabase via chat persistence (automatic)
  */
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useElementState } from "@onegenui/react";
 import type { WorkoutPort, WorkoutStatePort } from "../ports";
 import type { ExerciseItem, WorkoutSet } from "../types";
 
 export interface UseWorkoutLogicOptions {
   initialItems: ExerciseItem[];
   lock?: boolean | null;
+  elementKey: string;
+}
+
+/** State stored in Zustand via useElementState */
+interface WorkoutElementState extends Record<string, unknown> {
+  items: ExerciseItem[];
+  isLocked: boolean;
 }
 
 export interface UseWorkoutLogicReturn {
@@ -41,11 +54,19 @@ export function useWorkoutLogic(
   stateAdapter: WorkoutStatePort,
   options: UseWorkoutLogicOptions,
 ): UseWorkoutLogicReturn {
-  const { initialItems, lock: initialLock = false } = options;
+  const { initialItems, lock: initialLock = false, elementKey } = options;
 
-  const [edits, setEdits] = useState<Record<string, ExerciseItem>>({});
+  // Centralized state via Zustand - synced to tree and Supabase
+  const [state, updateState] = useElementState<WorkoutElementState>(
+    elementKey,
+    {
+      items: initialItems,
+      isLocked: !!initialLock,
+    },
+  );
+
+  // Local UI state (not synced - just for expand/collapse)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [isLocked, setIsLocked] = useState(!!initialLock);
 
   // Auto-expand first exercise on mount
   useEffect(() => {
@@ -54,11 +75,9 @@ export function useWorkoutLogic(
     }
   }, [initialItems]);
 
-  // Merge edits with base items
-  const displayItems = useMemo(
-    () => workoutAdapter.mergeEdits(initialItems, edits),
-    [workoutAdapter, initialItems, edits],
-  );
+  // displayItems comes from centralized state
+  const displayItems = state.items;
+  const isLocked = state.isLocked;
 
   const toggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
@@ -70,20 +89,23 @@ export function useWorkoutLogic(
   }, []);
 
   const toggleLock = useCallback(() => {
-    setIsLocked((prev) => !prev);
-  }, []);
+    updateState({ isLocked: !isLocked });
+  }, [isLocked, updateState]);
 
   const updateExercise = useCallback(
     (id: string, field: keyof ExerciseItem, value: unknown) => {
       if (isLocked) return;
 
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(displayItems, id);
-        if (!exercise) return prev;
-        return stateAdapter.updateExerciseField(prev, exercise, field, value);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, id);
+      if (!exercise) return;
+      
+      // Create updated items using adapter
+      const edits = stateAdapter.updateExerciseField({}, exercise, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems],
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState],
   );
 
   const updateSeries = useCallback(
@@ -95,63 +117,51 @@ export function useWorkoutLogic(
     ) => {
       if (isLocked) return;
 
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId,
-        );
-        if (!exercise) return prev;
-        return stateAdapter.updateSetField(
-          prev,
-          exercise,
-          seriesId,
-          field,
-          value,
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      
+      // Create updated items using adapter
+      const edits = stateAdapter.updateSetField({}, exercise, seriesId, field, value);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems],
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState],
   );
 
   const addSet = useCallback(
     (exerciseId: string) => {
       if (isLocked) return;
 
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId,
-        );
-        if (!exercise) return prev;
-        const newSet = workoutAdapter.createNewSet(exercise.series || []);
-        return stateAdapter.addSetToExercise(prev, exercise, newSet);
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      
+      const newSet = workoutAdapter.createNewSet(exercise.series || []);
+      const edits = stateAdapter.addSetToExercise({}, exercise, newSet);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems],
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState],
   );
 
   const removeSet = useCallback(
     (exerciseId: string, seriesId: string) => {
       if (isLocked) return;
 
-      setEdits((prev) => {
-        const exercise = workoutAdapter.findExerciseById(
-          displayItems,
-          exerciseId,
-        );
-        if (!exercise) return prev;
-        const updatedSeries = workoutAdapter.removeSetAndRenumber(
-          exercise.series || [],
-          seriesId,
-        );
-        return stateAdapter.removeSetFromExercise(
-          prev,
-          exercise,
-          updatedSeries,
-        );
-      });
+      const exercise = workoutAdapter.findExerciseById(displayItems, exerciseId);
+      if (!exercise) return;
+      
+      const updatedSeries = workoutAdapter.removeSetAndRenumber(
+        exercise.series || [],
+        seriesId,
+      );
+      const edits = stateAdapter.removeSetFromExercise({}, exercise, updatedSeries);
+      const updatedItems = workoutAdapter.mergeEdits(displayItems, edits);
+      
+      updateState({ items: updatedItems });
     },
-    [isLocked, workoutAdapter, stateAdapter, displayItems],
+    [isLocked, workoutAdapter, stateAdapter, displayItems, updateState],
   );
 
   return {

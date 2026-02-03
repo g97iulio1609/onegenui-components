@@ -3,7 +3,7 @@
 import { memo, useMemo } from "react";
 import { Lock, Unlock, Activity, BicepsFlexed } from "lucide-react";
 import { cn } from "../../utils/cn";
-import { ComponentRenderProps, useDomainAutoSave, useTreeSync } from "@onegenui/react";
+import { ComponentRenderProps, useDomainAutoSave } from "@onegenui/react";
 import { WorkoutProps } from "./schema";
 import { EmptyState } from "../../utils/shared-components";
 import { SessionTimer } from "./components/session-timer";
@@ -11,7 +11,7 @@ import {
   ExerciseItemCard,
   SupersetGroup,
 } from "./components/exercise-item-card";
-import { getWorkoutAdapter, getWorkoutStateAdapter } from "./adapters";
+import { getWorkoutAdapter, getWorkoutStateAdapter, ensureSeriesGeneratedDeep } from "./adapters";
 import { useWorkoutLogic } from "./hooks";
 
 export const Workout = memo(function Workout({
@@ -27,12 +27,16 @@ export const Workout = memo(function Workout({
 
   const resolvedItems = useMemo(() => {
     const raw = items || exercises || [];
-    return Array.isArray(raw) ? raw : [];
+    const arr = Array.isArray(raw) ? raw : [];
+    // Convert sets/reps to series array for rendering
+    return ensureSeriesGeneratedDeep(arr);
   }, [items, exercises]);
 
   const workoutAdapter = getWorkoutAdapter();
   const stateAdapter = getWorkoutStateAdapter();
 
+  // useWorkoutLogic now uses useElementState internally
+  // State is automatically synced to Zustand -> Tree -> Supabase
   const {
     displayItems,
     expandedIds,
@@ -46,15 +50,10 @@ export const Workout = memo(function Workout({
   } = useWorkoutLogic(workoutAdapter, stateAdapter, {
     initialItems: resolvedItems,
     lock: initialLock,
+    elementKey: element.key,
   });
 
-  // Sync workout items back to tree so AI receives current data
-  useTreeSync(
-    element.key,
-    useMemo(() => ({ items: displayItems }), [displayItems]),
-    { skipMount: true },
-  );
-
+  // Domain auto-save to separate workout table (for queries/analytics)
   useDomainAutoSave("workout", element.key, {
     title,
     date: new Date().toISOString(),

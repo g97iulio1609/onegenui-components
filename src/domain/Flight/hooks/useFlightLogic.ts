@@ -4,6 +4,7 @@
  */
 
 import { useMemo } from "react";
+import { useElementState } from "@onegenui/react";
 import type { FlightPort, FlightStatePort } from "../ports";
 import type { FlightData, FlightTrip } from "../components/types";
 
@@ -18,16 +19,19 @@ export interface UseFlightLogicReturn {
   hasContent: boolean;
   getTripKey: (trip: FlightTrip, index: number) => string;
   isRoundTrip: (trip: FlightTrip) => boolean;
+  updateTrips: (trips: FlightTrip[]) => void;
 }
 
 export function useFlightLogic(
+  elementKey: string,
   flightAdapter: FlightPort,
   stateAdapter: FlightStatePort,
   options: UseFlightLogicOptions,
 ): UseFlightLogicReturn {
   const { trips, flights, lock = false } = options;
 
-  const displayTrips = useMemo(
+  // Compute initial trips from props
+  const computedTrips = useMemo(
     () =>
       stateAdapter.computeDisplayTrips(
         trips,
@@ -37,12 +41,25 @@ export function useFlightLogic(
     [stateAdapter, flightAdapter, trips, flights],
   );
 
+  // Synced state for flight data (sent to AI)
+  const [{ localTrips }, updateState] = useElementState(elementKey, {
+    localTrips: null as FlightTrip[] | null,
+  });
+
+  // Use local edits if available, otherwise computed trips
+  const displayTrips = localTrips ?? computedTrips;
   const hasContent = displayTrips.length > 0;
+
+  const updateTrips = (newTrips: FlightTrip[]) => {
+    if (lock) return;
+    updateState({ localTrips: newTrips });
+  };
 
   return {
     displayTrips,
     hasContent,
     getTripKey: flightAdapter.getTripKey.bind(flightAdapter),
     isRoundTrip: flightAdapter.isRoundTrip.bind(flightAdapter),
+    updateTrips,
   };
 }

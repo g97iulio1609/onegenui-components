@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type {
   SupplementTrackerPort,
   SupplementStatePort,
@@ -14,6 +15,10 @@ import type {
   ScheduledDose,
   DailySupplementSchedule,
 } from "../schema";
+
+interface LocalEditsState extends Record<string, unknown> {
+  localEdits: Record<string, Partial<ScheduledDose>>;
+}
 
 export interface UseSupplementTrackerLogicOptions {
   initialSupplements?: SupplementItem[] | null;
@@ -42,6 +47,7 @@ export interface UseSupplementTrackerLogicReturn {
 }
 
 export function useSupplementTrackerLogic(
+  elementKey: string,
   trackerAdapter: SupplementTrackerPort,
   stateAdapter: SupplementStatePort,
   options: UseSupplementTrackerLogicOptions,
@@ -55,10 +61,12 @@ export function useSupplementTrackerLogic(
 
   const lock = rawLock ?? false;
 
-  // Local edits state
-  const [localEdits, setLocalEdits] = useState<
-    Record<string, Partial<ScheduledDose>>
-  >({});
+  // Local edits state (syncs to AI via Zustand)
+  const [editsState, setEditsState] = useElementState<LocalEditsState>(
+    elementKey,
+    { localEdits: {} },
+  );
+  const localEdits = editsState.localEdits;
 
   // Selected date state
   const [selectedDate] = useState<string>(
@@ -107,9 +115,11 @@ export function useSupplementTrackerLogic(
       const key = doseId || `temp-${suppId}`;
       const current = displayDoses.find((d) => d.id === key);
       const isTaken = current?.taken ?? false;
-      setLocalEdits((prev) => stateAdapter.toggleDose(prev, key, isTaken));
+      setEditsState({
+        localEdits: stateAdapter.toggleDose(localEdits, key, isTaken),
+      });
     },
-    [lock, displayDoses, stateAdapter],
+    [lock, displayDoses, stateAdapter, localEdits, setEditsState],
   );
 
   // Skip dose
@@ -117,9 +127,11 @@ export function useSupplementTrackerLogic(
     (suppId: string, doseId?: string) => {
       if (lock) return;
       const key = doseId || `temp-${suppId}`;
-      setLocalEdits((prev) => stateAdapter.skipDose(prev, key));
+      setEditsState({
+        localEdits: stateAdapter.skipDose(localEdits, key),
+      });
     },
-    [lock, stateAdapter],
+    [lock, stateAdapter, localEdits, setEditsState],
   );
 
   return {

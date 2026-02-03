@@ -4,12 +4,17 @@
  */
 
 import { useState, useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type {
   HotelPort,
   HotelStatePort,
   HotelData,
   HotelStatus,
 } from "../ports";
+
+interface HotelElementState extends Record<string, unknown> {
+  selections: Record<string, boolean>;
+}
 
 export interface UseHotelLogicOptions {
   initialHotels: HotelData[];
@@ -42,14 +47,19 @@ export interface UseHotelLogicReturn {
 }
 
 export function useHotelLogic(
+  elementKey: string,
   hotelAdapter: HotelPort,
   stateAdapter: HotelStatePort,
   options: UseHotelLogicOptions,
 ): UseHotelLogicReturn {
   const { initialHotels, lock = false } = options;
 
-  // Selection state
-  const [selections, setSelections] = useState<Record<string, boolean>>({});
+  // Selection state (persisted via Zustand)
+  const [elementState, updateElementState] = useElementState<HotelElementState>(
+    elementKey,
+    { selections: {} },
+  );
+  const { selections } = elementState;
 
   // Filter state
   const [filterStatus, setFilterStatus] = useState<HotelStatus | undefined>(
@@ -77,9 +87,11 @@ export function useHotelLogic(
   const toggleSelection = useCallback(
     (hotelId: string) => {
       if (lock) return;
-      setSelections((prev) => stateAdapter.toggleSelection(prev, hotelId));
+      updateElementState({
+        selections: stateAdapter.toggleSelection(selections, hotelId),
+      });
     },
-    [lock, stateAdapter],
+    [lock, stateAdapter, selections, updateElementState],
   );
 
   const toggleSortOrder = useCallback(() => {
@@ -88,8 +100,8 @@ export function useHotelLogic(
 
   const clearSelections = useCallback(() => {
     if (lock) return;
-    setSelections({});
-  }, [lock]);
+    updateElementState({ selections: {} });
+  }, [lock, updateElementState]);
 
   return {
     // State

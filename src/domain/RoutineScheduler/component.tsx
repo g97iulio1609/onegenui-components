@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { type ComponentRenderProps, useDomainAutoSave } from "@onegenui/react";
+import { type ComponentRenderProps } from "@onegenui/react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../../utils/cn";
 import { AnimatePresence } from "framer-motion";
@@ -47,7 +47,7 @@ export const RoutineScheduler = memo(function RoutineScheduler({
     navigateDate,
     handleToggleBlock,
     displayDays,
-  } = useRoutineSchedulerLogic(adapter, stateAdapter, {
+  } = useRoutineSchedulerLogic(element.key, adapter, stateAdapter, {
     initialDate: initialSelectedDate ?? undefined,
     initialView: view === "timeline" ? "day" : view,
     initialDays: initialDays || [],
@@ -57,12 +57,7 @@ export const RoutineScheduler = memo(function RoutineScheduler({
     lock: lock ?? false,
   });
 
-  useDomainAutoSave("schedule", element.key, {
-    type: "routine_schedule",
-    days: displayDays,
-    selectedDate,
-    view: currentView,
-  });
+  // Note: useDomainAutoSave removed - useElementState handles syncing
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4 w-full">

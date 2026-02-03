@@ -1,9 +1,11 @@
 /**
  * useBookingFormsLogic - Custom hook for booking form state management
  * Separates business logic from presentation
+ * Uses useElementState for AI-synced state
  */
 
 import { useState, useCallback, useMemo } from "react";
+import { useElementState } from "@onegenui/react";
 import type {
   BookingType,
   BookingMode,
@@ -49,25 +51,30 @@ export interface UseBookingFormsLogicReturn {
   resetHotelForm: () => void;
 }
 
+interface BookingFormsState extends Record<string, unknown> {
+  activeTab: BookingType;
+  flightForm: FlightFormData;
+  hotelForm: HotelFormData;
+}
+
 export function useBookingFormsLogic(
+  elementKey: string,
   validationAdapter: BookingFormsValidationPort,
   stateAdapter: BookingFormsStatePort,
   options: UseBookingFormsLogicOptions,
 ): UseBookingFormsLogicReturn {
   const { initialType = "flight", mode = "create" } = options;
 
-  // Tab state
-  const [activeTab, setActiveTab] = useState<BookingType>(initialType);
+  // AI-synced state via useElementState
+  const [state, updateState] = useElementState<BookingFormsState>(elementKey, {
+    activeTab: initialType,
+    flightForm: stateAdapter.getDefaultFlightForm(),
+    hotelForm: stateAdapter.getDefaultHotelForm(),
+  });
 
-  // Form state
-  const [flightForm, setFlightForm] = useState<FlightFormData>(() =>
-    stateAdapter.getDefaultFlightForm(),
-  );
-  const [hotelForm, setHotelForm] = useState<HotelFormData>(() =>
-    stateAdapter.getDefaultHotelForm(),
-  );
+  const { activeTab, flightForm, hotelForm } = state;
 
-  // Validation state
+  // UI-only validation state (not synced to AI)
   const [flightValidation, setFlightValidation] =
     useState<ValidationResult | null>(null);
   const [hotelValidation, setHotelValidation] =
@@ -88,22 +95,29 @@ export function useBookingFormsLogic(
   );
 
   // Actions
+  const setActiveTab = useCallback(
+    (tab: BookingType) => {
+      updateState({ activeTab: tab });
+    },
+    [updateState],
+  );
+
   const updateFlightField = useCallback(
     <K extends keyof FlightFormData>(field: K, value: FlightFormData[K]) => {
-      setFlightForm((prev) =>
-        stateAdapter.updateFlightField(prev, field, value),
-      );
+      const updated = stateAdapter.updateFlightField(flightForm, field, value);
+      updateState({ flightForm: updated });
       setFlightValidation(null);
     },
-    [stateAdapter],
+    [stateAdapter, flightForm, updateState],
   );
 
   const updateHotelField = useCallback(
     <K extends keyof HotelFormData>(field: K, value: HotelFormData[K]) => {
-      setHotelForm((prev) => stateAdapter.updateHotelField(prev, field, value));
+      const updated = stateAdapter.updateHotelField(hotelForm, field, value);
+      updateState({ hotelForm: updated });
       setHotelValidation(null);
     },
-    [stateAdapter],
+    [stateAdapter, hotelForm, updateState],
   );
 
   const validateFlight = useCallback(() => {
@@ -119,14 +133,14 @@ export function useBookingFormsLogic(
   }, [validationAdapter, hotelForm]);
 
   const resetFlightForm = useCallback(() => {
-    setFlightForm(stateAdapter.getDefaultFlightForm());
+    updateState({ flightForm: stateAdapter.getDefaultFlightForm() });
     setFlightValidation(null);
-  }, [stateAdapter]);
+  }, [stateAdapter, updateState]);
 
   const resetHotelForm = useCallback(() => {
-    setHotelForm(stateAdapter.getDefaultHotelForm());
+    updateState({ hotelForm: stateAdapter.getDefaultHotelForm() });
     setHotelValidation(null);
-  }, [stateAdapter]);
+  }, [stateAdapter, updateState]);
 
   return {
     // State

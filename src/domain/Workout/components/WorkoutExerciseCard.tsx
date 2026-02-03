@@ -21,11 +21,11 @@ import {
 interface WorkoutExerciseCardProps {
   exercise: ExerciseItem;
   lock: boolean;
-  onUpdateExercise: (field: keyof ExerciseItem, value: any) => void;
+  onUpdateExercise: (field: keyof ExerciseItem, value: ExerciseItem[keyof ExerciseItem]) => void;
   onUpdateSeries: (
     seriesId: string,
     field: keyof WorkoutSet,
-    value: any,
+    value: WorkoutSet[keyof WorkoutSet],
   ) => void;
   onAddSet: () => void;
   onRemoveSet: (seriesId: string) => void;

@@ -31,6 +31,22 @@ function ensureSeriesGenerated(exercise: ExerciseItem): ExerciseItem {
 }
 
 /**
+ * Recursively ensure all exercises have series generated from sets/reps
+ */
+export function ensureSeriesGeneratedDeep(items: ExerciseItem[]): ExerciseItem[] {
+  return items.map((item) => {
+    const withSeries = ensureSeriesGenerated(item);
+    if (withSeries.items && withSeries.items.length > 0) {
+      return {
+        ...withSeries,
+        items: ensureSeriesGeneratedDeep(withSeries.items),
+      };
+    }
+    return withSeries;
+  });
+}
+
+/**
  * Create a workout adapter with exercise operations
  */
 export function createWorkoutAdapter(): WorkoutPort {

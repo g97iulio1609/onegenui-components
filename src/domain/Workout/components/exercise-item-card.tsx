@@ -15,12 +15,12 @@ interface ExerciseItemCardProps {
   isExpanded: boolean;
   isLocked: boolean;
   onToggleExpand: (id: string) => void;
-  onUpdateExercise: (id: string, field: keyof ExerciseItem, value: any) => void;
+  onUpdateExercise: (id: string, field: keyof ExerciseItem, value: ExerciseItem[keyof ExerciseItem]) => void;
   onUpdateSeries: (
     exerciseId: string,
     seriesId: string,
     field: keyof WorkoutSet,
-    value: any,
+    value: WorkoutSet[keyof WorkoutSet],
   ) => void;
   onAddSet: (exerciseId: string) => void;
   onRemoveSet: (exerciseId: string, seriesId: string) => void;
@@ -149,12 +149,12 @@ interface SupersetGroupProps {
   expandedIds: Set<string>;
   isLocked: boolean;
   onToggleExpand: (id: string) => void;
-  onUpdateExercise: (id: string, field: keyof ExerciseItem, value: any) => void;
+  onUpdateExercise: (id: string, field: keyof ExerciseItem, value: ExerciseItem[keyof ExerciseItem]) => void;
   onUpdateSeries: (
     exerciseId: string,
     seriesId: string,
     field: keyof WorkoutSet,
-    value: any,
+    value: WorkoutSet[keyof WorkoutSet],
   ) => void;
   onAddSet: (exerciseId: string) => void;
   onRemoveSet: (exerciseId: string, seriesId: string) => void;

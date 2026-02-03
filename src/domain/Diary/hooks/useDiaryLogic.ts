@@ -4,8 +4,13 @@
  */
 
 import { useState, useMemo, useCallback } from "react";
+import { useElementState } from "@onegenui/react";
 import type { DiaryPort, DiaryStatePort } from "../ports";
 import type { DiaryEntry, DiaryProps } from "../schema";
+
+interface LocalEditsState extends Record<string, unknown> {
+  localEdits: Record<string, Partial<DiaryEntry>>;
+}
 
 export interface UseDiaryLogicOptions {
   initialEntries?: DiaryEntry[];
@@ -29,16 +34,19 @@ export interface UseDiaryLogicReturn {
 }
 
 export function useDiaryLogic(
+  elementKey: string,
   diaryAdapter: DiaryPort,
   stateAdapter: DiaryStatePort,
   options: UseDiaryLogicOptions,
 ): UseDiaryLogicReturn {
   const { initialEntries = [], initialSelectedDate, lock = false } = options;
 
-  // Local edits state
-  const [localEdits, setLocalEdits] = useState<
-    Record<string, Partial<DiaryEntry>>
-  >({});
+  // Local edits state (syncs to AI via Zustand)
+  const [editsState, setEditsState] = useElementState<LocalEditsState>(
+    elementKey,
+    { localEdits: {} },
+  );
+  const localEdits = editsState.localEdits;
 
   // Selected date state
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -82,9 +90,10 @@ export function useDiaryLogic(
       const entry = displayEntries.find((e) => e.id === entryId);
       if (!entry || !entry.goals) return;
 
-      setLocalEdits((prev) => stateAdapter.toggleGoal(prev, entry, goalId));
+      const newEdits = stateAdapter.toggleGoal(localEdits, entry, goalId);
+      setEditsState({ localEdits: newEdits });
     },
-    [lock, displayEntries, stateAdapter],
+    [lock, displayEntries, stateAdapter, localEdits, setEditsState],
   );
 
   return {
