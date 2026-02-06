@@ -5,6 +5,7 @@ import {
   ChartDefinition,
   DiaryDefinition,
   DocumentIndexDefinition,
+  DocumentReportDefinition,
   EmailDefinition,
   FlightDefinition,
   GanttDefinition,
@@ -14,6 +15,7 @@ import {
   MessageDefinition,
   MindMapDefinition,
   NutritionDefinition,
+  ResearchReportDefinition,
   RoutineSchedulerDefinition,
   SourceCitationDefinition,
   StockChartDefinition,
@@ -22,7 +24,7 @@ import {
   TripDefinition,
   WorkoutDefinition,
   exerciseSchema
-} from "./chunk-LSALQVIQ.mjs";
+} from "./chunk-JVSKUXOT.mjs";
 
 // src/definitions.ts
 import {
@@ -72,6 +74,7 @@ export {
   DividerDefinition,
   DocumentDefinition,
   DocumentIndexDefinition,
+  DocumentReportDefinition,
   DriveFileDefinition,
   DriveFileListDefinition,
   EmailDefinition,
@@ -90,6 +93,7 @@ export {
   MetricDefinition,
   MindMapDefinition,
   NutritionDefinition,
+  ResearchReportDefinition,
   RoutineSchedulerDefinition,
   SearchResultsDefinition,
   SelectDefinition,

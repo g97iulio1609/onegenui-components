@@ -10,6 +10,8 @@ import {
   DiaryDefinition,
   DiaryPropsSchema,
   DocumentIndexPropsSchema,
+  DocumentReportDefinition,
+  DocumentReportPropsSchema,
   EmailDefinition,
   EmailPropsSchema,
   FlightDefinition,
@@ -28,6 +30,8 @@ import {
   MindMapPropsSchema,
   NutritionDefinition,
   NutritionPropsSchema,
+  ResearchReportDefinition,
+  ResearchReportPropsSchema,
   RoutineSchedulerDefinition,
   RoutineSchedulerPropsSchema,
   SourceCitationPropsSchema,
@@ -41,7 +45,7 @@ import {
   TripPropsSchema,
   WorkoutDefinition,
   WorkoutPropsSchema
-} from "./chunk-LSALQVIQ.mjs";
+} from "./chunk-JVSKUXOT.mjs";
 
 // src/index.ts
 export * from "@onegenui/ui";
@@ -7093,7 +7097,13 @@ import {
   ChevronDown as ChevronDown3,
   BookOpen as BookOpen2,
   Hash,
-  ExternalLink as ExternalLink2
+  ExternalLink as ExternalLink2,
+  Tag as Tag2,
+  Users as Users3,
+  Quote,
+  Star as Star4,
+  Link2 as Link22,
+  Lightbulb
 } from "lucide-react";
 import { motion as motion24, AnimatePresence as AnimatePresence13 } from "framer-motion";
 import { jsx as jsx47, jsxs as jsxs46 } from "react/jsx-runtime";
@@ -7104,7 +7114,7 @@ var TreeNodeItem = memo45(function TreeNodeItem2({
   onNodeClick
 }) {
   const [expanded, setExpanded] = useState13(depth > 0);
-  const [showFullSummary, setShowFullSummary] = useState13(false);
+  const [showDetails, setShowDetails] = useState13(false);
   const hasChildren = node.children && node.children.length > 0;
   const toggle = useCallback13(() => {
     if (hasChildren) {
@@ -7114,13 +7124,17 @@ var TreeNodeItem = memo45(function TreeNodeItem2({
   const handleNodeClick = useCallback13(
     (e) => {
       e.stopPropagation();
-      setShowFullSummary((prev) => !prev);
+      setShowDetails((prev) => !prev);
       if (!expanded) setExpanded(true);
       onNodeClick?.(node);
     },
     [onNodeClick, node, expanded]
   );
   const pageRange = node.startPage === node.endPage ? `p. ${node.startPage}` : `pp. ${node.startPage}-${node.endPage}`;
+  const hasMetadata = node.entityCount || node.quoteCount || node.importance !== void 0;
+  const hasTags = node.tags && node.tags.length > 0;
+  const hasKeyPoints = node.keyPoints && node.keyPoints.length > 0;
+  const hasRelated = node.relatedNodes && node.relatedNodes.length > 0;
   return /* @__PURE__ */ jsxs46("div", { className: "select-none", children: [
     /* @__PURE__ */ jsxs46(
       "div",
@@ -7154,16 +7168,33 @@ var TreeNodeItem = memo45(function TreeNodeItem2({
                   children: pageRange
                 }
               ),
+              node.importance !== void 0 && node.importance >= 0.7 && /* @__PURE__ */ jsx47(
+                Star4,
+                {
+                  className: "h-3 w-3 text-amber-400 shrink-0",
+                  fill: "currentColor"
+                }
+              ),
+              hasMetadata && /* @__PURE__ */ jsxs46("span", { className: "flex items-center gap-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: [
+                node.entityCount ? /* @__PURE__ */ jsxs46("span", { className: "flex items-center gap-0.5", children: [
+                  /* @__PURE__ */ jsx47(Users3, { className: "h-2.5 w-2.5" }),
+                  node.entityCount
+                ] }) : null,
+                node.quoteCount ? /* @__PURE__ */ jsxs46("span", { className: "flex items-center gap-0.5", children: [
+                  /* @__PURE__ */ jsx47(Quote, { className: "h-2.5 w-2.5" }),
+                  node.quoteCount
+                ] }) : null
+              ] }),
               onNodeClick && /* @__PURE__ */ jsx47(
                 "button",
                 {
                   onClick: handleNodeClick,
                   className: cn(
                     "transition-opacity p-0.5 rounded hover:bg-white/10",
-                    showFullSummary ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    showDetails ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                   ),
-                  title: showFullSummary ? "Hide details" : "View section details",
-                  children: showFullSummary ? /* @__PURE__ */ jsx47(
+                  title: showDetails ? "Hide details" : "View section details",
+                  children: showDetails ? /* @__PURE__ */ jsx47(
                     ChevronDown3,
                     {
                       className: "h-3 w-3",
@@ -7179,16 +7210,46 @@ var TreeNodeItem = memo45(function TreeNodeItem2({
                 }
               )
             ] }),
+            hasTags && expanded && /* @__PURE__ */ jsxs46("div", { className: "flex flex-wrap items-center gap-1 mt-1", children: [
+              /* @__PURE__ */ jsx47(Tag2, { className: "h-2.5 w-2.5 text-muted-foreground" }),
+              node.tags.map((tag) => /* @__PURE__ */ jsx47(
+                "span",
+                {
+                  className: "text-[0.5rem] sm:text-[0.625rem] px-1.5 py-0.5 rounded-full bg-white/5 text-muted-foreground",
+                  style: accentColor ? { borderColor: `${accentColor}30`, borderWidth: 1 } : {},
+                  children: tag
+                },
+                tag
+              ))
+            ] }),
             node.summary && expanded && /* @__PURE__ */ jsx47(
               "p",
               {
                 className: cn(
                   "text-xs text-muted-foreground mt-1",
-                  !showFullSummary && "line-clamp-2"
+                  !showDetails && "line-clamp-2"
                 ),
                 children: node.summary
               }
-            )
+            ),
+            showDetails && hasKeyPoints && /* @__PURE__ */ jsx47("div", { className: "mt-1.5 space-y-0.5", children: node.keyPoints.map((point, i) => /* @__PURE__ */ jsxs46(
+              "div",
+              {
+                className: "flex items-start gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground",
+                children: [
+                  /* @__PURE__ */ jsx47(Lightbulb, { className: "h-3 w-3 shrink-0 mt-0.5 text-amber-400/70" }),
+                  /* @__PURE__ */ jsx47("span", { children: point })
+                ]
+              },
+              i
+            )) }),
+            showDetails && hasRelated && /* @__PURE__ */ jsxs46("div", { className: "flex items-center gap-1 mt-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: [
+              /* @__PURE__ */ jsx47(Link22, { className: "h-2.5 w-2.5" }),
+              /* @__PURE__ */ jsxs46("span", { children: [
+                "Related: ",
+                node.relatedNodes.join(", ")
+              ] })
+            ] })
           ] })
         ]
       }
@@ -7244,6 +7305,11 @@ var DocumentIndex = memo45(function DocumentIndex2({
     },
     [onAction, element.key]
   );
+  const countNodes = (nodes2) => nodes2.reduce(
+    (acc, n) => acc + 1 + (n.children ? countNodes(n.children) : 0),
+    0
+  );
+  const totalNodes = nodes ? countNodes(nodes) : 0;
   return /* @__PURE__ */ jsxs46("div", { className: "rounded-lg sm:rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden", children: [
     /* @__PURE__ */ jsxs46(
       "div",
@@ -7276,7 +7342,7 @@ var DocumentIndex = memo45(function DocumentIndex2({
             /* @__PURE__ */ jsxs46("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
               /* @__PURE__ */ jsx47(Hash, { className: "h-3 w-3 sm:h-3.5 sm:w-3.5" }),
               /* @__PURE__ */ jsxs46("span", { children: [
-                nodes?.length || 0,
+                totalNodes,
                 " sections"
               ] })
             ] }),
@@ -7456,8 +7522,165 @@ var SourceCitationDefinition = {
   schema: SourceCitationPropsSchema
 };
 
+// src/domain/document/DocumentReport.tsx
+import { memo as memo47, useState as useState15 } from "react";
+import { FileText as FileText5, ChevronDown as ChevronDown5, ChevronRight as ChevronRight6, BookOpen as BookOpen4, Users as Users4, Quote as Quote2, Lightbulb as Lightbulb2, Clock as Clock10 } from "lucide-react";
+import { jsx as jsx49, jsxs as jsxs48 } from "react/jsx-runtime";
+var SectionItem = memo47(function SectionItem2({
+  section,
+  depth = 0
+}) {
+  const [expanded, setExpanded] = useState15(depth < 2);
+  const hasChildren = section.children && section.children.length > 0;
+  return /* @__PURE__ */ jsxs48("div", { className: `${depth > 0 ? "ml-3 sm:ml-4 border-l border-white/5 pl-3 sm:pl-4" : ""}`, children: [
+    /* @__PURE__ */ jsxs48(
+      "button",
+      {
+        onClick: () => setExpanded(!expanded),
+        className: "w-full text-left py-2 sm:py-3 flex items-start gap-2 hover:bg-white/5 rounded-lg px-2 -mx-2 transition-colors",
+        children: [
+          hasChildren ? expanded ? /* @__PURE__ */ jsx49(ChevronDown5, { className: "w-4 h-4 mt-0.5 text-zinc-500" }) : /* @__PURE__ */ jsx49(ChevronRight6, { className: "w-4 h-4 mt-0.5 text-zinc-500" }) : /* @__PURE__ */ jsx49("div", { className: "w-4" }),
+          /* @__PURE__ */ jsxs48("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ jsxs48("div", { className: "flex items-baseline gap-2 flex-wrap", children: [
+              /* @__PURE__ */ jsx49("span", { className: "font-medium text-white text-sm sm:text-base", children: section.title }),
+              /* @__PURE__ */ jsxs48("span", { className: "text-xs text-zinc-500", children: [
+                "p.",
+                section.pageStart,
+                "-",
+                section.pageEnd
+              ] })
+            ] }),
+            !expanded && section.summary && /* @__PURE__ */ jsx49("p", { className: "text-xs text-zinc-400 mt-1 line-clamp-2", children: section.summary })
+          ] })
+        ]
+      }
+    ),
+    expanded && /* @__PURE__ */ jsxs48("div", { className: "pb-3 space-y-3", children: [
+      section.summary && /* @__PURE__ */ jsx49("p", { className: "text-xs sm:text-sm text-zinc-300 leading-relaxed pl-6", children: section.summary }),
+      section.keyPoints.length > 0 && /* @__PURE__ */ jsxs48("div", { className: "pl-6", children: [
+        /* @__PURE__ */ jsx49("div", { className: "text-xs text-zinc-500 uppercase tracking-wider mb-1", children: "Key Points" }),
+        /* @__PURE__ */ jsx49("ul", { className: "space-y-1", children: section.keyPoints.map((point, i) => /* @__PURE__ */ jsxs48("li", { className: "text-xs sm:text-sm text-zinc-300 flex gap-2", children: [
+          /* @__PURE__ */ jsx49("span", { className: "text-sky-400", children: "-" }),
+          /* @__PURE__ */ jsx49("span", { children: point })
+        ] }, i)) })
+      ] }),
+      section.entities.length > 0 && /* @__PURE__ */ jsx49("div", { className: "pl-6 flex flex-wrap gap-1.5", children: section.entities.slice(0, 8).map((e, i) => /* @__PURE__ */ jsx49("span", { className: "px-2 py-0.5 text-xs bg-zinc-800 text-zinc-300 rounded-full border border-white/5", children: e.value }, i)) }),
+      section.quotes.length > 0 && /* @__PURE__ */ jsx49("div", { className: "pl-6 space-y-2", children: section.quotes.slice(0, 2).map((q, i) => /* @__PURE__ */ jsxs48("blockquote", { className: "text-xs italic text-zinc-400 border-l-2 border-amber-500/50 pl-3", children: [
+        '"',
+        q.text,
+        '"',
+        q.speaker && /* @__PURE__ */ jsxs48("span", { className: "text-zinc-500 not-italic ml-2", children: [
+          "- ",
+          q.speaker
+        ] })
+      ] }, i)) }),
+      hasChildren && section.children.map((child) => /* @__PURE__ */ jsx49(SectionItem2, { section: child, depth: depth + 1 }, child.id))
+    ] })
+  ] });
+});
+var SemanticPanel = memo47(function SemanticPanel2({ overlay }) {
+  const [tab, setTab] = useState15("entities");
+  return /* @__PURE__ */ jsxs48("div", { className: "rounded-xl bg-zinc-900/40 border border-white/5 overflow-hidden", children: [
+    /* @__PURE__ */ jsx49("div", { className: "flex border-b border-white/5 overflow-x-auto", children: [
+      { key: "entities", icon: Users4, label: "Entities" },
+      { key: "insights", icon: Lightbulb2, label: "Insights" },
+      { key: "quotes", icon: Quote2, label: "Quotes" },
+      ...overlay.timeline?.length ? [{ key: "timeline", icon: Clock10, label: "Timeline" }] : []
+    ].map(({ key, icon: Icon, label }) => /* @__PURE__ */ jsxs48(
+      "button",
+      {
+        onClick: () => setTab(key),
+        className: `flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm whitespace-nowrap transition-colors ${tab === key ? "text-sky-400 border-b-2 border-sky-400 bg-sky-400/5" : "text-zinc-400 hover:text-zinc-300"}`,
+        children: [
+          /* @__PURE__ */ jsx49(Icon, { className: "w-3.5 h-3.5" }),
+          label
+        ]
+      },
+      key
+    )) }),
+    /* @__PURE__ */ jsxs48("div", { className: "p-3 sm:p-4 max-h-64 overflow-y-auto", children: [
+      tab === "entities" && /* @__PURE__ */ jsx49("div", { className: "flex flex-wrap gap-2", children: (overlay.topEntities ?? []).slice(0, 20).map((e) => /* @__PURE__ */ jsxs48("div", { className: "px-2.5 py-1.5 bg-zinc-800/50 rounded-lg border border-white/5", children: [
+        /* @__PURE__ */ jsx49("div", { className: "text-xs sm:text-sm text-white", children: e.value }),
+        /* @__PURE__ */ jsxs48("div", { className: "text-[0.625rem] text-zinc-500 capitalize", children: [
+          e.type,
+          " - ",
+          e.occurrenceCount,
+          "x"
+        ] })
+      ] }, e.id)) }),
+      tab === "insights" && /* @__PURE__ */ jsx49("ul", { className: "space-y-2", children: (overlay.keyInsights ?? []).map((insight, i) => /* @__PURE__ */ jsxs48("li", { className: "flex gap-2 text-xs sm:text-sm text-zinc-300", children: [
+        /* @__PURE__ */ jsx49(Lightbulb2, { className: "w-4 h-4 text-amber-400 shrink-0 mt-0.5" }),
+        insight
+      ] }, i)) }),
+      tab === "quotes" && /* @__PURE__ */ jsx49("div", { className: "space-y-3", children: (overlay.globalQuotes ?? []).slice(0, 5).map((q, i) => /* @__PURE__ */ jsxs48("blockquote", { className: "text-xs sm:text-sm italic text-zinc-300 border-l-2 border-amber-500/50 pl-3", children: [
+        '"',
+        q.text,
+        '"',
+        q.speaker && /* @__PURE__ */ jsxs48("span", { className: "text-zinc-500 not-italic ml-2", children: [
+          "- ",
+          q.speaker
+        ] })
+      ] }, i)) }),
+      tab === "timeline" && overlay.timeline && /* @__PURE__ */ jsx49("div", { className: "space-y-2", children: overlay.timeline.map((evt, i) => /* @__PURE__ */ jsxs48("div", { className: "flex gap-3 text-xs sm:text-sm", children: [
+        /* @__PURE__ */ jsx49("span", { className: "text-sky-400 font-mono shrink-0", children: evt.date }),
+        /* @__PURE__ */ jsx49("span", { className: "text-zinc-300", children: evt.event }),
+        /* @__PURE__ */ jsxs48("span", { className: "text-zinc-500 ml-auto", children: [
+          "p.",
+          evt.pageRef
+        ] })
+      ] }, i)) })
+    ] })
+  ] });
+});
+var DocumentReport = memo47(function DocumentReport2({ element, children }) {
+  const props = element.props;
+  const { title, description, totalPages, filename, sections = [], semanticOverlay, sources = [] } = props;
+  if (!title && !description && sections.length === 0) {
+    return /* @__PURE__ */ jsxs48("div", { className: "p-4 sm:p-8 text-center text-zinc-500", children: [
+      /* @__PURE__ */ jsx49(FileText5, { className: "w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50" }),
+      /* @__PURE__ */ jsx49("p", { className: "text-sm", children: "No document content" })
+    ] });
+  }
+  return /* @__PURE__ */ jsxs48("div", { className: "space-y-4 sm:space-y-6", children: [
+    /* @__PURE__ */ jsxs48("div", { className: "rounded-xl sm:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden", children: [
+      /* @__PURE__ */ jsxs48("div", { className: "p-4 sm:p-6 border-b border-white/5", children: [
+        /* @__PURE__ */ jsxs48("div", { className: "flex items-start justify-between gap-4 mb-3", children: [
+          /* @__PURE__ */ jsx49("h2", { className: "text-lg sm:text-xl lg:text-2xl font-bold text-white", children: title }),
+          /* @__PURE__ */ jsxs48("div", { className: "flex items-center gap-2 text-xs text-zinc-500", children: [
+            /* @__PURE__ */ jsx49(BookOpen4, { className: "w-4 h-4" }),
+            /* @__PURE__ */ jsxs48("span", { children: [
+              totalPages,
+              " pages"
+            ] })
+          ] })
+        ] }),
+        filename && /* @__PURE__ */ jsx49("p", { className: "text-xs text-zinc-500 mb-3", children: filename }),
+        /* @__PURE__ */ jsx49("p", { className: "text-zinc-300 leading-relaxed text-xs sm:text-sm lg:text-[15px]", children: description })
+      ] }),
+      /* @__PURE__ */ jsxs48("div", { className: "p-4 sm:p-6", children: [
+        /* @__PURE__ */ jsx49("h3", { className: "text-xs sm:text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4", children: "Document Structure" }),
+        /* @__PURE__ */ jsx49("div", { className: "space-y-1", children: sections.map((section, idx) => /* @__PURE__ */ jsx49(SectionItem, { section }, `${section.id}-${idx}`)) })
+      ] })
+    ] }),
+    semanticOverlay && ((semanticOverlay.topEntities?.length ?? 0) > 0 || (semanticOverlay.keyInsights?.length ?? 0) > 0) && /* @__PURE__ */ jsx49(SemanticPanel, { overlay: semanticOverlay }),
+    sources.length > 0 && /* @__PURE__ */ jsxs48("div", { className: "rounded-xl bg-zinc-900/40 border border-white/5 p-3 sm:p-4", children: [
+      /* @__PURE__ */ jsxs48("h4", { className: "text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2", children: [
+        sources.length,
+        " Sections"
+      ] }),
+      /* @__PURE__ */ jsx49("div", { className: "flex flex-wrap gap-1.5", children: sources.slice(0, 15).map((s) => /* @__PURE__ */ jsxs48("span", { className: "px-2 py-1 text-xs text-zinc-400 bg-zinc-800/50 rounded", children: [
+        s.title,
+        " (p.",
+        s.pageNumber,
+        ")"
+      ] }, s.id)) })
+    ] }),
+    children
+  ] });
+});
+
 // src/visualization/charts/Chart/component.tsx
-import { memo as memo47, useMemo as useMemo23, useState as useState15 } from "react";
+import { memo as memo48, useMemo as useMemo23, useState as useState16 } from "react";
 import {
   useData,
   useItemSelection
@@ -7474,7 +7697,7 @@ import {
 import { cn as cn2 } from "@onegenui/utils";
 
 // src/visualization/charts/Chart/component.tsx
-import { jsx as jsx49, jsxs as jsxs48 } from "react/jsx-runtime";
+import { jsx as jsx50, jsxs as jsxs49 } from "react/jsx-runtime";
 var DEFAULT_HEIGHT = 200;
 var MIN_HEIGHT = 120;
 var Y_AXIS_WIDTH = 40;
@@ -7536,7 +7759,7 @@ function hexToRgba(hex, alpha) {
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-var Chart = memo47(function Chart2({
+var Chart = memo48(function Chart2({
   element,
   children
 }) {
@@ -7555,7 +7778,7 @@ var Chart = memo47(function Chart2({
   }, [series, categories, globalData, data, dataPath]);
   const chartHeight = Math.max(height || DEFAULT_HEIGHT, MIN_HEIGHT);
   const { selectedItems, isItemSelected } = useItemSelection(element.key);
-  const [hoveredIndex, setHoveredIndex] = useState15(null);
+  const [hoveredIndex, setHoveredIndex] = useState16(null);
   const { ticks, normalizedData } = useMemo23(() => {
     if (!chartData || chartData.length === 0) {
       return { maxValue: 0, minValue: 0, ticks: [], normalizedData: [] };
@@ -7584,18 +7807,18 @@ var Chart = memo47(function Chart2({
     };
   }, [chartData]);
   if (!chartData || chartData.length === 0) {
-    return /* @__PURE__ */ jsx49("div", { className: "flex items-center justify-center p-4 sm:p-8 bg-card border border-border rounded-lg sm:rounded-xl text-muted-foreground text-sm", children: "No data available" });
+    return /* @__PURE__ */ jsx50("div", { className: "flex items-center justify-center p-4 sm:p-8 bg-card border border-border rounded-lg sm:rounded-xl text-muted-foreground text-sm", children: "No data available" });
   }
-  return /* @__PURE__ */ jsxs48("div", { className: "flex flex-col w-full h-full glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg", children: [
-    title && /* @__PURE__ */ jsx49("h3", { className: "text-xs sm:text-sm font-semibold mb-3 sm:mb-4 text-foreground", children: title }),
-    /* @__PURE__ */ jsxs48(
+  return /* @__PURE__ */ jsxs49("div", { className: "flex flex-col w-full h-full glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg", children: [
+    title && /* @__PURE__ */ jsx50("h3", { className: "text-xs sm:text-sm font-semibold mb-3 sm:mb-4 text-foreground", children: title }),
+    /* @__PURE__ */ jsxs49(
       "div",
       {
         className: "relative w-full",
         style: { height: `${chartHeight}px` },
         children: [
-          /* @__PURE__ */ jsx49("div", { className: "absolute inset-0 flex flex-col justify-between pointer-events-none", children: ticks.slice().reverse().map((tick) => /* @__PURE__ */ jsxs48("div", { className: "flex items-center w-full h-0 relative", children: [
-            /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx50("div", { className: "absolute inset-0 flex flex-col justify-between pointer-events-none", children: ticks.slice().reverse().map((tick) => /* @__PURE__ */ jsxs49("div", { className: "flex items-center w-full h-0 relative", children: [
+            /* @__PURE__ */ jsx50(
               "div",
               {
                 className: "border-t border-border border-dashed",
@@ -7605,9 +7828,9 @@ var Chart = memo47(function Chart2({
                 }
               }
             ),
-            /* @__PURE__ */ jsx49("span", { className: "absolute left-0 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground text-right -translate-y-1/2 pr-1", style: { width: `${Y_AXIS_WIDTH}px` }, children: formatValue(tick) })
+            /* @__PURE__ */ jsx50("span", { className: "absolute left-0 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground text-right -translate-y-1/2 pr-1", style: { width: `${Y_AXIS_WIDTH}px` }, children: formatValue(tick) })
           ] }, tick)) }),
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx50(
             "div",
             {
               className: "absolute inset-0 flex items-end justify-between pt-2 sm:pt-3 pb-5 sm:pb-6",
@@ -7620,7 +7843,7 @@ var Chart = memo47(function Chart2({
                 const isSelected = isItemSelected(itemId);
                 const isHovered = hoveredIndex === i;
                 const barHeight = `${d.percentage}%`;
-                return /* @__PURE__ */ jsxs48(
+                return /* @__PURE__ */ jsxs49(
                   "div",
                   {
                     "data-selectable-item": true,
@@ -7633,7 +7856,7 @@ var Chart = memo47(function Chart2({
                     onTouchStart: () => setHoveredIndex(i),
                     onTouchEnd: () => setHoveredIndex(null),
                     children: [
-                      (isHovered || isSelected) && /* @__PURE__ */ jsxs48(
+                      (isHovered || isSelected) && /* @__PURE__ */ jsxs49(
                         "div",
                         {
                           className: cn2(
@@ -7642,7 +7865,7 @@ var Chart = memo47(function Chart2({
                             "animate-in fade-in zoom-in-95 duration-200"
                           ),
                           children: [
-                            /* @__PURE__ */ jsxs48("span", { className: "opacity-70 mr-0.5 sm:mr-1", children: [
+                            /* @__PURE__ */ jsxs49("span", { className: "opacity-70 mr-0.5 sm:mr-1", children: [
                               d.label,
                               ":"
                             ] }),
@@ -7650,7 +7873,7 @@ var Chart = memo47(function Chart2({
                           ]
                         }
                       ),
-                      /* @__PURE__ */ jsx49(
+                      /* @__PURE__ */ jsx50(
                         "div",
                         {
                           className: cn2(
@@ -7664,7 +7887,7 @@ var Chart = memo47(function Chart2({
                           }
                         }
                       ),
-                      /* @__PURE__ */ jsx49("div", { className: "absolute top-full mt-1 sm:mt-2 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground truncate w-full text-center max-w-full", children: d.label })
+                      /* @__PURE__ */ jsx50("div", { className: "absolute top-full mt-1 sm:mt-2 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground truncate w-full text-center max-w-full", children: d.label })
                     ]
                   },
                   i
@@ -7680,8 +7903,8 @@ var Chart = memo47(function Chart2({
 });
 
 // src/visualization/charts/StockChart/component.tsx
-import { memo as memo48, useEffect as useEffect3, useRef as useRef2, useState as useState16 } from "react";
-import { jsx as jsx50, jsxs as jsxs49 } from "react/jsx-runtime";
+import { memo as memo49, useEffect as useEffect3, useRef as useRef2, useState as useState17 } from "react";
+import { jsx as jsx51, jsxs as jsxs50 } from "react/jsx-runtime";
 var chartsModule = null;
 var getTimeframeDays = (tf) => {
   switch (tf) {
@@ -7712,7 +7935,7 @@ var filterDataByTimeframe = (data, timeframe) => {
   if (!cutoffStr) return data;
   return data.filter((d) => d.time >= cutoffStr);
 };
-var StockChart = memo48(function StockChart2({
+var StockChart = memo49(function StockChart2({
   element
 }) {
   const props = element.props;
@@ -7725,7 +7948,7 @@ var StockChart = memo48(function StockChart2({
   const containerRef = useRef2(null);
   const chartRef = useRef2(null);
   const seriesRef = useRef2(null);
-  const [timeframe, setTimeframe] = useState16(
+  const [timeframe, setTimeframe] = useState17(
     props.timeframe || "3M"
   );
   const filteredData = filterDataByTimeframe(initialData, timeframe);
@@ -7816,13 +8039,13 @@ var StockChart = memo48(function StockChart2({
     seriesRef.current = series;
   };
   const timeframes = ["1D", "1W", "1M", "3M", "1Y", "5Y", "ALL"];
-  return /* @__PURE__ */ jsxs49("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl shadow-lg", children: [
-    /* @__PURE__ */ jsxs49("div", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2", children: [
-      /* @__PURE__ */ jsxs49("h3", { className: "m-0 text-xs sm:text-sm font-semibold text-foreground", children: [
+  return /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl shadow-lg", children: [
+    /* @__PURE__ */ jsxs50("div", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2", children: [
+      /* @__PURE__ */ jsxs50("h3", { className: "m-0 text-xs sm:text-sm font-semibold text-foreground", children: [
         symbol,
         " Stock Price"
       ] }),
-      /* @__PURE__ */ jsx50("div", { className: "flex gap-0.5 sm:gap-1 bg-muted/20 p-0.5 sm:p-1 rounded-md overflow-x-auto touch-pan-x w-full sm:w-auto", children: timeframes.map((tf) => /* @__PURE__ */ jsx50(
+      /* @__PURE__ */ jsx51("div", { className: "flex gap-0.5 sm:gap-1 bg-muted/20 p-0.5 sm:p-1 rounded-md overflow-x-auto touch-pan-x w-full sm:w-auto", children: timeframes.map((tf) => /* @__PURE__ */ jsx51(
         "button",
         {
           onClick: () => setTimeframe(tf),
@@ -7835,14 +8058,14 @@ var StockChart = memo48(function StockChart2({
         tf
       )) })
     ] }),
-    /* @__PURE__ */ jsxs49(
+    /* @__PURE__ */ jsxs50(
       "div",
       {
         className: "relative w-full overflow-hidden rounded bg-black/5",
         style: { height: `${Math.max(height * 0.7, 200)}px` },
         children: [
-          /* @__PURE__ */ jsx50("div", { ref: containerRef, className: "w-full h-full" }),
-          !filteredData.length && /* @__PURE__ */ jsx50("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground text-xs sm:text-sm", children: "No data available for this timeframe" })
+          /* @__PURE__ */ jsx51("div", { ref: containerRef, className: "w-full h-full" }),
+          !filteredData.length && /* @__PURE__ */ jsx51("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground text-xs sm:text-sm", children: "No data available for this timeframe" })
         ]
       }
     )
@@ -7850,7 +8073,7 @@ var StockChart = memo48(function StockChart2({
 });
 
 // src/visualization/graphs/Graph/component.tsx
-import { memo as memo51, useCallback as useCallback14, useEffect as useEffect4, useMemo as useMemo24, useRef as useRef3, useState as useState17 } from "react";
+import { memo as memo52, useCallback as useCallback14, useEffect as useEffect4, useMemo as useMemo24, useRef as useRef3, useState as useState18 } from "react";
 import { useSelection } from "@onegenui/react";
 
 // src/visualization/graphs/Graph/components/types.ts
@@ -7902,19 +8125,19 @@ var DT = 0.1;
 var MAX_ITERATIONS = 300;
 
 // src/visualization/graphs/Graph/components/edges-renderer.tsx
-import { memo as memo49 } from "react";
-import { Fragment as Fragment5, jsx as jsx51 } from "react/jsx-runtime";
-var EdgesRenderer = memo49(function EdgesRenderer2({
+import { memo as memo50 } from "react";
+import { Fragment as Fragment5, jsx as jsx52 } from "react/jsx-runtime";
+var EdgesRenderer = memo50(function EdgesRenderer2({
   edges,
   nodeStates
 }) {
-  return /* @__PURE__ */ jsx51(Fragment5, { children: edges.map((e, i) => {
+  return /* @__PURE__ */ jsx52(Fragment5, { children: edges.map((e, i) => {
     const u = nodeStates.get(e.source);
     const v = nodeStates.get(e.target);
     if (!u || !v) return null;
     const targetRadius = v.size + 4;
     const end = getIntersection(u.pos, v.pos, targetRadius);
-    return /* @__PURE__ */ jsx51("g", { children: /* @__PURE__ */ jsx51(
+    return /* @__PURE__ */ jsx52("g", { children: /* @__PURE__ */ jsx52(
       "line",
       {
         x1: u.pos.x,
@@ -7931,9 +8154,9 @@ var EdgesRenderer = memo49(function EdgesRenderer2({
 });
 
 // src/visualization/graphs/Graph/components/nodes-renderer.tsx
-import { memo as memo50 } from "react";
-import { Fragment as Fragment6, jsx as jsx52, jsxs as jsxs50 } from "react/jsx-runtime";
-var NodesRenderer = memo50(function NodesRenderer2({
+import { memo as memo51 } from "react";
+import { Fragment as Fragment6, jsx as jsx53, jsxs as jsxs51 } from "react/jsx-runtime";
+var NodesRenderer = memo51(function NodesRenderer2({
   nodes,
   nodeStates,
   elementKey,
@@ -7941,12 +8164,12 @@ var NodesRenderer = memo50(function NodesRenderer2({
   toggleSelection,
   onNodeDragStart
 }) {
-  return /* @__PURE__ */ jsx52(Fragment6, { children: nodes.map((n) => {
+  return /* @__PURE__ */ jsx53(Fragment6, { children: nodes.map((n) => {
     const s = nodeStates.get(n.id);
     if (!s) return null;
     const selected = isSelected(elementKey, n.id);
     const color = n.color || colorForGroup(n.group);
-    return /* @__PURE__ */ jsxs50(
+    return /* @__PURE__ */ jsxs51(
       "g",
       {
         transform: `translate(${s.pos.x}, ${s.pos.y})`,
@@ -7960,7 +8183,7 @@ var NodesRenderer = memo50(function NodesRenderer2({
         },
         className: "cursor-grab active:cursor-grabbing",
         children: [
-          /* @__PURE__ */ jsx52(
+          /* @__PURE__ */ jsx53(
             "circle",
             {
               r: s.size,
@@ -7970,8 +8193,8 @@ var NodesRenderer = memo50(function NodesRenderer2({
               className: "transition-[stroke-width] duration-200"
             }
           ),
-          /* @__PURE__ */ jsx52("circle", { r: s.size, fill: color, opacity: selected ? 0.2 : 0.1 }),
-          /* @__PURE__ */ jsx52(
+          /* @__PURE__ */ jsx53("circle", { r: s.size, fill: color, opacity: selected ? 0.2 : 0.1 }),
+          /* @__PURE__ */ jsx53(
             "foreignObject",
             {
               x: -s.size * 1.5,
@@ -7979,7 +8202,7 @@ var NodesRenderer = memo50(function NodesRenderer2({
               width: s.size * 3,
               height: 30,
               className: "pointer-events-none overflow-visible",
-              children: /* @__PURE__ */ jsx52("div", { className: "flex justify-center items-center h-full", children: /* @__PURE__ */ jsx52("span", { className: "px-1.5 py-0.5 rounded-md text-xs font-medium text-black border border-black/10 whitespace-nowrap shadow-sm bg-white/85", children: n.label }) })
+              children: /* @__PURE__ */ jsx53("div", { className: "flex justify-center items-center h-full", children: /* @__PURE__ */ jsx53("span", { className: "px-1.5 py-0.5 rounded-md text-xs font-medium text-black border border-black/10 whitespace-nowrap shadow-sm bg-white/85", children: n.label }) })
             }
           )
         ]
@@ -7990,8 +8213,8 @@ var NodesRenderer = memo50(function NodesRenderer2({
 });
 
 // src/visualization/graphs/Graph/component.tsx
-import { jsx as jsx53, jsxs as jsxs51 } from "react/jsx-runtime";
-var Graph = memo51(function Graph2({
+import { jsx as jsx54, jsxs as jsxs52 } from "react/jsx-runtime";
+var Graph = memo52(function Graph2({
   element,
   children
 }) {
@@ -8010,14 +8233,14 @@ var Graph = memo51(function Graph2({
     [propsEdges]
   );
   const containerRef = useRef3(null);
-  const [dimensions, setDimensions] = useState17({ w: 800, h: DEFAULT_H });
+  const [dimensions, setDimensions] = useState18({ w: 800, h: DEFAULT_H });
   const nodeStates = useRef3(/* @__PURE__ */ new Map());
   const rafRef = useRef3(void 0);
-  const [bump, setBump] = useState17(0);
+  const [bump, setBump] = useState18(0);
   const iterationCount = useRef3(0);
   const { isSelected, toggleSelection } = useSelection();
-  const [pan, setPan] = useState17({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState17(1);
+  const [pan, setPan] = useState18({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState18(1);
   const isDragging = useRef3(false);
   const dragNodeId = useRef3(null);
   const lastMousePos = useRef3({ x: 0, y: 0 });
@@ -8163,11 +8386,11 @@ var Graph = memo51(function Graph2({
     []
   );
   const renderedEdges = useMemo24(
-    () => /* @__PURE__ */ jsx53(EdgesRenderer, { edges, nodeStates: nodeStates.current }),
+    () => /* @__PURE__ */ jsx54(EdgesRenderer, { edges, nodeStates: nodeStates.current }),
     [edges, bump]
   );
   const renderedNodes = useMemo24(
-    () => /* @__PURE__ */ jsx53(
+    () => /* @__PURE__ */ jsx54(
       NodesRenderer,
       {
         nodes,
@@ -8187,7 +8410,7 @@ var Graph = memo51(function Graph2({
       handleNodeDragStart
     ]
   );
-  return /* @__PURE__ */ jsxs51(
+  return /* @__PURE__ */ jsxs52(
     "div",
     {
       ref: containerRef,
@@ -8203,13 +8426,13 @@ var Graph = memo51(function Graph2({
       onPointerUp: handlePointerUp,
       onPointerLeave: handlePointerUp,
       children: [
-        title && /* @__PURE__ */ jsx53("div", { className: "absolute top-2 sm:top-4 left-2 sm:left-4 z-10 bg-background px-1.5 sm:px-2 py-0.5 sm:py-1 rounded border border-border font-semibold text-xs sm:text-sm shadow-sm", children: title }),
-        /* @__PURE__ */ jsxs51("div", { className: "absolute bottom-1.5 sm:bottom-2.5 right-1.5 sm:right-2.5 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground z-10", children: [
+        title && /* @__PURE__ */ jsx54("div", { className: "absolute top-2 sm:top-4 left-2 sm:left-4 z-10 bg-background px-1.5 sm:px-2 py-0.5 sm:py-1 rounded border border-border font-semibold text-xs sm:text-sm shadow-sm", children: title }),
+        /* @__PURE__ */ jsxs52("div", { className: "absolute bottom-1.5 sm:bottom-2.5 right-1.5 sm:right-2.5 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground z-10", children: [
           "Zoom: ",
           Math.round(zoom * 100),
           "%"
         ] }),
-        /* @__PURE__ */ jsxs51(
+        /* @__PURE__ */ jsxs52(
           "svg",
           {
             width: "100%",
@@ -8217,7 +8440,7 @@ var Graph = memo51(function Graph2({
             viewBox: `0 0 ${dimensions.w} ${dimensions.h}`,
             className: "block",
             children: [
-              /* @__PURE__ */ jsx53("defs", { children: /* @__PURE__ */ jsx53(
+              /* @__PURE__ */ jsx54("defs", { children: /* @__PURE__ */ jsx54(
                 "marker",
                 {
                   id: "arrow",
@@ -8227,10 +8450,10 @@ var Graph = memo51(function Graph2({
                   markerWidth: "6",
                   markerHeight: "6",
                   orient: "auto",
-                  children: /* @__PURE__ */ jsx53("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "var(--muted-foreground)" })
+                  children: /* @__PURE__ */ jsx54("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "var(--muted-foreground)" })
                 }
               ) }),
-              /* @__PURE__ */ jsxs51("g", { transform: `translate(${pan.x}, ${pan.y}) scale(${zoom})`, children: [
+              /* @__PURE__ */ jsxs52("g", { transform: `translate(${pan.x}, ${pan.y}) scale(${zoom})`, children: [
                 renderedEdges,
                 renderedNodes
               ] })
@@ -8244,7 +8467,7 @@ var Graph = memo51(function Graph2({
 });
 
 // src/visualization/graphs/MindMap/component.tsx
-import { memo as memo53, useMemo as useMemo25 } from "react";
+import { memo as memo54, useMemo as useMemo25 } from "react";
 
 // src/visualization/graphs/MindMap/components/types.ts
 var DEPTH_COLORS = [
@@ -8279,22 +8502,22 @@ function buildTreeFromFlat(nodes) {
 }
 
 // src/visualization/graphs/MindMap/components/node-renderer.tsx
-import { memo as memo52, useState as useState18, useCallback as useCallback15, useRef as useRef4, useLayoutEffect } from "react";
-import { jsx as jsx54, jsxs as jsxs52 } from "react/jsx-runtime";
-var NodeRenderer = memo52(function NodeRenderer2({
+import { memo as memo53, useState as useState19, useCallback as useCallback15, useRef as useRef4, useLayoutEffect } from "react";
+import { jsx as jsx55, jsxs as jsxs53 } from "react/jsx-runtime";
+var NodeRenderer = memo53(function NodeRenderer2({
   node,
   depth,
   isHorizontal,
   expandedByDefault,
   elementKey
 }) {
-  const [expanded, setExpanded] = useState18(expandedByDefault);
+  const [expanded, setExpanded] = useState19(expandedByDefault);
   const hasChildren = node.children && node.children.length > 0;
   const defaultColors = getColorForDepth(depth);
   const colors = node.color ? { bg: `${node.color}15`, border: node.color, text: node.color } : defaultColors;
   const nodeRef = useRef4(null);
   const childrenRef = useRef4(null);
-  const [paths, setPaths] = useState18([]);
+  const [paths, setPaths] = useState19([]);
   const updatePaths = useCallback15(() => {
     if (!expanded || !hasChildren || !nodeRef.current || !childrenRef.current) {
       setPaths([]);
@@ -8333,7 +8556,7 @@ var NodeRenderer = memo52(function NodeRenderer2({
     e.stopPropagation();
     setExpanded(!expanded);
   };
-  return /* @__PURE__ */ jsxs52(
+  return /* @__PURE__ */ jsxs53(
     "div",
     {
       className: cn2(
@@ -8341,8 +8564,8 @@ var NodeRenderer = memo52(function NodeRenderer2({
         isHorizontal ? "flex-row items-center" : "flex-col items-center"
       ),
       children: [
-        /* @__PURE__ */ jsxs52("div", { ref: nodeRef, className: "relative group z-10 flex items-center", children: [
-          /* @__PURE__ */ jsxs52(
+        /* @__PURE__ */ jsxs53("div", { ref: nodeRef, className: "relative group z-10 flex items-center", children: [
+          /* @__PURE__ */ jsxs53(
             "div",
             {
               "data-node-anchor": true,
@@ -8360,9 +8583,9 @@ var NodeRenderer = memo52(function NodeRenderer2({
                 backgroundColor: depth === 0 ? void 0 : colors.bg
               },
               children: [
-                node.icon && /* @__PURE__ */ jsx54("span", { className: "text-xl flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-background/50 border border-white/10", children: node.icon }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex-1 min-w-0", children: [
-                  /* @__PURE__ */ jsx54(
+                node.icon && /* @__PURE__ */ jsx55("span", { className: "text-xl flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-background/50 border border-white/10", children: node.icon }),
+                /* @__PURE__ */ jsxs53("div", { className: "flex-1 min-w-0", children: [
+                  /* @__PURE__ */ jsx55(
                     "div",
                     {
                       className: cn2(
@@ -8373,12 +8596,12 @@ var NodeRenderer = memo52(function NodeRenderer2({
                       children: node.label
                     }
                   ),
-                  node.description && /* @__PURE__ */ jsx54("div", { className: "text-[11px] text-muted-foreground mt-1 leading-snug line-clamp-2", children: node.description })
+                  node.description && /* @__PURE__ */ jsx55("div", { className: "text-[11px] text-muted-foreground mt-1 leading-snug line-clamp-2", children: node.description })
                 ] })
               ]
             }
           ),
-          hasChildren && /* @__PURE__ */ jsx54(
+          hasChildren && /* @__PURE__ */ jsx55(
             "button",
             {
               onClick: toggleExpand,
@@ -8397,8 +8620,8 @@ var NodeRenderer = memo52(function NodeRenderer2({
             }
           )
         ] }),
-        hasChildren && expanded && /* @__PURE__ */ jsxs52("div", { className: "flex flex-row items-stretch", children: [
-          isHorizontal && /* @__PURE__ */ jsx54("div", { className: "w-16 relative shrink-0", children: /* @__PURE__ */ jsx54("svg", { className: "absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none", children: paths.map((d, i) => /* @__PURE__ */ jsx54(
+        hasChildren && expanded && /* @__PURE__ */ jsxs53("div", { className: "flex flex-row items-stretch", children: [
+          isHorizontal && /* @__PURE__ */ jsx55("div", { className: "w-16 relative shrink-0", children: /* @__PURE__ */ jsx55("svg", { className: "absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none", children: paths.map((d, i) => /* @__PURE__ */ jsx55(
             "path",
             {
               d,
@@ -8410,7 +8633,7 @@ var NodeRenderer = memo52(function NodeRenderer2({
             },
             i
           )) }) }),
-          /* @__PURE__ */ jsx54(
+          /* @__PURE__ */ jsx55(
             "div",
             {
               ref: childrenRef,
@@ -8418,7 +8641,7 @@ var NodeRenderer = memo52(function NodeRenderer2({
                 "flex",
                 isHorizontal ? "flex-col gap-4 py-2" : "flex-row gap-4"
               ),
-              children: node.children.map((child) => /* @__PURE__ */ jsx54(
+              children: node.children.map((child) => /* @__PURE__ */ jsx55(
                 NodeRenderer2,
                 {
                   node: child,
@@ -8438,8 +8661,8 @@ var NodeRenderer = memo52(function NodeRenderer2({
 });
 
 // src/visualization/graphs/MindMap/component.tsx
-import { jsx as jsx55, jsxs as jsxs53 } from "react/jsx-runtime";
-var MindMap = memo53(function MindMap2({
+import { jsx as jsx56, jsxs as jsxs54 } from "react/jsx-runtime";
+var MindMap = memo54(function MindMap2({
   element,
   children
 }) {
@@ -8451,18 +8674,18 @@ var MindMap = memo53(function MindMap2({
     return buildTreeFromFlat(nodes);
   }, [nodes]);
   if (!rootNodes.length) {
-    return /* @__PURE__ */ jsx55("div", { className: "p-4 sm:p-8 text-center text-muted-foreground bg-muted/20 rounded-lg sm:rounded-xl border border-dashed border-border text-sm", children: "No mind map data" });
+    return /* @__PURE__ */ jsx56("div", { className: "p-4 sm:p-8 text-center text-muted-foreground bg-muted/20 rounded-lg sm:rounded-xl border border-dashed border-border text-sm", children: "No mind map data" });
   }
-  return /* @__PURE__ */ jsxs53("div", { className: "w-full overflow-hidden", children: [
-    title && /* @__PURE__ */ jsx55("h3", { className: "mb-2 sm:mb-4 text-base sm:text-lg font-semibold text-foreground flex items-center gap-2", children: title }),
-    /* @__PURE__ */ jsx55(
+  return /* @__PURE__ */ jsxs54("div", { className: "w-full overflow-hidden", children: [
+    title && /* @__PURE__ */ jsx56("h3", { className: "mb-2 sm:mb-4 text-base sm:text-lg font-semibold text-foreground flex items-center gap-2", children: title }),
+    /* @__PURE__ */ jsx56(
       "div",
       {
         className: cn2(
           "flex p-4 sm:p-6 lg:p-8 gap-6 sm:gap-8 lg:gap-12 overflow-auto glass-subtle rounded-lg sm:rounded-2xl min-h-[250px] sm:min-h-[350px] lg:min-h-[400px] touch-pan-x touch-pan-y",
           isHorizontal ? "flex-col" : "flex-row"
         ),
-        children: rootNodes.map((node) => /* @__PURE__ */ jsx55(
+        children: rootNodes.map((node) => /* @__PURE__ */ jsx56(
           NodeRenderer,
           {
             node,
@@ -8480,9 +8703,9 @@ var MindMap = memo53(function MindMap2({
 });
 
 // src/visualization/graphs/Gantt/component.tsx
-import { memo as memo54 } from "react";
-import { jsx as jsx56, jsxs as jsxs54 } from "react/jsx-runtime";
-var Gantt = memo54(function Gantt2({
+import { memo as memo55 } from "react";
+import { jsx as jsx57, jsxs as jsxs55 } from "react/jsx-runtime";
+var Gantt = memo55(function Gantt2({
   element,
   children
 }) {
@@ -8508,29 +8731,29 @@ var Gantt = memo54(function Gantt2({
     month: "short",
     day: "numeric"
   });
-  return /* @__PURE__ */ jsxs54("div", { className: "glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 overflow-hidden shadow-lg", children: [
-    title && /* @__PURE__ */ jsx56("h3", { className: "mb-3 sm:mb-5 text-base sm:text-lg font-bold text-foreground", children: title }),
-    /* @__PURE__ */ jsx56(
+  return /* @__PURE__ */ jsxs55("div", { className: "glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 overflow-hidden shadow-lg", children: [
+    title && /* @__PURE__ */ jsx57("h3", { className: "mb-3 sm:mb-5 text-base sm:text-lg font-bold text-foreground", children: title }),
+    /* @__PURE__ */ jsx57(
       "div",
       {
         className: "relative",
         style: {
           minHeight: `${tasks.length * 36 + 40}px`
         },
-        children: /* @__PURE__ */ jsx56("div", { className: "overflow-x-auto pb-2 sm:pb-3 touch-pan-x", children: /* @__PURE__ */ jsxs54("div", { className: "min-w-[400px] sm:min-w-[600px]", children: [
-          /* @__PURE__ */ jsxs54("div", { className: "flex justify-between mb-2 sm:mb-3 border-b border-border pb-1.5 sm:pb-2 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
-            /* @__PURE__ */ jsx56("span", { children: tasks[0] ? formatDate3(tasks[0].start) : "" }),
-            /* @__PURE__ */ jsx56("span", { children: (() => {
+        children: /* @__PURE__ */ jsx57("div", { className: "overflow-x-auto pb-2 sm:pb-3 touch-pan-x", children: /* @__PURE__ */ jsxs55("div", { className: "min-w-[400px] sm:min-w-[600px]", children: [
+          /* @__PURE__ */ jsxs55("div", { className: "flex justify-between mb-2 sm:mb-3 border-b border-border pb-1.5 sm:pb-2 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
+            /* @__PURE__ */ jsx57("span", { children: tasks[0] ? formatDate3(tasks[0].start) : "" }),
+            /* @__PURE__ */ jsx57("span", { children: (() => {
               const lastTask = tasks[tasks.length - 1];
               return lastTask ? formatDate3(lastTask.end) : "";
             })() })
           ] }),
-          /* @__PURE__ */ jsx56("div", { className: "flex flex-col gap-2 sm:gap-3", children: tasks.map((task, index) => {
+          /* @__PURE__ */ jsx57("div", { className: "flex flex-col gap-2 sm:gap-3", children: tasks.map((task, index) => {
             const paddingLeft = getLeft(task.start);
             const width = getWidth(task.start, task.end);
             const isMilestone = task.type === "milestone" || width === 0;
             const itemId = task.id || `task-${index}`;
-            return /* @__PURE__ */ jsxs54(
+            return /* @__PURE__ */ jsxs55(
               "div",
               {
                 "data-selectable-item": true,
@@ -8538,15 +8761,15 @@ var Gantt = memo54(function Gantt2({
                 "data-item-id": itemId,
                 className: "flex items-center h-6 sm:h-7 rounded px-0.5 sm:px-1 cursor-pointer hover:bg-muted/50 transition-colors touch-manipulation",
                 children: [
-                  /* @__PURE__ */ jsx56("div", { className: "w-1/4 sm:w-1/5 pr-1.5 sm:pr-3 text-[0.625rem] sm:text-[0.8125rem] font-medium overflow-hidden text-ellipsis whitespace-nowrap text-foreground", children: task.name }),
-                  /* @__PURE__ */ jsx56(
+                  /* @__PURE__ */ jsx57("div", { className: "w-1/4 sm:w-1/5 pr-1.5 sm:pr-3 text-[0.625rem] sm:text-[0.8125rem] font-medium overflow-hidden text-ellipsis whitespace-nowrap text-foreground", children: task.name }),
+                  /* @__PURE__ */ jsx57(
                     "div",
                     {
                       className: cn2(
                         "flex-1 relative h-full rounded",
                         isMilestone ? "bg-transparent" : "bg-muted/30"
                       ),
-                      children: isMilestone ? /* @__PURE__ */ jsx56(
+                      children: isMilestone ? /* @__PURE__ */ jsx57(
                         "div",
                         {
                           className: "absolute w-3 h-3 sm:w-4 sm:h-4 z-10 border-2 border-white shadow-sm rotate-45 -translate-x-1/2 origin-left",
@@ -8556,7 +8779,7 @@ var Gantt = memo54(function Gantt2({
                           },
                           title: `Milestone: ${task.name}`
                         }
-                      ) : /* @__PURE__ */ jsxs54(
+                      ) : /* @__PURE__ */ jsxs55(
                         "div",
                         {
                           className: "absolute h-full rounded opacity-90 flex items-center pl-1.5 sm:pl-2 text-white text-[0.5rem] sm:text-[0.625rem] overflow-hidden",
@@ -8567,11 +8790,11 @@ var Gantt = memo54(function Gantt2({
                           },
                           title: `${task.name}: ${task.progress}%`,
                           children: [
-                            width > 10 && /* @__PURE__ */ jsxs54("span", { className: "z-[2]", children: [
+                            width > 10 && /* @__PURE__ */ jsxs55("span", { className: "z-[2]", children: [
                               task.progress,
                               "%"
                             ] }),
-                            /* @__PURE__ */ jsx56(
+                            /* @__PURE__ */ jsx57(
                               "div",
                               {
                                 className: "absolute left-0 top-0 bottom-0 bg-white opacity-20",
@@ -8593,7 +8816,7 @@ var Gantt = memo54(function Gantt2({
         ] }) })
       }
     ),
-    children && /* @__PURE__ */ jsx56("div", { className: "mt-4 sm:mt-6 space-y-3 sm:space-y-4", children })
+    children && /* @__PURE__ */ jsx57("div", { className: "mt-4 sm:mt-6 space-y-3 sm:space-y-4", children })
   ] });
 });
 
@@ -8658,10 +8881,10 @@ import {
 } from "@onegenui/ui";
 
 // src/communication/Message/component.tsx
-import { memo as memo55, useState as useState19, useEffect as useEffect5 } from "react";
+import { memo as memo56, useState as useState20, useEffect as useEffect5 } from "react";
 import { Send, User as User4 } from "lucide-react";
-import { jsx as jsx57, jsxs as jsxs55 } from "react/jsx-runtime";
-var Message = memo55(function Message2({
+import { jsx as jsx58, jsxs as jsxs56 } from "react/jsx-runtime";
+var Message = memo56(function Message2({
   element,
   children
 }) {
@@ -8672,7 +8895,7 @@ var Message = memo55(function Message2({
     activeAgents = [],
     lock = false
   } = element.props;
-  const [messages, setMessages] = useState19(
+  const [messages, setMessages] = useState20(
     initialMessages || []
   );
   useEffect5(() => {
@@ -8680,7 +8903,7 @@ var Message = memo55(function Message2({
       setMessages(initialMessages);
     }
   }, [initialMessages]);
-  const [replyText, setReplyText] = useState19("");
+  const [replyText, setReplyText] = useState20("");
   const handleSendReply = () => {
     if (lock || !replyText.trim()) return;
     const newMessage = {
@@ -8695,11 +8918,11 @@ var Message = memo55(function Message2({
     setReplyText("");
   };
   const getParticipant = (id) => participants.find((p) => p.id === id);
-  return /* @__PURE__ */ jsxs55("div", { className: "flex flex-col h-full max-h-[500px] sm:max-h-[600px] overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
-    title && /* @__PURE__ */ jsxs55("div", { className: "flex items-center justify-between border-b border-border px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/20 gap-2", children: [
-      /* @__PURE__ */ jsx57("div", { className: "font-semibold text-sm sm:text-base truncate", children: title }),
-      participants.length > 0 && /* @__PURE__ */ jsxs55("div", { className: "flex -space-x-1.5 sm:-space-x-2 shrink-0", children: [
-        participants.slice(0, 5).map((p) => /* @__PURE__ */ jsx57(
+  return /* @__PURE__ */ jsxs56("div", { className: "flex flex-col h-full max-h-[500px] sm:max-h-[600px] overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
+    title && /* @__PURE__ */ jsxs56("div", { className: "flex items-center justify-between border-b border-border px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/20 gap-2", children: [
+      /* @__PURE__ */ jsx58("div", { className: "font-semibold text-sm sm:text-base truncate", children: title }),
+      participants.length > 0 && /* @__PURE__ */ jsxs56("div", { className: "flex -space-x-1.5 sm:-space-x-2 shrink-0", children: [
+        participants.slice(0, 5).map((p) => /* @__PURE__ */ jsx58(
           "div",
           {
             className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm ring-1 ring-black/5 bg-[var(--avatar-bg,var(--primary))]",
@@ -8707,29 +8930,29 @@ var Message = memo55(function Message2({
               "--avatar-bg": p.color
             },
             title: `${p.name} (${p.role})`,
-            children: p.avatar ? /* @__PURE__ */ jsx57(
+            children: p.avatar ? /* @__PURE__ */ jsx58(
               "img",
               {
                 src: p.avatar,
                 alt: p.name,
                 className: "h-full w-full rounded-full object-cover"
               }
-            ) : /* @__PURE__ */ jsx57("span", { children: p.name[0] })
+            ) : /* @__PURE__ */ jsx58("span", { children: p.name[0] })
           },
           p.id
         )),
-        participants.length > 5 && /* @__PURE__ */ jsxs55("div", { className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm bg-zinc-600", children: [
+        participants.length > 5 && /* @__PURE__ */ jsxs56("div", { className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm bg-zinc-600", children: [
           "+",
           participants.length - 5
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs55("div", { className: "flex flex-1 flex-col gap-3 sm:gap-4 overflow-y-auto p-3 sm:p-4 bg-muted/5 min-h-0 touch-pan-y", children: [
+    /* @__PURE__ */ jsxs56("div", { className: "flex flex-1 flex-col gap-3 sm:gap-4 overflow-y-auto p-3 sm:p-4 bg-muted/5 min-h-0 touch-pan-y", children: [
       messages.map((msg) => {
         const participant = getParticipant(msg.participantId);
         const senderName = participant ? participant.name : msg.sender;
         const role = participant?.role;
-        return /* @__PURE__ */ jsxs55(
+        return /* @__PURE__ */ jsxs56(
           "div",
           {
             "data-selectable-item": true,
@@ -8740,7 +8963,7 @@ var Message = memo55(function Message2({
               msg.isOwn ? "self-end items-end" : "self-start items-start"
             ),
             children: [
-              /* @__PURE__ */ jsxs55(
+              /* @__PURE__ */ jsxs56(
                 "div",
                 {
                   className: cn(
@@ -8748,13 +8971,13 @@ var Message = memo55(function Message2({
                     msg.isOwn ? "flex-row-reverse" : "flex-row"
                   ),
                   children: [
-                    /* @__PURE__ */ jsx57("span", { className: "font-semibold text-foreground truncate max-w-[8rem] sm:max-w-none", children: senderName }),
-                    role && /* @__PURE__ */ jsx57("span", { className: "px-1 sm:px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] bg-secondary text-secondary-foreground border border-border/50 hidden sm:inline", children: role }),
-                    /* @__PURE__ */ jsx57("span", { className: "opacity-70 text-[0.5rem] sm:text-[0.625rem]", children: msg.timestamp })
+                    /* @__PURE__ */ jsx58("span", { className: "font-semibold text-foreground truncate max-w-[8rem] sm:max-w-none", children: senderName }),
+                    role && /* @__PURE__ */ jsx58("span", { className: "px-1 sm:px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] bg-secondary text-secondary-foreground border border-border/50 hidden sm:inline", children: role }),
+                    /* @__PURE__ */ jsx58("span", { className: "opacity-70 text-[0.5rem] sm:text-[0.625rem]", children: msg.timestamp })
                   ]
                 }
               ),
-              /* @__PURE__ */ jsx57(
+              /* @__PURE__ */ jsx58(
                 "div",
                 {
                   className: cn(
@@ -8773,15 +8996,15 @@ var Message = memo55(function Message2({
           msg.id
         );
       }),
-      activeAgents.length > 0 && /* @__PURE__ */ jsx57("div", { className: "flex flex-wrap gap-2 sm:gap-3 mt-1 sm:mt-2 px-1 sm:px-2", children: activeAgents.map((agentId) => {
+      activeAgents.length > 0 && /* @__PURE__ */ jsx58("div", { className: "flex flex-wrap gap-2 sm:gap-3 mt-1 sm:mt-2 px-1 sm:px-2", children: activeAgents.map((agentId) => {
         const p = getParticipant(agentId);
         if (!p) return null;
-        return /* @__PURE__ */ jsxs55(
+        return /* @__PURE__ */ jsxs56(
           "div",
           {
             className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs text-muted-foreground animate-pulse",
             children: [
-              /* @__PURE__ */ jsx57(
+              /* @__PURE__ */ jsx58(
                 "div",
                 {
                   className: "h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[var(--agent-color,currentColor)]",
@@ -8790,7 +9013,7 @@ var Message = memo55(function Message2({
                   }
                 }
               ),
-              /* @__PURE__ */ jsxs55("span", { children: [
+              /* @__PURE__ */ jsxs56("span", { children: [
                 p.name,
                 " is typing..."
               ] })
@@ -8799,13 +9022,13 @@ var Message = memo55(function Message2({
           agentId
         );
       }) }),
-      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ jsxs55("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-1.5 sm:space-y-2", children: [
-        /* @__PURE__ */ jsx57("div", { className: "p-3 sm:p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ jsx57(User4, { className: "h-6 w-6 sm:h-8 sm:w-8 opacity-50" }) }),
-        /* @__PURE__ */ jsx57("p", { className: "text-xs sm:text-sm", children: "No messages yet" })
+      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ jsxs56("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-1.5 sm:space-y-2", children: [
+        /* @__PURE__ */ jsx58("div", { className: "p-3 sm:p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ jsx58(User4, { className: "h-6 w-6 sm:h-8 sm:w-8 opacity-50" }) }),
+        /* @__PURE__ */ jsx58("p", { className: "text-xs sm:text-sm", children: "No messages yet" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs55("div", { className: "p-2.5 sm:p-4 border-t border-border bg-background flex gap-2 items-end safe-area-bottom", children: [
-      /* @__PURE__ */ jsx57(
+    /* @__PURE__ */ jsxs56("div", { className: "p-2.5 sm:p-4 border-t border-border bg-background flex gap-2 items-end safe-area-bottom", children: [
+      /* @__PURE__ */ jsx58(
         "textarea",
         {
           "data-interactive": true,
@@ -8825,7 +9048,7 @@ var Message = memo55(function Message2({
           }
         }
       ),
-      /* @__PURE__ */ jsx57(
+      /* @__PURE__ */ jsx58(
         "button",
         {
           "data-interactive": true,
@@ -8835,7 +9058,7 @@ var Message = memo55(function Message2({
             "inline-flex items-center justify-center shrink-0 rounded-lg h-[2.75rem] w-[2.75rem] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 touch-manipulation",
             !replyText.trim() ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
           ),
-          children: /* @__PURE__ */ jsx57(Send, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+          children: /* @__PURE__ */ jsx58(Send, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       )
     ] }),
@@ -8844,18 +9067,18 @@ var Message = memo55(function Message2({
 });
 
 // src/communication/Email/component.tsx
-import { memo as memo58, useState as useState21, useEffect as useEffect7, useRef as useRef5, useCallback as useCallback16 } from "react";
+import { memo as memo59, useState as useState22, useEffect as useEffect7, useRef as useRef5, useCallback as useCallback16 } from "react";
 import { createLogger } from "@onegenui/utils";
 import { PenSquare, Mail } from "lucide-react";
 
 // src/communication/Email/components/unread-dot.tsx
-import { jsx as jsx58 } from "react/jsx-runtime";
+import { jsx as jsx59 } from "react/jsx-runtime";
 function UnreadDot() {
-  return /* @__PURE__ */ jsx58("div", { className: "w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(234,67,53,0.5)] bg-gradient-to-br from-red-500 to-red-700" });
+  return /* @__PURE__ */ jsx59("div", { className: "w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(234,67,53,0.5)] bg-gradient-to-br from-red-500 to-red-700" });
 }
 
 // src/communication/Email/components/compose-modal.tsx
-import { useState as useState20, useEffect as useEffect6 } from "react";
+import { useState as useState21, useEffect as useEffect6 } from "react";
 import { Send as Send2, X as X2, Paperclip } from "lucide-react";
 
 // src/communication/Email/components/types.ts
@@ -8901,18 +9124,18 @@ function formatDate2(dateStr) {
 }
 
 // src/communication/Email/components/compose-modal.tsx
-import { jsx as jsx59, jsxs as jsxs56 } from "react/jsx-runtime";
+import { jsx as jsx60, jsxs as jsxs57 } from "react/jsx-runtime";
 function ComposeModal({
   mode,
   originalEmail,
   onClose,
   onSend
 }) {
-  const [to, setTo] = useState20("");
-  const [cc, setCc] = useState20("");
-  const [subject, setSubject] = useState20("");
-  const [body, setBody] = useState20("");
-  const [sending, setSending] = useState20(false);
+  const [to, setTo] = useState21("");
+  const [cc, setCc] = useState21("");
+  const [subject, setSubject] = useState21("");
+  const [body, setBody] = useState21("");
+  const [sending, setSending] = useState21(false);
   useEffect6(() => {
     if (mode === "reply" && originalEmail) {
       setTo(extractEmailAddress(originalEmail.from));
@@ -8983,27 +9206,27 @@ ${originalEmail.body}`
     forward: "Inoltra",
     none: ""
   }[mode];
-  return /* @__PURE__ */ jsx59("div", { className: "absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4", children: /* @__PURE__ */ jsxs56(
+  return /* @__PURE__ */ jsx60("div", { className: "absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4", children: /* @__PURE__ */ jsxs57(
     "div",
     {
       className: "flex flex-col w-full sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-card border-t sm:border border-border rounded-t-2xl sm:rounded-xl shadow-2xl overflow-hidden",
       onClick: (e) => e.stopPropagation(),
       children: [
-        /* @__PURE__ */ jsxs56("div", { className: "flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-border bg-muted/20", children: [
-          /* @__PURE__ */ jsx59("span", { className: "font-semibold text-sm sm:text-base", children: modeTitle }),
-          /* @__PURE__ */ jsx59(
+        /* @__PURE__ */ jsxs57("div", { className: "flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-border bg-muted/20", children: [
+          /* @__PURE__ */ jsx60("span", { className: "font-semibold text-sm sm:text-base", children: modeTitle }),
+          /* @__PURE__ */ jsx60(
             "button",
             {
               onClick: onClose,
               className: "p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
-              children: /* @__PURE__ */ jsx59(X2, { className: "w-4 h-4" })
+              children: /* @__PURE__ */ jsx60(X2, { className: "w-4 h-4" })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs56("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-5 flex-1 overflow-y-auto touch-pan-y", children: [
-          /* @__PURE__ */ jsxs56("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ jsx59("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "A:" }),
-            /* @__PURE__ */ jsx59(
+        /* @__PURE__ */ jsxs57("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-5 flex-1 overflow-y-auto touch-pan-y", children: [
+          /* @__PURE__ */ jsxs57("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ jsx60("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "A:" }),
+            /* @__PURE__ */ jsx60(
               "input",
               {
                 type: "email",
@@ -9015,9 +9238,9 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs56("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ jsx59("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Cc:" }),
-            /* @__PURE__ */ jsx59(
+          /* @__PURE__ */ jsxs57("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ jsx60("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Cc:" }),
+            /* @__PURE__ */ jsx60(
               "input",
               {
                 type: "email",
@@ -9028,9 +9251,9 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs56("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ jsx59("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Ogg:" }),
-            /* @__PURE__ */ jsx59(
+          /* @__PURE__ */ jsxs57("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ jsx60("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Ogg:" }),
+            /* @__PURE__ */ jsx60(
               "input",
               {
                 type: "text",
@@ -9041,7 +9264,7 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ jsx59(
+          /* @__PURE__ */ jsx60(
             "textarea",
             {
               value: body,
@@ -9051,16 +9274,16 @@ ${originalEmail.body}`
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs56("div", { className: "flex justify-between items-center px-3 sm:px-5 py-3 sm:py-4 border-t border-border bg-muted/20 safe-area-bottom", children: [
-          /* @__PURE__ */ jsx59(
+        /* @__PURE__ */ jsxs57("div", { className: "flex justify-between items-center px-3 sm:px-5 py-3 sm:py-4 border-t border-border bg-muted/20 safe-area-bottom", children: [
+          /* @__PURE__ */ jsx60(
             "button",
             {
               className: "p-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors opacity-50 cursor-pointer touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
               title: "Allega file",
-              children: /* @__PURE__ */ jsx59(Paperclip, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+              children: /* @__PURE__ */ jsx60(Paperclip, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
             }
           ),
-          /* @__PURE__ */ jsxs56(
+          /* @__PURE__ */ jsxs57(
             "button",
             {
               onClick: handleSend,
@@ -9070,7 +9293,7 @@ ${originalEmail.body}`
                 !to.trim() || sending ? "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50" : "bg-blue-600 hover:bg-blue-500 text-white cursor-pointer hover:shadow-blue-500/30"
               ),
               children: [
-                /* @__PURE__ */ jsx59(Send2, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
+                /* @__PURE__ */ jsx60(Send2, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
                 sending ? "Invio..." : "Invia"
               ]
             }
@@ -9082,10 +9305,10 @@ ${originalEmail.body}`
 }
 
 // src/communication/Email/components/email-list.tsx
-import { memo as memo56 } from "react";
-import { Star as Star4, Paperclip as Paperclip2 } from "lucide-react";
-import { jsx as jsx60, jsxs as jsxs57 } from "react/jsx-runtime";
-var EmailList = memo56(function EmailList2({
+import { memo as memo57 } from "react";
+import { Star as Star5, Paperclip as Paperclip2 } from "lucide-react";
+import { jsx as jsx61, jsxs as jsxs58 } from "react/jsx-runtime";
+var EmailList = memo57(function EmailList2({
   emails,
   elementKey,
   hoveredId,
@@ -9094,13 +9317,13 @@ var EmailList = memo56(function EmailList2({
   onHoverEmail
 }) {
   if (emails.length === 0) {
-    return /* @__PURE__ */ jsx60("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: /* @__PURE__ */ jsxs57("div", { className: "flex flex-col items-center justify-center py-12 sm:py-16 text-foreground/60 text-center", children: [
-      /* @__PURE__ */ jsx60("div", { className: "text-4xl sm:text-5xl mb-3 sm:mb-4 opacity-50", children: "\u{1F4ED}" }),
-      /* @__PURE__ */ jsx60("div", { className: "text-base sm:text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
-      /* @__PURE__ */ jsx60("div", { className: "text-xs sm:text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
+    return /* @__PURE__ */ jsx61("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: /* @__PURE__ */ jsxs58("div", { className: "flex flex-col items-center justify-center py-12 sm:py-16 text-foreground/60 text-center", children: [
+      /* @__PURE__ */ jsx61("div", { className: "text-4xl sm:text-5xl mb-3 sm:mb-4 opacity-50", children: "\u{1F4ED}" }),
+      /* @__PURE__ */ jsx61("div", { className: "text-base sm:text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
+      /* @__PURE__ */ jsx61("div", { className: "text-xs sm:text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
     ] }) });
   }
-  return /* @__PURE__ */ jsx60("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: emails.map((email) => /* @__PURE__ */ jsx60(
+  return /* @__PURE__ */ jsx61("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: emails.map((email) => /* @__PURE__ */ jsx61(
     "div",
     {
       "data-selectable-item": true,
@@ -9113,12 +9336,12 @@ var EmailList = memo56(function EmailList2({
         "group relative border border-border/50 p-3 sm:p-4 cursor-pointer transition-all duration-200 rounded-lg sm:rounded-xl mb-2 bg-card/80 shadow-sm touch-manipulation",
         hoveredId === email.id ? "bg-card border-primary/30 shadow-md" : !email.read ? "bg-card border-red-500/30" : "bg-card/60"
       ),
-      children: /* @__PURE__ */ jsxs57("div", { className: "flex items-start gap-2.5 sm:gap-3.5", children: [
-        /* @__PURE__ */ jsx60("div", { className: "w-2 sm:w-2.5 mt-2 flex justify-center shrink-0", children: !email.read && /* @__PURE__ */ jsx60(UnreadDot, {}) }),
-        /* @__PURE__ */ jsx60("div", { className: "w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center shrink-0 text-xs sm:text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
-        /* @__PURE__ */ jsxs57("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ jsxs57("div", { className: "flex justify-between items-center mb-0.5 sm:mb-1 gap-2", children: [
-            /* @__PURE__ */ jsx60(
+      children: /* @__PURE__ */ jsxs58("div", { className: "flex items-start gap-2.5 sm:gap-3.5", children: [
+        /* @__PURE__ */ jsx61("div", { className: "w-2 sm:w-2.5 mt-2 flex justify-center shrink-0", children: !email.read && /* @__PURE__ */ jsx61(UnreadDot, {}) }),
+        /* @__PURE__ */ jsx61("div", { className: "w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center shrink-0 text-xs sm:text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
+        /* @__PURE__ */ jsxs58("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxs58("div", { className: "flex justify-between items-center mb-0.5 sm:mb-1 gap-2", children: [
+            /* @__PURE__ */ jsx61(
               "span",
               {
                 className: cn(
@@ -9128,8 +9351,8 @@ var EmailList = memo56(function EmailList2({
                 children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto"
               }
             ),
-            /* @__PURE__ */ jsxs57("div", { className: "flex items-center gap-1.5 sm:gap-2 shrink-0", children: [
-              /* @__PURE__ */ jsx60(
+            /* @__PURE__ */ jsxs58("div", { className: "flex items-center gap-1.5 sm:gap-2 shrink-0", children: [
+              /* @__PURE__ */ jsx61(
                 "button",
                 {
                   onClick: (e) => onToggleStar(email.id, e),
@@ -9137,8 +9360,8 @@ var EmailList = memo56(function EmailList2({
                     "p-1.5 sm:p-1 rounded-full transition-colors sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 touch-manipulation min-h-[2rem] min-w-[2rem] sm:min-h-0 sm:min-w-0 flex items-center justify-center",
                     email.starred ? "text-yellow-400 opacity-100" : "text-muted-foreground hover:bg-muted"
                   ),
-                  children: /* @__PURE__ */ jsx60(
-                    Star4,
+                  children: /* @__PURE__ */ jsx61(
+                    Star5,
                     {
                       className: "w-3.5 h-3.5 sm:w-3.5 sm:h-3.5",
                       fill: email.starred ? "currentColor" : "none"
@@ -9146,10 +9369,10 @@ var EmailList = memo56(function EmailList2({
                   )
                 }
               ),
-              /* @__PURE__ */ jsx60("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
+              /* @__PURE__ */ jsx61("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
             ] })
           ] }),
-          /* @__PURE__ */ jsx60(
+          /* @__PURE__ */ jsx61(
             "div",
             {
               className: cn(
@@ -9159,10 +9382,10 @@ var EmailList = memo56(function EmailList2({
               children: email.subject || "(Nessun oggetto)"
             }
           ),
-          /* @__PURE__ */ jsx60("div", { className: "text-[0.625rem] sm:text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
-          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ jsx60("div", { className: "flex items-center gap-1.5 mt-1.5 sm:mt-2", children: /* @__PURE__ */ jsxs57("div", { className: "bg-muted/50 px-1.5 sm:px-2 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
-            /* @__PURE__ */ jsx60(Paperclip2, { className: "w-2.5 h-2.5 sm:w-2.5 sm:h-2.5" }),
-            /* @__PURE__ */ jsxs57("span", { children: [
+          /* @__PURE__ */ jsx61("div", { className: "text-[0.625rem] sm:text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
+          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ jsx61("div", { className: "flex items-center gap-1.5 mt-1.5 sm:mt-2", children: /* @__PURE__ */ jsxs58("div", { className: "bg-muted/50 px-1.5 sm:px-2 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
+            /* @__PURE__ */ jsx61(Paperclip2, { className: "w-2.5 h-2.5 sm:w-2.5 sm:h-2.5" }),
+            /* @__PURE__ */ jsxs58("span", { children: [
               email.attachments.length,
               " allegat",
               email.attachments.length === 1 ? "o" : "i"
@@ -9176,7 +9399,7 @@ var EmailList = memo56(function EmailList2({
 });
 
 // src/communication/Email/components/email-detail.tsx
-import { memo as memo57 } from "react";
+import { memo as memo58 } from "react";
 import {
   ArrowLeft as ArrowLeft2,
   Archive,
@@ -9184,11 +9407,11 @@ import {
   Reply,
   ReplyAll,
   Forward,
-  Star as Star5,
+  Star as Star6,
   Paperclip as Paperclip3
 } from "lucide-react";
-import { Fragment as Fragment7, jsx as jsx61, jsxs as jsxs58 } from "react/jsx-runtime";
-var EmailDetail = memo57(function EmailDetail2({
+import { Fragment as Fragment7, jsx as jsx62, jsxs as jsxs59 } from "react/jsx-runtime";
+var EmailDetail = memo58(function EmailDetail2({
   email,
   lock,
   onBack,
@@ -9197,50 +9420,50 @@ var EmailDetail = memo57(function EmailDetail2({
   onDelete,
   onToggleStar
 }) {
-  return /* @__PURE__ */ jsxs58("div", { className: "flex flex-col flex-1 bg-background/30 overflow-hidden", children: [
-    /* @__PURE__ */ jsxs58("div", { className: "flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 border-b border-border bg-muted/10", children: [
-      /* @__PURE__ */ jsx61(
+  return /* @__PURE__ */ jsxs59("div", { className: "flex flex-col flex-1 bg-background/30 overflow-hidden", children: [
+    /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 border-b border-border bg-muted/10", children: [
+      /* @__PURE__ */ jsx62(
         "button",
         {
           onClick: onBack,
           className: "p-2 sm:p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
           title: "Torna alla lista",
-          children: /* @__PURE__ */ jsx61(ArrowLeft2, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+          children: /* @__PURE__ */ jsx62(ArrowLeft2, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       ),
-      /* @__PURE__ */ jsx61("div", { className: "flex-1" }),
-      /* @__PURE__ */ jsxs58("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
-        /* @__PURE__ */ jsx61(
+      /* @__PURE__ */ jsx62("div", { className: "flex-1" }),
+      /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: () => onCompose("reply"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Rispondi",
-            children: /* @__PURE__ */ jsx61(Reply, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ jsx62(Reply, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ jsx61(
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: () => onCompose("replyAll"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] hidden sm:flex items-center justify-center",
             title: "Rispondi a tutti",
-            children: /* @__PURE__ */ jsx61(ReplyAll, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ jsx62(ReplyAll, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ jsx61(
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: () => onCompose("forward"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Inoltra",
-            children: /* @__PURE__ */ jsx61(Forward, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ jsx62(Forward, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] }),
-      /* @__PURE__ */ jsx61("div", { className: "w-px h-4 sm:h-5 bg-border mx-0.5 sm:mx-1" }),
-      /* @__PURE__ */ jsxs58("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
-        /* @__PURE__ */ jsx61(
+      /* @__PURE__ */ jsx62("div", { className: "w-px h-4 sm:h-5 bg-border mx-0.5 sm:mx-1" }),
+      /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: (e) => onArchive(email.id, e),
@@ -9250,10 +9473,10 @@ var EmailDetail = memo57(function EmailDetail2({
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
             ),
             title: "Archivia",
-            children: /* @__PURE__ */ jsx61(Archive, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ jsx62(Archive, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ jsx61(
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: (e) => onDelete(email.id, e),
@@ -9263,32 +9486,32 @@ var EmailDetail = memo57(function EmailDetail2({
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
             ),
             title: "Elimina",
-            children: /* @__PURE__ */ jsx61(Trash22, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ jsx62(Trash22, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxs58("div", { className: "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 touch-pan-y", children: [
-      /* @__PURE__ */ jsx61("h1", { className: "text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
-      /* @__PURE__ */ jsxs58("div", { className: "flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-border/60", children: [
-        /* @__PURE__ */ jsx61("div", { className: "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
-        /* @__PURE__ */ jsxs58("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ jsxs58("div", { className: "flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mb-1", children: [
-            /* @__PURE__ */ jsx61("span", { className: "font-semibold text-sm sm:text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
-            /* @__PURE__ */ jsx61("span", { className: "text-xs sm:text-sm text-muted-foreground truncate", children: extractEmailAddress(email.from) })
+    /* @__PURE__ */ jsxs59("div", { className: "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 touch-pan-y", children: [
+      /* @__PURE__ */ jsx62("h1", { className: "text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
+      /* @__PURE__ */ jsxs59("div", { className: "flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-border/60", children: [
+        /* @__PURE__ */ jsx62("div", { className: "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
+        /* @__PURE__ */ jsxs59("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxs59("div", { className: "flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mb-1", children: [
+            /* @__PURE__ */ jsx62("span", { className: "font-semibold text-sm sm:text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
+            /* @__PURE__ */ jsx62("span", { className: "text-xs sm:text-sm text-muted-foreground truncate", children: extractEmailAddress(email.from) })
           ] }),
-          /* @__PURE__ */ jsxs58("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
-            /* @__PURE__ */ jsx61("span", { children: email.date }),
-            email.to && /* @__PURE__ */ jsxs58(Fragment7, { children: [
-              /* @__PURE__ */ jsx61("span", { className: "w-1 h-1 rounded-full bg-border" }),
-              /* @__PURE__ */ jsxs58("span", { className: "truncate", children: [
+          /* @__PURE__ */ jsxs59("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
+            /* @__PURE__ */ jsx62("span", { children: email.date }),
+            email.to && /* @__PURE__ */ jsxs59(Fragment7, { children: [
+              /* @__PURE__ */ jsx62("span", { className: "w-1 h-1 rounded-full bg-border" }),
+              /* @__PURE__ */ jsxs59("span", { className: "truncate", children: [
                 "A: ",
                 email.to
               ] })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx61(
+        /* @__PURE__ */ jsx62(
           "button",
           {
             onClick: (e) => onToggleStar(email.id, e),
@@ -9296,26 +9519,26 @@ var EmailDetail = memo57(function EmailDetail2({
               "p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center shrink-0",
               email.starred ? "text-yellow-400" : "text-muted-foreground"
             ),
-            children: /* @__PURE__ */ jsx61(Star5, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", fill: email.starred ? "currentColor" : "none" })
+            children: /* @__PURE__ */ jsx62(Star6, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", fill: email.starred ? "currentColor" : "none" })
           }
         )
       ] }),
-      /* @__PURE__ */ jsx61("div", { className: "text-sm sm:text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
-      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ jsxs58("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/60", children: [
-        /* @__PURE__ */ jsxs58("div", { className: "text-[0.625rem] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3", children: [
+      /* @__PURE__ */ jsx62("div", { className: "text-sm sm:text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
+      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ jsxs59("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/60", children: [
+        /* @__PURE__ */ jsxs59("div", { className: "text-[0.625rem] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3", children: [
           email.attachments.length,
           " Allegat",
           email.attachments.length === 1 ? "o" : "i"
         ] }),
-        /* @__PURE__ */ jsx61("div", { className: "flex flex-wrap gap-2", children: email.attachments.map((att, i) => /* @__PURE__ */ jsxs58(
+        /* @__PURE__ */ jsx62("div", { className: "flex flex-wrap gap-2", children: email.attachments.map((att, i) => /* @__PURE__ */ jsxs59(
           "div",
           {
             className: "group flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-muted/30 border border-border hover:border-primary/30 rounded-lg cursor-pointer transition-all hover:bg-muted/60 touch-manipulation",
             children: [
-              /* @__PURE__ */ jsx61("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded bg-background flex items-center justify-center text-muted-foreground shrink-0", children: /* @__PURE__ */ jsx61(Paperclip3, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }) }),
-              /* @__PURE__ */ jsxs58("div", { className: "flex flex-col min-w-0", children: [
-                /* @__PURE__ */ jsx61("span", { className: "text-[0.625rem] sm:text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate", children: att.name }),
-                att.size && /* @__PURE__ */ jsx61("span", { className: "text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: att.size })
+              /* @__PURE__ */ jsx62("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded bg-background flex items-center justify-center text-muted-foreground shrink-0", children: /* @__PURE__ */ jsx62(Paperclip3, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }) }),
+              /* @__PURE__ */ jsxs59("div", { className: "flex flex-col min-w-0", children: [
+                /* @__PURE__ */ jsx62("span", { className: "text-[0.625rem] sm:text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate", children: att.name }),
+                att.size && /* @__PURE__ */ jsx62("span", { className: "text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: att.size })
               ] })
             ]
           },
@@ -9323,13 +9546,13 @@ var EmailDetail = memo57(function EmailDetail2({
         )) })
       ] })
     ] }),
-    /* @__PURE__ */ jsx61("div", { className: "p-3 sm:p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ jsxs58(
+    /* @__PURE__ */ jsx62("div", { className: "p-3 sm:p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ jsxs59(
       "button",
       {
         onClick: () => onCompose("reply"),
         className: "w-full flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-border bg-background hover:bg-muted/50 transition-all text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 group touch-manipulation min-h-[2.75rem]",
         children: [
-          /* @__PURE__ */ jsx61(
+          /* @__PURE__ */ jsx62(
             Reply,
             {
               className: "w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:text-primary transition-colors"
@@ -9343,9 +9566,9 @@ var EmailDetail = memo57(function EmailDetail2({
 });
 
 // src/communication/Email/component.tsx
-import { jsx as jsx62, jsxs as jsxs59 } from "react/jsx-runtime";
+import { jsx as jsx63, jsxs as jsxs60 } from "react/jsx-runtime";
 var log = createLogger({ prefix: "email" });
-var Email = memo58(function Email2({
+var Email = memo59(function Email2({
   element,
   children
 }) {
@@ -9357,10 +9580,10 @@ var Email = memo58(function Email2({
     onSendEmail
   } = element.props;
   const isInitialMount = useRef5(true);
-  const [localEmails, setLocalEmails] = useState21([]);
-  const [selectedEmailId, setSelectedEmailId] = useState21(null);
-  const [composeMode, setComposeMode] = useState21("none");
-  const [hoveredId, setHoveredId] = useState21(null);
+  const [localEmails, setLocalEmails] = useState22([]);
+  const [selectedEmailId, setSelectedEmailId] = useState22(null);
+  const [composeMode, setComposeMode] = useState22("none");
+  const [hoveredId, setHoveredId] = useState22(null);
   const emailsKey = JSON.stringify(initialEmails);
   useEffect7(() => {
     const newEmails = initialEmails || [];
@@ -9421,35 +9644,35 @@ var Email = memo58(function Email2({
     },
     [onSendEmail]
   );
-  return /* @__PURE__ */ jsxs59("div", { className: "glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
-    /* @__PURE__ */ jsxs59("div", { className: "flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2", children: [
-      /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0", children: [
-        /* @__PURE__ */ jsx62("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0", children: /* @__PURE__ */ jsx62(Mail, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
-        /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx62("h3", { className: "m-0 text-sm sm:text-base font-bold leading-tight truncate", children: title || "Gmail" }),
-          description && /* @__PURE__ */ jsx62("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate", children: description })
+  return /* @__PURE__ */ jsxs60("div", { className: "glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
+    /* @__PURE__ */ jsxs60("div", { className: "flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2", children: [
+      /* @__PURE__ */ jsxs60("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0", children: [
+        /* @__PURE__ */ jsx63("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0", children: /* @__PURE__ */ jsx63(Mail, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
+        /* @__PURE__ */ jsxs60("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx63("h3", { className: "m-0 text-sm sm:text-base font-bold leading-tight truncate", children: title || "Gmail" }),
+          description && /* @__PURE__ */ jsx63("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate", children: description })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-2 sm:gap-3 shrink-0", children: [
-        /* @__PURE__ */ jsxs59("div", { className: "hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5", children: [
+      /* @__PURE__ */ jsxs60("div", { className: "flex items-center gap-2 sm:gap-3 shrink-0", children: [
+        /* @__PURE__ */ jsxs60("div", { className: "hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5", children: [
           emails.filter((e) => !e.read).length,
           " non lett",
           emails.filter((e) => !e.read).length === 1 ? "a" : "e"
         ] }),
-        /* @__PURE__ */ jsxs59(
+        /* @__PURE__ */ jsxs60(
           "button",
           {
             onClick: () => setComposeMode("new"),
             className: "flex items-center gap-1.5 sm:gap-2 pl-2 sm:pl-3 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-medium transition-all shadow-lg shadow-blue-500/20 touch-manipulation min-h-[2.5rem]",
             children: [
-              /* @__PURE__ */ jsx62(PenSquare, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
-              /* @__PURE__ */ jsx62("span", { className: "hidden sm:inline", children: "Scrivi" })
+              /* @__PURE__ */ jsx63(PenSquare, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
+              /* @__PURE__ */ jsx63("span", { className: "hidden sm:inline", children: "Scrivi" })
             ]
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx62("div", { className: "flex flex-1 overflow-hidden relative", children: selectedEmail ? /* @__PURE__ */ jsx62(
+    /* @__PURE__ */ jsx63("div", { className: "flex flex-1 overflow-hidden relative", children: selectedEmail ? /* @__PURE__ */ jsx63(
       EmailDetail,
       {
         email: selectedEmail,
@@ -9460,7 +9683,7 @@ var Email = memo58(function Email2({
         onDelete: handleDelete,
         onToggleStar: handleToggleStar
       }
-    ) : /* @__PURE__ */ jsx62(
+    ) : /* @__PURE__ */ jsx63(
       EmailList,
       {
         emails,
@@ -9471,7 +9694,7 @@ var Email = memo58(function Email2({
         onHoverEmail: setHoveredId
       }
     ) }),
-    composeMode !== "none" && /* @__PURE__ */ jsx62(
+    composeMode !== "none" && /* @__PURE__ */ jsx63(
       ComposeModal,
       {
         mode: composeMode,
@@ -9485,9 +9708,9 @@ var Email = memo58(function Email2({
 });
 
 // src/document/DocumentExplorer.tsx
-import { memo as memo59, useState as useState22, useCallback as useCallback17 } from "react";
-import { jsx as jsx63, jsxs as jsxs60 } from "react/jsx-runtime";
-var TreeNodeItem3 = memo59(function TreeNodeItem4({
+import { memo as memo60, useState as useState23, useCallback as useCallback17 } from "react";
+import { jsx as jsx64, jsxs as jsxs61 } from "react/jsx-runtime";
+var TreeNodeItem3 = memo60(function TreeNodeItem4({
   node,
   depth,
   onSelect,
@@ -9498,14 +9721,14 @@ var TreeNodeItem3 = memo59(function TreeNodeItem4({
   const isExpanded = expanded.has(node.id);
   const isSelected = selectedId === node.id;
   const hasChildren = node.children && node.children.length > 0;
-  return /* @__PURE__ */ jsxs60("div", { style: { marginLeft: `${depth * 0.75}rem` }, children: [
-    /* @__PURE__ */ jsxs60(
+  return /* @__PURE__ */ jsxs61("div", { style: { marginLeft: `${depth * 0.75}rem` }, children: [
+    /* @__PURE__ */ jsxs61(
       "div",
       {
         onClick: () => onSelect(node),
         className: `flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 cursor-pointer rounded-md sm:rounded-lg touch-manipulation ${isSelected ? "bg-sky-500/10 border-l-2 sm:border-l-3 border-sky-500" : "border-l-2 sm:border-l-3 border-transparent hover:bg-white/5"}`,
         children: [
-          hasChildren && /* @__PURE__ */ jsx63(
+          hasChildren && /* @__PURE__ */ jsx64(
             "button",
             {
               onClick: (e) => {
@@ -9516,10 +9739,10 @@ var TreeNodeItem3 = memo59(function TreeNodeItem4({
               children: isExpanded ? "v" : ">"
             }
           ),
-          !hasChildren && /* @__PURE__ */ jsx63("span", { className: "w-3 sm:w-4" }),
-          /* @__PURE__ */ jsxs60("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ jsx63("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: node.title }),
-            /* @__PURE__ */ jsxs60("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
+          !hasChildren && /* @__PURE__ */ jsx64("span", { className: "w-3 sm:w-4" }),
+          /* @__PURE__ */ jsxs61("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ jsx64("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: node.title }),
+            /* @__PURE__ */ jsxs61("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
               "p",
               node.pageStart,
               "-",
@@ -9529,7 +9752,7 @@ var TreeNodeItem3 = memo59(function TreeNodeItem4({
         ]
       }
     ),
-    hasChildren && isExpanded && /* @__PURE__ */ jsx63("div", { children: node.children.map((child) => /* @__PURE__ */ jsx63(
+    hasChildren && isExpanded && /* @__PURE__ */ jsx64("div", { children: node.children.map((child) => /* @__PURE__ */ jsx64(
       TreeNodeItem4,
       {
         node: child,
@@ -9543,13 +9766,13 @@ var TreeNodeItem3 = memo59(function TreeNodeItem4({
     )) })
   ] });
 });
-var DocumentExplorer = memo59(function DocumentExplorer2({
+var DocumentExplorer = memo60(function DocumentExplorer2({
   tree,
   onNodeSelect,
   selectedNodeId,
   expandedByDefault = true
 }) {
-  const [expanded, setExpanded] = useState22(() => {
+  const [expanded, setExpanded] = useState23(() => {
     if (!expandedByDefault) return /* @__PURE__ */ new Set();
     const ids = /* @__PURE__ */ new Set();
     const collect = (node) => {
@@ -9576,9 +9799,9 @@ var DocumentExplorer = memo59(function DocumentExplorer2({
     },
     [onNodeSelect]
   );
-  return /* @__PURE__ */ jsxs60("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsx63("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Structure" }),
-    /* @__PURE__ */ jsx63("div", { className: "p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx63(
+  return /* @__PURE__ */ jsxs61("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsx64("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Structure" }),
+    /* @__PURE__ */ jsx64("div", { className: "p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx64(
       TreeNodeItem3,
       {
         node: tree,
@@ -9593,9 +9816,9 @@ var DocumentExplorer = memo59(function DocumentExplorer2({
 });
 
 // src/document/KnowledgeGraph.tsx
-import { memo as memo60, useMemo as useMemo26 } from "react";
-import { jsx as jsx64, jsxs as jsxs61 } from "react/jsx-runtime";
-var KnowledgeGraph = memo60(function KnowledgeGraph2({
+import { memo as memo61, useMemo as useMemo26 } from "react";
+import { jsx as jsx65, jsxs as jsxs62 } from "react/jsx-runtime";
+var KnowledgeGraph = memo61(function KnowledgeGraph2({
   entities,
   relations,
   width = 600,
@@ -9634,11 +9857,11 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
     number: "#78716c",
     term: "#64748b"
   };
-  return /* @__PURE__ */ jsxs61("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsx64("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Knowledge Graph" }),
-    /* @__PURE__ */ jsx64("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx64("div", { className: "space-y-2", children: nodes.slice(0, 15).map((node) => {
+  return /* @__PURE__ */ jsxs62("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsx65("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Knowledge Graph" }),
+    /* @__PURE__ */ jsx65("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx65("div", { className: "space-y-2", children: nodes.slice(0, 15).map((node) => {
       const nodeEdges = edges.filter((e) => e.source === node.id || e.target === node.id);
-      return /* @__PURE__ */ jsxs61(
+      return /* @__PURE__ */ jsxs62(
         "div",
         {
           className: "flex items-center gap-2 p-2 rounded-lg bg-zinc-800/30 cursor-pointer touch-manipulation",
@@ -9647,16 +9870,16 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
             if (entity) onEntityClick?.(entity);
           },
           children: [
-            /* @__PURE__ */ jsx64(
+            /* @__PURE__ */ jsx65(
               "div",
               {
                 className: "w-3 h-3 rounded-full shrink-0",
                 style: { backgroundColor: typeColors[node.type] || "#999" }
               }
             ),
-            /* @__PURE__ */ jsxs61("div", { className: "flex-1 min-w-0", children: [
-              /* @__PURE__ */ jsx64("div", { className: "text-xs text-white truncate", children: node.label }),
-              /* @__PURE__ */ jsxs61("div", { className: "text-[0.5rem] text-zinc-500", children: [
+            /* @__PURE__ */ jsxs62("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsx65("div", { className: "text-xs text-white truncate", children: node.label }),
+              /* @__PURE__ */ jsxs62("div", { className: "text-[0.5rem] text-zinc-500", children: [
                 node.type,
                 " \u2022 ",
                 nodeEdges.length,
@@ -9668,12 +9891,12 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
         node.id
       );
     }) }) }),
-    /* @__PURE__ */ jsx64("div", { className: "hidden sm:block overflow-x-auto touch-pan-x", children: /* @__PURE__ */ jsxs61("svg", { width, height, className: "block min-w-full", children: [
+    /* @__PURE__ */ jsx65("div", { className: "hidden sm:block overflow-x-auto touch-pan-x", children: /* @__PURE__ */ jsxs62("svg", { width, height, className: "block min-w-full", children: [
       edges.map((edge, i) => {
         const sourceNode = nodes.find((n) => n.id === edge.source);
         const targetNode = nodes.find((n) => n.id === edge.target);
         if (!sourceNode || !targetNode) return null;
-        return /* @__PURE__ */ jsx64(
+        return /* @__PURE__ */ jsx65(
           "line",
           {
             x1: sourceNode.x,
@@ -9686,7 +9909,7 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
           i
         );
       }),
-      nodes.map((node) => /* @__PURE__ */ jsxs61(
+      nodes.map((node) => /* @__PURE__ */ jsxs62(
         "g",
         {
           transform: `translate(${node.x}, ${node.y})`,
@@ -9696,7 +9919,7 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
             if (entity) onEntityClick?.(entity);
           },
           children: [
-            /* @__PURE__ */ jsx64(
+            /* @__PURE__ */ jsx65(
               "circle",
               {
                 r: 20,
@@ -9705,35 +9928,35 @@ var KnowledgeGraph = memo60(function KnowledgeGraph2({
                 strokeWidth: 2
               }
             ),
-            /* @__PURE__ */ jsx64("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#a1a1aa", children: node.label })
+            /* @__PURE__ */ jsx65("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#a1a1aa", children: node.label })
           ]
         },
         node.id
       ))
     ] }) }),
-    /* @__PURE__ */ jsx64("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-t border-white/10 flex gap-2 sm:gap-4 flex-wrap text-[0.5rem] sm:text-xs", children: Object.entries(typeColors).map(([type, color]) => /* @__PURE__ */ jsxs61("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
-      /* @__PURE__ */ jsx64(
+    /* @__PURE__ */ jsx65("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-t border-white/10 flex gap-2 sm:gap-4 flex-wrap text-[0.5rem] sm:text-xs", children: Object.entries(typeColors).map(([type, color]) => /* @__PURE__ */ jsxs62("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+      /* @__PURE__ */ jsx65(
         "div",
         {
           className: "w-2 h-2 sm:w-3 sm:h-3 rounded-full",
           style: { backgroundColor: color }
         }
       ),
-      /* @__PURE__ */ jsx64("span", { className: "text-zinc-400", children: type })
+      /* @__PURE__ */ jsx65("span", { className: "text-zinc-400", children: type })
     ] }, type)) })
   ] });
 });
 
 // src/document/DocumentTimeline.tsx
-import { memo as memo61 } from "react";
-import { jsx as jsx65, jsxs as jsxs62 } from "react/jsx-runtime";
+import { memo as memo62 } from "react";
+import { jsx as jsx66, jsxs as jsxs63 } from "react/jsx-runtime";
 function parseDate(value) {
   if (!value) return null;
   const yearMatch = value.match(/\b(1[0-9]{3}|2[0-9]{3})\b/);
   if (yearMatch?.[1]) return parseInt(yearMatch[1], 10);
   return null;
 }
-var DocumentTimeline = memo61(function DocumentTimeline2({
+var DocumentTimeline = memo62(function DocumentTimeline2({
   entities,
   onEntityClick
 }) {
@@ -9746,33 +9969,33 @@ var DocumentTimeline = memo61(function DocumentTimeline2({
     return { entity, year };
   }).filter((e) => e !== null).sort((a, b) => a.year - b.year);
   if (events.length === 0) {
-    return /* @__PURE__ */ jsx65("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No date entities found for timeline" });
+    return /* @__PURE__ */ jsx66("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No date entities found for timeline" });
   }
   const firstEvent = events[0];
   const lastEvent = events[events.length - 1];
   const minYear = firstEvent?.year ?? 0;
   const maxYear = lastEvent?.year ?? 0;
   const yearRange = Math.max(1, maxYear - minYear);
-  return /* @__PURE__ */ jsxs62("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsx65("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Timeline" }),
-    /* @__PURE__ */ jsx65("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx65("div", { className: "relative pl-6 border-l-2 border-sky-500/30", children: events.slice(0, 10).map((event) => /* @__PURE__ */ jsxs62(
+  return /* @__PURE__ */ jsxs63("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsx66("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Timeline" }),
+    /* @__PURE__ */ jsx66("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ jsx66("div", { className: "relative pl-6 border-l-2 border-sky-500/30", children: events.slice(0, 10).map((event) => /* @__PURE__ */ jsxs63(
       "div",
       {
         className: "relative mb-4 last:mb-0 cursor-pointer touch-manipulation",
         onClick: () => onEntityClick?.(event.entity),
         children: [
-          /* @__PURE__ */ jsx65("div", { className: "absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" }),
-          /* @__PURE__ */ jsx65("div", { className: "text-xs font-semibold text-white", children: event.year }),
-          /* @__PURE__ */ jsx65("div", { className: "text-[0.625rem] text-zinc-400 truncate max-w-[12rem]", children: event.entity.value.slice(0, 30) })
+          /* @__PURE__ */ jsx66("div", { className: "absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" }),
+          /* @__PURE__ */ jsx66("div", { className: "text-xs font-semibold text-white", children: event.year }),
+          /* @__PURE__ */ jsx66("div", { className: "text-[0.625rem] text-zinc-400 truncate max-w-[12rem]", children: event.entity.value.slice(0, 30) })
         ]
       },
       event.entity.id
     )) }) }),
-    /* @__PURE__ */ jsxs62("div", { className: "hidden sm:block p-4 relative min-h-[6.25rem]", children: [
-      /* @__PURE__ */ jsx65("div", { className: "absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" }),
-      /* @__PURE__ */ jsx65("div", { className: "flex justify-between pt-[3.75rem]", children: events.slice(0, 10).map((event) => {
+    /* @__PURE__ */ jsxs63("div", { className: "hidden sm:block p-4 relative min-h-[6.25rem]", children: [
+      /* @__PURE__ */ jsx66("div", { className: "absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" }),
+      /* @__PURE__ */ jsx66("div", { className: "flex justify-between pt-[3.75rem]", children: events.slice(0, 10).map((event) => {
         const position = yearRange > 0 ? (event.year - minYear) / yearRange * 100 : 50;
-        return /* @__PURE__ */ jsxs62(
+        return /* @__PURE__ */ jsxs63(
           "div",
           {
             style: {
@@ -9784,16 +10007,16 @@ var DocumentTimeline = memo61(function DocumentTimeline2({
             className: "text-center cursor-pointer touch-manipulation",
             onClick: () => onEntityClick?.(event.entity),
             children: [
-              /* @__PURE__ */ jsx65("div", { className: "w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" }),
-              /* @__PURE__ */ jsx65("div", { className: "text-[0.625rem] sm:text-xs font-semibold text-white", children: event.year }),
-              /* @__PURE__ */ jsx65("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap", children: event.entity.value.slice(0, 15) })
+              /* @__PURE__ */ jsx66("div", { className: "w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" }),
+              /* @__PURE__ */ jsx66("div", { className: "text-[0.625rem] sm:text-xs font-semibold text-white", children: event.year }),
+              /* @__PURE__ */ jsx66("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap", children: event.entity.value.slice(0, 15) })
             ]
           },
           event.entity.id
         );
       }) })
     ] }),
-    /* @__PURE__ */ jsxs62("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500", children: [
+    /* @__PURE__ */ jsxs63("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500", children: [
       events.length,
       " date/event entities found"
     ] })
@@ -9801,36 +10024,36 @@ var DocumentTimeline = memo61(function DocumentTimeline2({
 });
 
 // src/document/DeepAnalysisPanel.tsx
-import { memo as memo62 } from "react";
-import { jsx as jsx66, jsxs as jsxs63 } from "react/jsx-runtime";
-var DeepAnalysisPanel = memo62(function DeepAnalysisPanel2({
+import { memo as memo63 } from "react";
+import { jsx as jsx67, jsxs as jsxs64 } from "react/jsx-runtime";
+var DeepAnalysisPanel = memo63(function DeepAnalysisPanel2({
   node,
   quotes = [],
   onQuoteClick
 }) {
   const nodeQuotes = quotes.filter((q) => q.nodeId === node.id);
-  return /* @__PURE__ */ jsxs63("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10", children: [
-      /* @__PURE__ */ jsx66("h3", { className: "m-0 text-base sm:text-lg font-semibold text-white", children: node.title }),
-      /* @__PURE__ */ jsxs63("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1", children: [
+  return /* @__PURE__ */ jsxs64("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10", children: [
+      /* @__PURE__ */ jsx67("h3", { className: "m-0 text-base sm:text-lg font-semibold text-white", children: node.title }),
+      /* @__PURE__ */ jsxs64("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1", children: [
         "Pages ",
         node.pageStart,
         "-",
         node.pageEnd
       ] })
     ] }),
-    /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ jsx66("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Summary" }),
-      /* @__PURE__ */ jsx66("p", { className: "m-0 text-xs sm:text-sm leading-relaxed text-zinc-300", children: node.summary || "No summary available" }),
-      node.detailedSummary && /* @__PURE__ */ jsx66("p", { className: "mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400", children: node.detailedSummary })
+    /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ jsx67("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Summary" }),
+      /* @__PURE__ */ jsx67("p", { className: "m-0 text-xs sm:text-sm leading-relaxed text-zinc-300", children: node.summary || "No summary available" }),
+      node.detailedSummary && /* @__PURE__ */ jsx67("p", { className: "mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400", children: node.detailedSummary })
     ] }),
-    node.keyPoints.length > 0 && /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ jsx66("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Key Points" }),
-      /* @__PURE__ */ jsx66("ul", { className: "m-0 pl-4 sm:pl-5 space-y-1", children: node.keyPoints.map((point, i) => /* @__PURE__ */ jsx66("li", { className: "text-xs sm:text-sm text-zinc-300", children: point }, i)) })
+    node.keyPoints.length > 0 && /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ jsx67("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Key Points" }),
+      /* @__PURE__ */ jsx67("ul", { className: "m-0 pl-4 sm:pl-5 space-y-1", children: node.keyPoints.map((point, i) => /* @__PURE__ */ jsx67("li", { className: "text-xs sm:text-sm text-zinc-300", children: point }, i)) })
     ] }),
-    node.keywords.length > 0 && /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ jsx66("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Keywords" }),
-      /* @__PURE__ */ jsx66("div", { className: "flex gap-1.5 sm:gap-2 flex-wrap", children: node.keywords.map((keyword, i) => /* @__PURE__ */ jsx66(
+    node.keywords.length > 0 && /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ jsx67("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Keywords" }),
+      /* @__PURE__ */ jsx67("div", { className: "flex gap-1.5 sm:gap-2 flex-wrap", children: node.keywords.map((keyword, i) => /* @__PURE__ */ jsx67(
         "span",
         {
           className: "px-2 py-0.5 sm:py-1 bg-sky-500/10 rounded text-[0.625rem] sm:text-xs text-sky-300 border border-sky-500/20",
@@ -9839,20 +10062,20 @@ var DeepAnalysisPanel = memo62(function DeepAnalysisPanel2({
         i
       )) })
     ] }),
-    nodeQuotes.length > 0 && /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ jsx66("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Notable Quotes" }),
-      /* @__PURE__ */ jsx66("div", { className: "space-y-2", children: nodeQuotes.map((quote) => /* @__PURE__ */ jsxs63(
+    nodeQuotes.length > 0 && /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ jsx67("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Notable Quotes" }),
+      /* @__PURE__ */ jsx67("div", { className: "space-y-2", children: nodeQuotes.map((quote) => /* @__PURE__ */ jsxs64(
         "div",
         {
           onClick: () => onQuoteClick?.(quote),
           className: `p-2.5 sm:p-3 bg-zinc-800/30 border-l-2 sm:border-l-3 border-sky-500 rounded-r ${onQuoteClick ? "cursor-pointer hover:bg-zinc-800/50 touch-manipulation" : ""}`,
           children: [
-            /* @__PURE__ */ jsxs63("p", { className: "m-0 text-xs sm:text-sm italic text-zinc-300", children: [
+            /* @__PURE__ */ jsxs64("p", { className: "m-0 text-xs sm:text-sm italic text-zinc-300", children: [
               '"',
               quote.text,
               '"'
             ] }),
-            /* @__PURE__ */ jsxs63("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5", children: [
+            /* @__PURE__ */ jsxs64("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5", children: [
               "Page ",
               quote.pageNumber,
               " - ",
@@ -9863,23 +10086,23 @@ var DeepAnalysisPanel = memo62(function DeepAnalysisPanel2({
         quote.id
       )) })
     ] }),
-    node.metrics && /* @__PURE__ */ jsxs63("div", { className: "p-3 sm:p-4", children: [
-      /* @__PURE__ */ jsx66("h4", { className: "m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Metrics" }),
-      /* @__PURE__ */ jsxs63("div", { className: "grid grid-cols-3 gap-2 sm:gap-3", children: [
-        /* @__PURE__ */ jsxs63("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ jsx66("div", { className: "text-base sm:text-xl font-semibold text-white", children: node.metrics.wordCount }),
-          /* @__PURE__ */ jsx66("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Words" })
+    node.metrics && /* @__PURE__ */ jsxs64("div", { className: "p-3 sm:p-4", children: [
+      /* @__PURE__ */ jsx67("h4", { className: "m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Metrics" }),
+      /* @__PURE__ */ jsxs64("div", { className: "grid grid-cols-3 gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ jsxs64("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ jsx67("div", { className: "text-base sm:text-xl font-semibold text-white", children: node.metrics.wordCount }),
+          /* @__PURE__ */ jsx67("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Words" })
         ] }),
-        /* @__PURE__ */ jsxs63("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ jsxs63("div", { className: "text-base sm:text-xl font-semibold text-white", children: [
+        /* @__PURE__ */ jsxs64("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ jsxs64("div", { className: "text-base sm:text-xl font-semibold text-white", children: [
             node.metrics.readingTimeMinutes,
             "m"
           ] }),
-          /* @__PURE__ */ jsx66("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Reading Time" })
+          /* @__PURE__ */ jsx67("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Reading Time" })
         ] }),
-        /* @__PURE__ */ jsxs63("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ jsx66("div", { className: "text-base sm:text-xl font-semibold capitalize text-white", children: node.metrics.complexity }),
-          /* @__PURE__ */ jsx66("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Complexity" })
+        /* @__PURE__ */ jsxs64("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ jsx67("div", { className: "text-base sm:text-xl font-semibold capitalize text-white", children: node.metrics.complexity }),
+          /* @__PURE__ */ jsx67("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Complexity" })
         ] })
       ] })
     ] })
@@ -9887,8 +10110,8 @@ var DeepAnalysisPanel = memo62(function DeepAnalysisPanel2({
 });
 
 // src/document/CitationViewer.tsx
-import { memo as memo63 } from "react";
-import { jsx as jsx67, jsxs as jsxs64 } from "react/jsx-runtime";
+import { memo as memo64 } from "react";
+import { jsx as jsx68, jsxs as jsxs65 } from "react/jsx-runtime";
 var typeIcons = {
   book: "B",
   article: "A",
@@ -9897,7 +10120,7 @@ var typeIcons = {
   thesis: "T",
   other: "O"
 };
-var CitationViewer = memo63(function CitationViewer2({
+var CitationViewer = memo64(function CitationViewer2({
   citations,
   onCitationClick
 }) {
@@ -9911,40 +10134,40 @@ var CitationViewer = memo63(function CitationViewer2({
     {}
   );
   if (citations.length === 0) {
-    return /* @__PURE__ */ jsx67("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No citations found in document" });
+    return /* @__PURE__ */ jsx68("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No citations found in document" });
   }
-  return /* @__PURE__ */ jsxs64("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsxs64("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base", children: [
-      /* @__PURE__ */ jsx67("span", { className: "text-white", children: "Citations" }),
-      /* @__PURE__ */ jsxs64("span", { className: "text-zinc-400 font-normal text-xs sm:text-sm", children: [
+  return /* @__PURE__ */ jsxs65("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsxs65("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base", children: [
+      /* @__PURE__ */ jsx68("span", { className: "text-white", children: "Citations" }),
+      /* @__PURE__ */ jsxs65("span", { className: "text-zinc-400 font-normal text-xs sm:text-sm", children: [
         citations.length,
         " total"
       ] })
     ] }),
-    /* @__PURE__ */ jsx67("div", { className: "max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ jsxs64("div", { children: [
-      /* @__PURE__ */ jsxs64("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5", children: [
+    /* @__PURE__ */ jsx68("div", { className: "max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ jsxs65("div", { children: [
+      /* @__PURE__ */ jsxs65("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5", children: [
         type,
         " (",
         typeCitations.length,
         ")"
       ] }),
-      typeCitations.map((citation) => /* @__PURE__ */ jsxs64(
+      typeCitations.map((citation) => /* @__PURE__ */ jsxs65(
         "div",
         {
           onClick: () => onCitationClick?.(citation),
           className: `p-3 sm:p-4 border-b border-white/5 flex gap-2.5 sm:gap-3 ${onCitationClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
           children: [
-            /* @__PURE__ */ jsx67("div", { className: "w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm", children: typeIcons[citation.type] || "?" }),
-            /* @__PURE__ */ jsxs64("div", { className: "flex-1 min-w-0", children: [
-              citation.title && /* @__PURE__ */ jsx67("div", { className: "font-medium text-xs sm:text-sm text-white", children: citation.title }),
-              citation.authors && citation.authors.length > 0 && /* @__PURE__ */ jsx67("div", { className: "text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5", children: citation.authors.join(", ") }),
-              citation.year && /* @__PURE__ */ jsxs64("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 ml-1", children: [
+            /* @__PURE__ */ jsx68("div", { className: "w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm", children: typeIcons[citation.type] || "?" }),
+            /* @__PURE__ */ jsxs65("div", { className: "flex-1 min-w-0", children: [
+              citation.title && /* @__PURE__ */ jsx68("div", { className: "font-medium text-xs sm:text-sm text-white", children: citation.title }),
+              citation.authors && citation.authors.length > 0 && /* @__PURE__ */ jsx68("div", { className: "text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5", children: citation.authors.join(", ") }),
+              citation.year && /* @__PURE__ */ jsxs65("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 ml-1", children: [
                 "(",
                 citation.year,
                 ")"
               ] }),
-              /* @__PURE__ */ jsx67("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap", children: citation.text }),
-              /* @__PURE__ */ jsxs64("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1", children: [
+              /* @__PURE__ */ jsx68("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap", children: citation.text }),
+              /* @__PURE__ */ jsxs65("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1", children: [
                 "Page ",
                 citation.pageNumber
               ] })
@@ -9958,8 +10181,8 @@ var CitationViewer = memo63(function CitationViewer2({
 });
 
 // src/document/EntityExplorer.tsx
-import { memo as memo64, useState as useState23, useMemo as useMemo27 } from "react";
-import { jsx as jsx68, jsxs as jsxs65 } from "react/jsx-runtime";
+import { memo as memo65, useState as useState24, useMemo as useMemo27 } from "react";
+import { jsx as jsx69, jsxs as jsxs66 } from "react/jsx-runtime";
 var typeColorClasses = {
   person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
   organization: { bg: "bg-sky-500", text: "text-sky-400", dot: "bg-sky-500" },
@@ -9970,13 +10193,13 @@ var typeColorClasses = {
   number: { bg: "bg-stone-500", text: "text-stone-400", dot: "bg-stone-500" },
   term: { bg: "bg-slate-500", text: "text-slate-400", dot: "bg-slate-500" }
 };
-var EntityExplorer = memo64(function EntityExplorer2({
+var EntityExplorer = memo65(function EntityExplorer2({
   entities,
   onEntityClick,
   filterTypes
 }) {
-  const [selectedType, setSelectedType] = useState23(null);
-  const [searchQuery, setSearchQuery] = useState23("");
+  const [selectedType, setSelectedType] = useState24(null);
+  const [searchQuery, setSearchQuery] = useState24("");
   const types = useMemo27(() => {
     const typeSet = new Set(entities.map((e) => e.type));
     return Array.from(typeSet).sort();
@@ -10006,14 +10229,14 @@ var EntityExplorer = memo64(function EntityExplorer2({
     }
     return groups;
   }, [filteredEntities]);
-  return /* @__PURE__ */ jsxs65("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ jsxs65("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: [
+  return /* @__PURE__ */ jsxs66("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ jsxs66("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: [
       "Entities (",
       filteredEntities.length,
       ")"
     ] }),
-    /* @__PURE__ */ jsxs65("div", { className: "p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3", children: [
-      /* @__PURE__ */ jsx68(
+    /* @__PURE__ */ jsxs66("div", { className: "p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3", children: [
+      /* @__PURE__ */ jsx69(
         "input",
         {
           type: "text",
@@ -10023,29 +10246,29 @@ var EntityExplorer = memo64(function EntityExplorer2({
           className: "flex-1 min-w-0 px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0"
         }
       ),
-      /* @__PURE__ */ jsxs65(
+      /* @__PURE__ */ jsxs66(
         "select",
         {
           value: selectedType || "",
           onChange: (e) => setSelectedType(e.target.value || null),
           className: "px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0",
           children: [
-            /* @__PURE__ */ jsx68("option", { value: "", children: "All types" }),
-            types.map((type) => /* @__PURE__ */ jsx68("option", { value: type, children: type }, type))
+            /* @__PURE__ */ jsx69("option", { value: "", children: "All types" }),
+            types.map((type) => /* @__PURE__ */ jsx69("option", { value: type, children: type }, type))
           ]
         }
       )
     ] }),
-    /* @__PURE__ */ jsx68("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap", children: types.map((type) => {
+    /* @__PURE__ */ jsx69("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap", children: types.map((type) => {
       const count = entities.filter((e) => e.type === type).length;
       const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
-      return /* @__PURE__ */ jsxs65(
+      return /* @__PURE__ */ jsxs66(
         "button",
         {
           onClick: () => setSelectedType((prev) => prev === type ? null : type),
           className: `px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border-none text-[0.625rem] sm:text-xs cursor-pointer flex items-center gap-1 sm:gap-1.5 transition-colors touch-manipulation min-h-[1.75rem] ${selectedType === type ? `${colors.bg} text-white` : "bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700"}`,
           children: [
-            /* @__PURE__ */ jsx68("span", { className: `w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}` }),
+            /* @__PURE__ */ jsx69("span", { className: `w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}` }),
             type,
             " (",
             count,
@@ -10055,21 +10278,21 @@ var EntityExplorer = memo64(function EntityExplorer2({
         type
       );
     }) }),
-    /* @__PURE__ */ jsx68("div", { className: "max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(groupedEntities).map(([type, typeEntities]) => {
+    /* @__PURE__ */ jsx69("div", { className: "max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(groupedEntities).map(([type, typeEntities]) => {
       const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
-      return /* @__PURE__ */ jsxs65("div", { children: [
-        /* @__PURE__ */ jsx68("div", { className: `px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`, children: type }),
-        typeEntities.map((entity) => /* @__PURE__ */ jsxs65(
+      return /* @__PURE__ */ jsxs66("div", { children: [
+        /* @__PURE__ */ jsx69("div", { className: `px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`, children: type }),
+        typeEntities.map((entity) => /* @__PURE__ */ jsxs66(
           "div",
           {
             onClick: () => onEntityClick?.(entity),
             className: `px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 flex justify-between items-center gap-2 ${onEntityClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
             children: [
-              /* @__PURE__ */ jsxs65("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx68("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: entity.value }),
-                entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ jsx68("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 truncate", children: entity.normalized })
+              /* @__PURE__ */ jsxs66("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx69("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: entity.value }),
+                entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ jsx69("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 truncate", children: entity.normalized })
               ] }),
-              /* @__PURE__ */ jsxs65("div", { className: "text-[0.625rem] sm:text-xs text-zinc-600 shrink-0", children: [
+              /* @__PURE__ */ jsxs66("div", { className: "text-[0.625rem] sm:text-xs text-zinc-600 shrink-0", children: [
                 entity.occurrences.length,
                 " occ"
               ] })
@@ -10083,9 +10306,9 @@ var EntityExplorer = memo64(function EntityExplorer2({
 });
 
 // src/document/hooks/useKnowledgeBase.ts
-import { useState as useState24, useCallback as useCallback18, useMemo as useMemo28 } from "react";
+import { useState as useState25, useCallback as useCallback18, useMemo as useMemo28 } from "react";
 function useKnowledgeBase(options = {}) {
-  const [knowledgeBase, setKnowledgeBase] = useState24(
+  const [knowledgeBase, setKnowledgeBase] = useState25(
     options.initialKnowledgeBase ?? null
   );
   const entities = useMemo28(
@@ -10139,7 +10362,7 @@ function useKnowledgeBase(options = {}) {
 }
 
 // src/document/hooks/useDocumentExplorer.ts
-import { useState as useState25, useCallback as useCallback19 } from "react";
+import { useState as useState26, useCallback as useCallback19 } from "react";
 function collectAllNodeIds(node, ids) {
   ids.add(node.id);
   if (node.children) {
@@ -10172,11 +10395,11 @@ function searchTree(node, query, results = []) {
   return results;
 }
 function useDocumentExplorer(options = {}) {
-  const [tree, setTree] = useState25(
+  const [tree, setTree] = useState26(
     options.initialTree ?? null
   );
-  const [selectedNode, setSelectedNode] = useState25(null);
-  const [expandedNodes, setExpandedNodes] = useState25(/* @__PURE__ */ new Set());
+  const [selectedNode, setSelectedNode] = useState26(null);
+  const [expandedNodes, setExpandedNodes] = useState26(/* @__PURE__ */ new Set());
   const selectNode = useCallback19(
     (node) => {
       setSelectedNode(node);
@@ -10233,13 +10456,13 @@ function useDocumentExplorer(options = {}) {
 }
 
 // src/document/hooks/useQuestionAnswer.ts
-import { useState as useState26, useCallback as useCallback20 } from "react";
+import { useState as useState27, useCallback as useCallback20 } from "react";
 function useQuestionAnswer(options = {}) {
-  const [question, setQuestion] = useState26("");
-  const [answer, setAnswer] = useState26(null);
-  const [isLoading, setIsLoading] = useState26(false);
-  const [error, setError] = useState26(null);
-  const [history, setHistory] = useState26([]);
+  const [question, setQuestion] = useState27("");
+  const [answer, setAnswer] = useState27(null);
+  const [isLoading, setIsLoading] = useState27(false);
+  const [error, setError] = useState27(null);
+  const [history, setHistory] = useState27([]);
   const askQuestion = useCallback20(
     async (knowledgeBaseId, q) => {
       setIsLoading(true);
@@ -10341,6 +10564,7 @@ var componentRegistry = {
   ResearchReport,
   DocumentIndex,
   SourceCitation,
+  DocumentReport,
   // Visualization
   Chart,
   StockChart,
@@ -10392,8 +10616,10 @@ var componentDefinitions = {
   SupplementTracker: SupplementTrackerDefinition,
   Calendar: CalendarDefinition,
   Diary: DiaryDefinition,
+  ResearchReport: ResearchReportDefinition,
   DocumentIndex: DocumentIndexDefinition,
   SourceCitation: SourceCitationDefinition,
+  DocumentReport: DocumentReportDefinition,
   // Visualization
   Chart: ChartDefinition,
   StockChart: StockChartDefinition,
@@ -10430,6 +10656,9 @@ export {
   DocumentIndex,
   DocumentIndexDefinition,
   DocumentIndexPropsSchema,
+  DocumentReport,
+  DocumentReportDefinition,
+  DocumentReportPropsSchema,
   DocumentTimeline,
   Email,
   EmailDefinition,
@@ -10465,6 +10694,8 @@ export {
   Pricing,
   ProfileCard,
   ResearchReport,
+  ResearchReportDefinition,
+  ResearchReportPropsSchema,
   RoutineScheduler,
   RoutineSchedulerDefinition,
   RoutineSchedulerPropsSchema,

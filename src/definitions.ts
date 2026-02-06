@@ -67,8 +67,10 @@ export { RoutineSchedulerDefinition } from "./domain/RoutineScheduler/schema";
 export { SupplementTrackerDefinition } from "./domain/SupplementTracker/schema";
 export { CalendarDefinition } from "./domain/Calendar/schema";
 export { DiaryDefinition } from "./domain/Diary/schema";
+export { ResearchReportDefinition } from "./domain/research/schema";
 export { DocumentIndexDefinition } from "./domain/DocumentIndex/schema";
 export { SourceCitationDefinition } from "./domain/SourceCitation/schema";
+export { DocumentReportDefinition } from "./domain/document/schema";
 
 // Visualization (formerly @onegenui/viz)
 export { ChartDefinition } from "./visualization/charts/Chart/schema";

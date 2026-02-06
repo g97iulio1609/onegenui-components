@@ -9,6 +9,12 @@ import {
   BookOpen,
   Hash,
   ExternalLink,
+  Tag,
+  Users,
+  Quote,
+  Star,
+  Link2,
+  Lightbulb,
 } from "lucide-react";
 import { cn } from "../../utils/cn";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,9 +33,8 @@ const TreeNodeItem = memo(function TreeNodeItem({
   accentColor,
   onNodeClick,
 }: TreeNodeProps) {
-  // First level nodes start collapsed, deeper ones follow parent state
   const [expanded, setExpanded] = useState(depth > 0);
-  const [showFullSummary, setShowFullSummary] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const hasChildren = node.children && node.children.length > 0;
 
   const toggle = useCallback(() => {
@@ -41,8 +46,7 @@ const TreeNodeItem = memo(function TreeNodeItem({
   const handleNodeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      // Toggle full summary display and trigger action
-      setShowFullSummary((prev) => !prev);
+      setShowDetails((prev) => !prev);
       if (!expanded) setExpanded(true);
       onNodeClick?.(node);
     },
@@ -53,6 +57,12 @@ const TreeNodeItem = memo(function TreeNodeItem({
     node.startPage === node.endPage
       ? `p. ${node.startPage}`
       : `pp. ${node.startPage}-${node.endPage}`;
+
+  const hasMetadata =
+    node.entityCount || node.quoteCount || node.importance !== undefined;
+  const hasTags = node.tags && node.tags.length > 0;
+  const hasKeyPoints = node.keyPoints && node.keyPoints.length > 0;
+  const hasRelated = node.relatedNodes && node.relatedNodes.length > 0;
 
   return (
     <div className="select-none">
@@ -92,20 +102,40 @@ const TreeNodeItem = memo(function TreeNodeItem({
             >
               {pageRange}
             </span>
+            {node.importance !== undefined && node.importance >= 0.7 && (
+              <Star
+                className="h-3 w-3 text-amber-400 shrink-0"
+                fill="currentColor"
+              />
+            )}
+            {hasMetadata && (
+              <span className="flex items-center gap-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground">
+                {node.entityCount ? (
+                  <span className="flex items-center gap-0.5">
+                    <Users className="h-2.5 w-2.5" />
+                    {node.entityCount}
+                  </span>
+                ) : null}
+                {node.quoteCount ? (
+                  <span className="flex items-center gap-0.5">
+                    <Quote className="h-2.5 w-2.5" />
+                    {node.quoteCount}
+                  </span>
+                ) : null}
+              </span>
+            )}
             {onNodeClick && (
               <button
                 onClick={handleNodeClick}
                 className={cn(
                   "transition-opacity p-0.5 rounded hover:bg-white/10",
-                  showFullSummary
+                  showDetails
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100",
                 )}
-                title={
-                  showFullSummary ? "Hide details" : "View section details"
-                }
+                title={showDetails ? "Hide details" : "View section details"}
               >
-                {showFullSummary ? (
+                {showDetails ? (
                   <ChevronDown
                     className="h-3 w-3"
                     style={{ color: accentColor }}
@@ -119,15 +149,56 @@ const TreeNodeItem = memo(function TreeNodeItem({
               </button>
             )}
           </div>
+
+          {/* Tags row */}
+          {hasTags && expanded && (
+            <div className="flex flex-wrap items-center gap-1 mt-1">
+              <Tag className="h-2.5 w-2.5 text-muted-foreground" />
+              {node.tags!.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[0.5rem] sm:text-[0.625rem] px-1.5 py-0.5 rounded-full bg-white/5 text-muted-foreground"
+                  style={accentColor ? { borderColor: `${accentColor}30`, borderWidth: 1 } : {}}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Summary */}
           {node.summary && expanded && (
             <p
               className={cn(
                 "text-xs text-muted-foreground mt-1",
-                !showFullSummary && "line-clamp-2",
+                !showDetails && "line-clamp-2",
               )}
             >
               {node.summary}
             </p>
+          )}
+
+          {/* Key points (shown when details expanded) */}
+          {showDetails && hasKeyPoints && (
+            <div className="mt-1.5 space-y-0.5">
+              {node.keyPoints!.map((point, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground"
+                >
+                  <Lightbulb className="h-3 w-3 shrink-0 mt-0.5 text-amber-400/70" />
+                  <span>{point}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Related nodes (shown when details expanded) */}
+          {showDetails && hasRelated && (
+            <div className="flex items-center gap-1 mt-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground">
+              <Link2 className="h-2.5 w-2.5" />
+              <span>Related: {node.relatedNodes!.join(", ")}</span>
+            </div>
           )}
         </div>
       </div>
@@ -174,7 +245,6 @@ export const DocumentIndex = memo(function DocumentIndex({
 
   const handleNodeClick = useCallback(
     (node: DocumentIndexNode) => {
-      // Use standard onAction callback to emit selection event
       onAction?.({
         name: "view_section",
         params: {
@@ -189,6 +259,14 @@ export const DocumentIndex = memo(function DocumentIndex({
     },
     [onAction, element.key],
   );
+
+  // Count total nodes recursively
+  const countNodes = (nodes: DocumentIndexNode[]): number =>
+    nodes.reduce(
+      (acc, n) => acc + 1 + (n.children ? countNodes(n.children) : 0),
+      0,
+    );
+  const totalNodes = nodes ? countNodes(nodes) : 0;
 
   return (
     <div className="rounded-lg sm:rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden">
@@ -220,7 +298,7 @@ export const DocumentIndex = memo(function DocumentIndex({
           </div>
           <div className="flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground">
             <Hash className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-            <span>{nodes?.length || 0} sections</span>
+            <span>{totalNodes} sections</span>
           </div>
           {collapsed ? (
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" />

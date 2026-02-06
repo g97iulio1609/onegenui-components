@@ -36,6 +36,7 @@ __export(definitions_exports, {
   DividerDefinition: () => import_definitions.DividerDefinition,
   DocumentDefinition: () => import_definitions.DocumentDefinition,
   DocumentIndexDefinition: () => DocumentIndexDefinition,
+  DocumentReportDefinition: () => DocumentReportDefinition,
   DriveFileDefinition: () => import_definitions.DriveFileDefinition,
   DriveFileListDefinition: () => import_definitions.DriveFileListDefinition,
   EmailDefinition: () => EmailDefinition,
@@ -54,6 +55,7 @@ __export(definitions_exports, {
   MetricDefinition: () => import_definitions.MetricDefinition,
   MindMapDefinition: () => MindMapDefinition,
   NutritionDefinition: () => NutritionDefinition,
+  ResearchReportDefinition: () => ResearchReportDefinition,
   RoutineSchedulerDefinition: () => RoutineSchedulerDefinition,
   SearchResultsDefinition: () => import_definitions.SearchResultsDefinition,
   SelectDefinition: () => import_definitions.SelectDefinition,
@@ -644,48 +646,94 @@ var DiaryDefinition = {
   hasChildren: true
 };
 
-// src/domain/DocumentIndex/schema.ts
+// src/domain/research/schema.ts
 var import_zod16 = require("zod");
-var DocumentIndexNodeSchema = import_zod16.z.lazy(
-  () => import_zod16.z.object({
-    title: import_zod16.z.string().describe("Section title"),
-    nodeId: import_zod16.z.string().describe("Unique node identifier"),
-    startPage: import_zod16.z.number().int().min(1).describe("Starting page number"),
-    endPage: import_zod16.z.number().int().min(1).describe("Ending page number"),
-    summary: import_zod16.z.string().optional().describe("Section summary"),
-    children: import_zod16.z.array(DocumentIndexNodeSchema).optional().describe("Nested sections")
+var ResearchSourceSchema = import_zod16.z.object({
+  id: import_zod16.z.string().describe("Source identifier"),
+  title: import_zod16.z.string().describe("Source title"),
+  url: import_zod16.z.string().describe("Source URL"),
+  domain: import_zod16.z.string().describe("Source domain"),
+  favicon: import_zod16.z.string().optional().describe("Source favicon URL"),
+  date: import_zod16.z.string().optional().describe("Publication date (ISO format)")
+});
+var ReportImageSchema = import_zod16.z.object({
+  url: import_zod16.z.string().describe("Image URL"),
+  alt: import_zod16.z.string().optional().describe("Image alt text"),
+  caption: import_zod16.z.string().optional().describe("Image caption")
+});
+var ReportVideoSchema = import_zod16.z.object({
+  url: import_zod16.z.string().describe("Video URL"),
+  thumbnail: import_zod16.z.string().optional().describe("Video thumbnail URL"),
+  title: import_zod16.z.string().optional().describe("Video title")
+});
+var ReportSectionSchema = import_zod16.z.object({
+  title: import_zod16.z.string().describe("Section title"),
+  content: import_zod16.z.string().describe("Markdown content with inline citations [1], [2]"),
+  image: ReportImageSchema.optional().describe("Optional section image"),
+  video: ReportVideoSchema.optional().describe("Optional section video")
+});
+var ResearchReportPropsSchema = import_zod16.z.object({
+  title: import_zod16.z.string().describe("Report title"),
+  summary: import_zod16.z.string().describe("Opening summary paragraph with inline citations [1], [2]"),
+  sections: import_zod16.z.array(ReportSectionSchema).describe("Report sections"),
+  sources: import_zod16.z.array(ResearchSourceSchema).describe("Referenced sources"),
+  relatedQueries: import_zod16.z.array(import_zod16.z.string()).optional().describe("Related follow-up queries"),
+  searchQuery: import_zod16.z.string().optional().describe("Original search query"),
+  totalResults: import_zod16.z.number().optional().describe("Total results found")
+});
+var ResearchReportDefinition = {
+  props: ResearchReportPropsSchema,
+  description: "Comprehensive research report with sections, citations, and sources."
+};
+
+// src/domain/DocumentIndex/schema.ts
+var import_zod17 = require("zod");
+var DocumentIndexNodeSchema = import_zod17.z.lazy(
+  () => import_zod17.z.object({
+    title: import_zod17.z.string().describe("Section title"),
+    nodeId: import_zod17.z.string().describe("Unique node identifier"),
+    startPage: import_zod17.z.number().int().min(1).describe("Starting page number"),
+    endPage: import_zod17.z.number().int().min(1).describe("Ending page number"),
+    summary: import_zod17.z.string().optional().describe("Section summary"),
+    keyPoints: import_zod17.z.array(import_zod17.z.string()).optional().describe("Key points extracted from section"),
+    tags: import_zod17.z.array(import_zod17.z.string()).optional().describe("Thematic tags for the section"),
+    entityCount: import_zod17.z.number().int().optional().describe("Number of entities mentioned in section"),
+    quoteCount: import_zod17.z.number().int().optional().describe("Number of notable quotes in section"),
+    importance: import_zod17.z.number().min(0).max(1).optional().describe("Importance score 0-1"),
+    relatedNodes: import_zod17.z.array(import_zod17.z.string()).optional().describe("nodeIds of related sections"),
+    children: import_zod17.z.array(DocumentIndexNodeSchema).optional().describe("Nested sections")
   })
 );
-var DocumentIndexPropsSchema = import_zod16.z.object({
-  title: import_zod16.z.string().describe("Document title"),
-  description: import_zod16.z.string().optional().describe("Document description"),
-  pageCount: import_zod16.z.number().int().min(1).describe("Total number of pages"),
-  nodes: import_zod16.z.array(DocumentIndexNodeSchema).describe("Top-level sections"),
-  accentColor: import_zod16.z.string().optional().describe("Accent color for styling"),
-  collapsed: import_zod16.z.boolean().optional().default(false).describe("Start collapsed")
+var DocumentIndexPropsSchema = import_zod17.z.object({
+  title: import_zod17.z.string().describe("Document title"),
+  description: import_zod17.z.string().optional().describe("Document description"),
+  pageCount: import_zod17.z.number().int().min(1).describe("Total number of pages"),
+  nodes: import_zod17.z.array(DocumentIndexNodeSchema).describe("Top-level sections"),
+  accentColor: import_zod17.z.string().optional().describe("Accent color for styling"),
+  collapsed: import_zod17.z.boolean().optional().default(false).describe("Start collapsed")
 });
 var DocumentIndexDefinition = {
   props: DocumentIndexPropsSchema,
-  description: "Document index with hierarchical navigation. Shows document structure with expandable sections, page numbers, and summaries. Use for PDF or document analysis results."
+  description: "Document index with hierarchical navigation. Shows document structure with expandable sections, page numbers, summaries, key points, tags, entity/quote counts, importance scores, and cross-references. Use for PDF or document analysis results."
 };
 
 // src/domain/SourceCitation/schema.ts
-var import_zod17 = require("zod");
-var CitationSchema = import_zod17.z.object({
-  id: import_zod17.z.string().describe("Unique citation identifier"),
-  nodeId: import_zod17.z.string().describe("Reference to the source node"),
-  text: import_zod17.z.string().describe("The cited text"),
-  pageNumber: import_zod17.z.number().int().min(1).describe("Page number of the citation"),
-  sectionTitle: import_zod17.z.string().describe("Section title containing the citation"),
-  confidence: import_zod17.z.enum(["high", "medium", "low"]).optional().describe("Confidence level")
+var import_zod18 = require("zod");
+var CitationSchema = import_zod18.z.object({
+  id: import_zod18.z.string().describe("Unique citation identifier"),
+  nodeId: import_zod18.z.string().describe("Reference to the source node"),
+  text: import_zod18.z.string().describe("The cited text"),
+  pageNumber: import_zod18.z.number().int().min(1).describe("Page number of the citation"),
+  sectionTitle: import_zod18.z.string().describe("Section title containing the citation"),
+  confidence: import_zod18.z.enum(["high", "medium", "low"]).optional().describe("Confidence level")
 });
-var SourceCitationPropsSchema = import_zod17.z.object({
-  title: import_zod17.z.string().describe("Document title"),
-  description: import_zod17.z.string().optional().describe("Brief description"),
-  citations: import_zod17.z.array(CitationSchema).describe("List of citations"),
-  showPageNumbers: import_zod17.z.boolean().optional().default(true),
-  collapsed: import_zod17.z.boolean().optional().default(false),
-  accentColor: import_zod17.z.string().optional().describe("Accent color for styling")
+var SourceCitationPropsSchema = import_zod18.z.object({
+  title: import_zod18.z.string().describe("Document title"),
+  description: import_zod18.z.string().optional().describe("Brief description"),
+  citations: import_zod18.z.array(CitationSchema).describe("List of citations"),
+  showPageNumbers: import_zod18.z.boolean().optional().default(true),
+  collapsed: import_zod18.z.boolean().optional().default(false),
+  accentColor: import_zod18.z.string().optional().describe("Accent color for styling")
   // Note: onCitationClick is a runtime callback, not part of schema validation
 });
 var SourceCitationDefinition = {
@@ -693,26 +741,104 @@ var SourceCitationDefinition = {
   description: "Source citations with page references. Shows cited text with links to source pages. Use after document analysis to show where information comes from."
 };
 
+// src/domain/document/schema.ts
+var import_zod19 = require("zod");
+var DocSectionEntitySchema = import_zod19.z.object({
+  type: import_zod19.z.string().describe("Entity type (person, date, place, concept, etc.)"),
+  value: import_zod19.z.string().describe("Entity value"),
+  relevance: import_zod19.z.number().min(0).max(1).describe("Relevance to section")
+});
+var DocSectionQuoteSchema = import_zod19.z.object({
+  text: import_zod19.z.string().describe("Quote text"),
+  significance: import_zod19.z.enum(["key", "supporting", "notable"]).describe("Quote importance"),
+  speaker: import_zod19.z.string().optional().describe("Speaker if applicable")
+});
+var DocReportSectionSchema = import_zod19.z.lazy(
+  () => import_zod19.z.object({
+    id: import_zod19.z.string().describe("Section identifier"),
+    title: import_zod19.z.string().describe("Section title"),
+    level: import_zod19.z.number().int().min(0).max(10).default(0).describe("Depth in hierarchy"),
+    pageStart: import_zod19.z.number().int().min(1).describe("Starting page"),
+    pageEnd: import_zod19.z.number().int().min(1).describe("Ending page"),
+    summary: import_zod19.z.string().default("").describe("Detailed section summary"),
+    keyPoints: import_zod19.z.array(import_zod19.z.string()).default([]).describe("Key takeaways"),
+    entities: import_zod19.z.array(DocSectionEntitySchema).default([]).describe("Section entities"),
+    quotes: import_zod19.z.array(DocSectionQuoteSchema).default([]).describe("Notable quotes"),
+    children: import_zod19.z.array(DocReportSectionSchema).optional().describe("Child sections")
+  })
+);
+var AggregatedEntitySchema = import_zod19.z.object({
+  id: import_zod19.z.string().describe("Entity identifier"),
+  type: import_zod19.z.string().describe("Entity type"),
+  value: import_zod19.z.string().describe("Entity value"),
+  description: import_zod19.z.string().optional().describe("Entity description"),
+  occurrenceCount: import_zod19.z.number().int().min(1).describe("Total occurrences"),
+  importance: import_zod19.z.number().min(0).max(100).describe("Importance score")
+});
+var ReportRelationSchema = import_zod19.z.object({
+  id: import_zod19.z.string().describe("Relation identifier"),
+  sourceTitle: import_zod19.z.string().describe("Source section"),
+  targetTitle: import_zod19.z.string().describe("Target section"),
+  type: import_zod19.z.string().describe("Relation type"),
+  evidence: import_zod19.z.string().describe("Supporting evidence")
+});
+var TimelineEventSchema = import_zod19.z.object({
+  date: import_zod19.z.string().describe("Date or time reference"),
+  event: import_zod19.z.string().describe("Event description"),
+  pageRef: import_zod19.z.number().int().min(1).describe("Page reference")
+});
+var SemanticOverlaySchema = import_zod19.z.object({
+  topEntities: import_zod19.z.array(AggregatedEntitySchema).default([]).describe("Top entities"),
+  relations: import_zod19.z.array(ReportRelationSchema).default([]).describe("Section relations"),
+  keyInsights: import_zod19.z.array(import_zod19.z.string()).default([]).describe("Global insights"),
+  globalQuotes: import_zod19.z.array(DocSectionQuoteSchema).default([]).describe("Key quotes"),
+  timeline: import_zod19.z.array(TimelineEventSchema).default([]).describe("Event timeline")
+});
+var PageSourceSchema = import_zod19.z.object({
+  id: import_zod19.z.string().describe("Source identifier"),
+  title: import_zod19.z.string().describe("Section title"),
+  pageNumber: import_zod19.z.number().int().min(1).describe("Page number")
+});
+var DocumentReportPropsSchema = import_zod19.z.object({
+  title: import_zod19.z.string().describe("Document title"),
+  description: import_zod19.z.string().default("").describe("Document description/summary"),
+  totalPages: import_zod19.z.number().int().min(1).describe("Total pages"),
+  filename: import_zod19.z.string().optional().describe("Original filename"),
+  sections: import_zod19.z.array(DocReportSectionSchema).default([]).describe("Document sections"),
+  semanticOverlay: SemanticOverlaySchema.default({
+    topEntities: [],
+    relations: [],
+    keyInsights: [],
+    globalQuotes: [],
+    timeline: []
+  }).describe("Semantic analysis overlay"),
+  sources: import_zod19.z.array(PageSourceSchema).default([]).describe("Page references")
+});
+var DocumentReportDefinition = {
+  props: DocumentReportPropsSchema,
+  description: "Comprehensive document analysis report with hierarchical sections, entities, quotes, and semantic overlay. Streams progressively for real-time rendering."
+};
+
 // src/visualization/charts/Chart/schema.ts
-var import_zod18 = require("zod");
+var import_zod20 = require("zod");
 
 // src/visualization/utils/shared-schemas.ts
 var import_schemas2 = require("@onegenui/schemas");
 
 // src/visualization/charts/Chart/schema.ts
-var seriesSchema = import_zod18.z.object({
-  name: import_zod18.z.string(),
-  data: import_zod18.z.array(import_zod18.z.number()),
-  color: import_zod18.z.string().nullable()
+var seriesSchema = import_zod20.z.object({
+  name: import_zod20.z.string(),
+  data: import_zod20.z.array(import_zod20.z.number()),
+  color: import_zod20.z.string().nullable()
 });
-var ChartPropsSchema = import_zod18.z.object({
-  title: import_zod18.z.string().nullable(),
-  data: import_zod18.z.array(import_schemas2.chartDatumSchema).nullable(),
-  dataPath: import_zod18.z.string().nullable(),
-  height: import_zod18.z.number().nullable(),
+var ChartPropsSchema = import_zod20.z.object({
+  title: import_zod20.z.string().nullable(),
+  data: import_zod20.z.array(import_schemas2.chartDatumSchema).nullable(),
+  dataPath: import_zod20.z.string().nullable(),
+  height: import_zod20.z.number().nullable(),
   // Multi-series support
-  series: import_zod18.z.array(seriesSchema).nullable(),
-  categories: import_zod18.z.array(import_zod18.z.string()).nullable()
+  series: import_zod20.z.array(seriesSchema).nullable(),
+  categories: import_zod20.z.array(import_zod20.z.string()).nullable()
 });
 var ChartDefinition = {
   name: "Chart",
@@ -722,37 +848,37 @@ var ChartDefinition = {
 };
 
 // src/visualization/charts/StockChart/schema.ts
-var import_zod19 = require("zod");
-var ohlcSchema = import_zod19.z.object({
-  time: import_zod19.z.string().describe("Date in YYYY-MM-DD format"),
-  open: import_zod19.z.number().describe("Opening price"),
-  high: import_zod19.z.number().describe("Highest price"),
-  low: import_zod19.z.number().describe("Lowest price"),
-  close: import_zod19.z.number().describe("Closing price"),
-  volume: import_zod19.z.number().nullable().optional().describe("Trading volume")
+var import_zod21 = require("zod");
+var ohlcSchema = import_zod21.z.object({
+  time: import_zod21.z.string().describe("Date in YYYY-MM-DD format"),
+  open: import_zod21.z.number().describe("Opening price"),
+  high: import_zod21.z.number().describe("Highest price"),
+  low: import_zod21.z.number().describe("Lowest price"),
+  close: import_zod21.z.number().describe("Closing price"),
+  volume: import_zod21.z.number().nullable().optional().describe("Trading volume")
 });
-var stockSeriesSchema = import_zod19.z.object({
-  symbol: import_zod19.z.string().describe("Stock ticker symbol (e.g., AAPL, GOOGL)"),
-  name: import_zod19.z.string().describe("Full company/instrument name"),
-  color: import_zod19.z.string().describe("Hex color for the series line (e.g., #3b82f6)"),
-  data: import_zod19.z.array(ohlcSchema).describe("Array of OHLC data points")
+var stockSeriesSchema = import_zod21.z.object({
+  symbol: import_zod21.z.string().describe("Stock ticker symbol (e.g., AAPL, GOOGL)"),
+  name: import_zod21.z.string().describe("Full company/instrument name"),
+  color: import_zod21.z.string().describe("Hex color for the series line (e.g., #3b82f6)"),
+  data: import_zod21.z.array(ohlcSchema).describe("Array of OHLC data points")
 });
-var technicalLevelSchema = import_zod19.z.object({
-  price: import_zod19.z.number().describe("Price level"),
-  type: import_zod19.z.enum(["support", "resistance"]).describe("Type of technical level"),
-  strength: import_zod19.z.number().nullable().optional().describe("Strength indicator (0-1)"),
-  label: import_zod19.z.string().nullable().optional().describe("Custom label for the level")
+var technicalLevelSchema = import_zod21.z.object({
+  price: import_zod21.z.number().describe("Price level"),
+  type: import_zod21.z.enum(["support", "resistance"]).describe("Type of technical level"),
+  strength: import_zod21.z.number().nullable().optional().describe("Strength indicator (0-1)"),
+  label: import_zod21.z.string().nullable().optional().describe("Custom label for the level")
 });
-var timeframeSchema = import_zod19.z.enum(["1D", "1W", "1M", "3M", "1Y", "5Y", "10Y", "ALL"]).describe("Time period to display");
-var StockChartPropsSchema = import_zod19.z.object({
-  title: import_zod19.z.string().nullable().optional().describe("Chart title"),
-  series: import_zod19.z.array(stockSeriesSchema).nullable().optional().describe("Array of stock series to display"),
-  levels: import_zod19.z.array(technicalLevelSchema).nullable().optional().describe("Technical support/resistance levels"),
-  chartType: import_zod19.z.enum(["Line", "Candlestick"]).nullable().optional().describe("Chart visualization type"),
+var timeframeSchema = import_zod21.z.enum(["1D", "1W", "1M", "3M", "1Y", "5Y", "10Y", "ALL"]).describe("Time period to display");
+var StockChartPropsSchema = import_zod21.z.object({
+  title: import_zod21.z.string().nullable().optional().describe("Chart title"),
+  series: import_zod21.z.array(stockSeriesSchema).nullable().optional().describe("Array of stock series to display"),
+  levels: import_zod21.z.array(technicalLevelSchema).nullable().optional().describe("Technical support/resistance levels"),
+  chartType: import_zod21.z.enum(["Line", "Candlestick"]).nullable().optional().describe("Chart visualization type"),
   timeframe: timeframeSchema.nullable().optional().describe("Initial timeframe selection"),
-  height: import_zod19.z.number().nullable().optional().describe("Chart height in pixels (default: 400)"),
-  showLevels: import_zod19.z.boolean().nullable().optional().describe("Show support/resistance levels (default: true)"),
-  showVolume: import_zod19.z.boolean().nullable().optional().describe("Show volume bars (default: false)")
+  height: import_zod21.z.number().nullable().optional().describe("Chart height in pixels (default: 400)"),
+  showLevels: import_zod21.z.boolean().nullable().optional().describe("Show support/resistance levels (default: true)"),
+  showVolume: import_zod21.z.boolean().nullable().optional().describe("Show volume bars (default: false)")
 });
 var StockChartDefinition = {
   name: "StockChart",
@@ -762,18 +888,18 @@ var StockChartDefinition = {
 };
 
 // src/visualization/graphs/Graph/schema.ts
-var import_zod20 = require("zod");
-var GraphPropsSchema = import_zod20.z.object({
-  title: import_zod20.z.string().nullable(),
-  nodes: import_zod20.z.array(import_schemas2.graphNodeSchema).nullable(),
-  edges: import_zod20.z.array(import_schemas2.graphEdgeSchema).nullable(),
-  layout: import_zod20.z.enum(["force", "radial", "grid"]).nullable(),
-  showLabels: import_zod20.z.boolean().nullable(),
-  showEdgeLabels: import_zod20.z.boolean().nullable(),
-  allowPanZoom: import_zod20.z.boolean().nullable(),
-  width: import_zod20.z.number().nullable(),
-  height: import_zod20.z.number().nullable(),
-  lock: import_zod20.z.boolean().nullable()
+var import_zod22 = require("zod");
+var GraphPropsSchema = import_zod22.z.object({
+  title: import_zod22.z.string().nullable(),
+  nodes: import_zod22.z.array(import_schemas2.graphNodeSchema).nullable(),
+  edges: import_zod22.z.array(import_schemas2.graphEdgeSchema).nullable(),
+  layout: import_zod22.z.enum(["force", "radial", "grid"]).nullable(),
+  showLabels: import_zod22.z.boolean().nullable(),
+  showEdgeLabels: import_zod22.z.boolean().nullable(),
+  allowPanZoom: import_zod22.z.boolean().nullable(),
+  width: import_zod22.z.number().nullable(),
+  height: import_zod22.z.number().nullable(),
+  lock: import_zod22.z.boolean().nullable()
 });
 var GraphDefinition = {
   name: "Graph",
@@ -783,12 +909,12 @@ var GraphDefinition = {
 };
 
 // src/visualization/graphs/MindMap/schema.ts
-var import_zod21 = require("zod");
-var MindMapPropsSchema = import_zod21.z.object({
-  title: import_zod21.z.string().nullable(),
-  nodes: import_zod21.z.array(import_schemas2.mindMapNodeSchema),
-  layout: import_zod21.z.enum(["horizontal", "vertical"]).nullable(),
-  expandedByDefault: import_zod21.z.boolean().nullable()
+var import_zod23 = require("zod");
+var MindMapPropsSchema = import_zod23.z.object({
+  title: import_zod23.z.string().nullable(),
+  nodes: import_zod23.z.array(import_schemas2.mindMapNodeSchema),
+  layout: import_zod23.z.enum(["horizontal", "vertical"]).nullable(),
+  expandedByDefault: import_zod23.z.boolean().nullable()
 });
 var MindMapDefinition = {
   name: "MindMap",
@@ -798,11 +924,11 @@ var MindMapDefinition = {
 };
 
 // src/visualization/graphs/Gantt/schema.ts
-var import_zod22 = require("zod");
-var GanttPropsSchema = import_zod22.z.object({
-  title: import_zod22.z.string().nullable(),
-  tasks: import_zod22.z.array(import_schemas2.ganttTaskSchema).min(1).describe("Tasks (REQUIRED, min 1)"),
-  lock: import_zod22.z.boolean().nullable()
+var import_zod24 = require("zod");
+var GanttPropsSchema = import_zod24.z.object({
+  title: import_zod24.z.string().nullable(),
+  tasks: import_zod24.z.array(import_schemas2.ganttTaskSchema).min(1).describe("Tasks (REQUIRED, min 1)"),
+  lock: import_zod24.z.boolean().nullable()
 });
 var GanttDefinition = {
   name: "Gantt",
@@ -828,6 +954,7 @@ var GanttDefinition = {
   DividerDefinition,
   DocumentDefinition,
   DocumentIndexDefinition,
+  DocumentReportDefinition,
   DriveFileDefinition,
   DriveFileListDefinition,
   EmailDefinition,
@@ -846,6 +973,7 @@ var GanttDefinition = {
   MetricDefinition,
   MindMapDefinition,
   NutritionDefinition,
+  ResearchReportDefinition,
   RoutineSchedulerDefinition,
   SearchResultsDefinition,
   SelectDefinition,

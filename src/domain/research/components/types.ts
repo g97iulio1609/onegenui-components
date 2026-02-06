@@ -6,7 +6,7 @@ export type Source = {
   id: string;
   title: string;
   url: string;
-  domain?: string;
+  domain: string;
   favicon?: string;
   date?: string;
 };

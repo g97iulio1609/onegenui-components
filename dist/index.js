@@ -54,6 +54,9 @@ __export(index_exports, {
   DocumentIndex: () => DocumentIndex,
   DocumentIndexDefinition: () => DocumentIndexDefinition,
   DocumentIndexPropsSchema: () => DocumentIndexPropsSchema,
+  DocumentReport: () => DocumentReport,
+  DocumentReportDefinition: () => DocumentReportDefinition,
+  DocumentReportPropsSchema: () => DocumentReportPropsSchema,
   DocumentTimeline: () => DocumentTimeline,
   Email: () => Email,
   EmailDefinition: () => EmailDefinition,
@@ -89,6 +92,8 @@ __export(index_exports, {
   Pricing: () => Pricing,
   ProfileCard: () => ProfileCard,
   ResearchReport: () => ResearchReport,
+  ResearchReportDefinition: () => ResearchReportDefinition,
+  ResearchReportPropsSchema: () => ResearchReportPropsSchema,
   RoutineScheduler: () => RoutineScheduler,
   RoutineSchedulerDefinition: () => RoutineSchedulerDefinition,
   RoutineSchedulerPropsSchema: () => RoutineSchedulerPropsSchema,
@@ -7614,6 +7619,46 @@ var ResearchReport = (0, import_react82.memo)(function ResearchReport2({
   ] });
 });
 
+// src/domain/research/schema.ts
+var import_zod14 = require("zod");
+var ResearchSourceSchema = import_zod14.z.object({
+  id: import_zod14.z.string().describe("Source identifier"),
+  title: import_zod14.z.string().describe("Source title"),
+  url: import_zod14.z.string().describe("Source URL"),
+  domain: import_zod14.z.string().describe("Source domain"),
+  favicon: import_zod14.z.string().optional().describe("Source favicon URL"),
+  date: import_zod14.z.string().optional().describe("Publication date (ISO format)")
+});
+var ReportImageSchema = import_zod14.z.object({
+  url: import_zod14.z.string().describe("Image URL"),
+  alt: import_zod14.z.string().optional().describe("Image alt text"),
+  caption: import_zod14.z.string().optional().describe("Image caption")
+});
+var ReportVideoSchema = import_zod14.z.object({
+  url: import_zod14.z.string().describe("Video URL"),
+  thumbnail: import_zod14.z.string().optional().describe("Video thumbnail URL"),
+  title: import_zod14.z.string().optional().describe("Video title")
+});
+var ReportSectionSchema = import_zod14.z.object({
+  title: import_zod14.z.string().describe("Section title"),
+  content: import_zod14.z.string().describe("Markdown content with inline citations [1], [2]"),
+  image: ReportImageSchema.optional().describe("Optional section image"),
+  video: ReportVideoSchema.optional().describe("Optional section video")
+});
+var ResearchReportPropsSchema = import_zod14.z.object({
+  title: import_zod14.z.string().describe("Report title"),
+  summary: import_zod14.z.string().describe("Opening summary paragraph with inline citations [1], [2]"),
+  sections: import_zod14.z.array(ReportSectionSchema).describe("Report sections"),
+  sources: import_zod14.z.array(ResearchSourceSchema).describe("Referenced sources"),
+  relatedQueries: import_zod14.z.array(import_zod14.z.string()).optional().describe("Related follow-up queries"),
+  searchQuery: import_zod14.z.string().optional().describe("Original search query"),
+  totalResults: import_zod14.z.number().optional().describe("Total results found")
+});
+var ResearchReportDefinition = {
+  props: ResearchReportPropsSchema,
+  description: "Comprehensive research report with sections, citations, and sources."
+};
+
 // src/domain/DocumentIndex/component.tsx
 var import_react83 = require("react");
 var import_lucide_react43 = require("lucide-react");
@@ -7626,7 +7671,7 @@ var TreeNodeItem = (0, import_react83.memo)(function TreeNodeItem2({
   onNodeClick
 }) {
   const [expanded, setExpanded] = (0, import_react83.useState)(depth > 0);
-  const [showFullSummary, setShowFullSummary] = (0, import_react83.useState)(false);
+  const [showDetails, setShowDetails] = (0, import_react83.useState)(false);
   const hasChildren = node.children && node.children.length > 0;
   const toggle = (0, import_react83.useCallback)(() => {
     if (hasChildren) {
@@ -7636,13 +7681,17 @@ var TreeNodeItem = (0, import_react83.memo)(function TreeNodeItem2({
   const handleNodeClick = (0, import_react83.useCallback)(
     (e) => {
       e.stopPropagation();
-      setShowFullSummary((prev) => !prev);
+      setShowDetails((prev) => !prev);
       if (!expanded) setExpanded(true);
       onNodeClick?.(node);
     },
     [onNodeClick, node, expanded]
   );
   const pageRange = node.startPage === node.endPage ? `p. ${node.startPage}` : `pp. ${node.startPage}-${node.endPage}`;
+  const hasMetadata = node.entityCount || node.quoteCount || node.importance !== void 0;
+  const hasTags = node.tags && node.tags.length > 0;
+  const hasKeyPoints = node.keyPoints && node.keyPoints.length > 0;
+  const hasRelated = node.relatedNodes && node.relatedNodes.length > 0;
   return /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "select-none", children: [
     /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)(
       "div",
@@ -7676,16 +7725,33 @@ var TreeNodeItem = (0, import_react83.memo)(function TreeNodeItem2({
                   children: pageRange
                 }
               ),
+              node.importance !== void 0 && node.importance >= 0.7 && /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
+                import_lucide_react43.Star,
+                {
+                  className: "h-3 w-3 text-amber-400 shrink-0",
+                  fill: "currentColor"
+                }
+              ),
+              hasMetadata && /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("span", { className: "flex items-center gap-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: [
+                node.entityCount ? /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("span", { className: "flex items-center gap-0.5", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Users, { className: "h-2.5 w-2.5" }),
+                  node.entityCount
+                ] }) : null,
+                node.quoteCount ? /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("span", { className: "flex items-center gap-0.5", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Quote, { className: "h-2.5 w-2.5" }),
+                  node.quoteCount
+                ] }) : null
+              ] }),
               onNodeClick && /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
                 "button",
                 {
                   onClick: handleNodeClick,
                   className: (0, import_utils.cn)(
                     "transition-opacity p-0.5 rounded hover:bg-white/10",
-                    showFullSummary ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    showDetails ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                   ),
-                  title: showFullSummary ? "Hide details" : "View section details",
-                  children: showFullSummary ? /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
+                  title: showDetails ? "Hide details" : "View section details",
+                  children: showDetails ? /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
                     import_lucide_react43.ChevronDown,
                     {
                       className: "h-3 w-3",
@@ -7701,16 +7767,46 @@ var TreeNodeItem = (0, import_react83.memo)(function TreeNodeItem2({
                 }
               )
             ] }),
+            hasTags && expanded && /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "flex flex-wrap items-center gap-1 mt-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Tag, { className: "h-2.5 w-2.5 text-muted-foreground" }),
+              node.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
+                "span",
+                {
+                  className: "text-[0.5rem] sm:text-[0.625rem] px-1.5 py-0.5 rounded-full bg-white/5 text-muted-foreground",
+                  style: accentColor ? { borderColor: `${accentColor}30`, borderWidth: 1 } : {},
+                  children: tag
+                },
+                tag
+              ))
+            ] }),
             node.summary && expanded && /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(
               "p",
               {
                 className: (0, import_utils.cn)(
                   "text-xs text-muted-foreground mt-1",
-                  !showFullSummary && "line-clamp-2"
+                  !showDetails && "line-clamp-2"
                 ),
                 children: node.summary
               }
-            )
+            ),
+            showDetails && hasKeyPoints && /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { className: "mt-1.5 space-y-0.5", children: node.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)(
+              "div",
+              {
+                className: "flex items-start gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground",
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Lightbulb, { className: "h-3 w-3 shrink-0 mt-0.5 text-amber-400/70" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("span", { children: point })
+                ]
+              },
+              i
+            )) }),
+            showDetails && hasRelated && /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "flex items-center gap-1 mt-1 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Link2, { className: "h-2.5 w-2.5" }),
+              /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("span", { children: [
+                "Related: ",
+                node.relatedNodes.join(", ")
+              ] })
+            ] })
           ] })
         ]
       }
@@ -7766,6 +7862,11 @@ var DocumentIndex = (0, import_react83.memo)(function DocumentIndex2({
     },
     [onAction, element.key]
   );
+  const countNodes = (nodes2) => nodes2.reduce(
+    (acc, n) => acc + 1 + (n.children ? countNodes(n.children) : 0),
+    0
+  );
+  const totalNodes = nodes ? countNodes(nodes) : 0;
   return /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "rounded-lg sm:rounded-xl border border-white/10 bg-card/50 backdrop-blur-sm overflow-hidden", children: [
     /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)(
       "div",
@@ -7798,7 +7899,7 @@ var DocumentIndex = (0, import_react83.memo)(function DocumentIndex2({
             /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
               /* @__PURE__ */ (0, import_jsx_runtime47.jsx)(import_lucide_react43.Hash, { className: "h-3 w-3 sm:h-3.5 sm:w-3.5" }),
               /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("span", { children: [
-                nodes?.length || 0,
+                totalNodes,
                 " sections"
               ] })
             ] }),
@@ -7831,24 +7932,30 @@ var DocumentIndex = (0, import_react83.memo)(function DocumentIndex2({
 });
 
 // src/domain/DocumentIndex/schema.ts
-var import_zod14 = require("zod");
-var DocumentIndexNodeSchema = import_zod14.z.lazy(
-  () => import_zod14.z.object({
-    title: import_zod14.z.string().describe("Section title"),
-    nodeId: import_zod14.z.string().describe("Unique node identifier"),
-    startPage: import_zod14.z.number().int().min(1).describe("Starting page number"),
-    endPage: import_zod14.z.number().int().min(1).describe("Ending page number"),
-    summary: import_zod14.z.string().optional().describe("Section summary"),
-    children: import_zod14.z.array(DocumentIndexNodeSchema).optional().describe("Nested sections")
+var import_zod15 = require("zod");
+var DocumentIndexNodeSchema = import_zod15.z.lazy(
+  () => import_zod15.z.object({
+    title: import_zod15.z.string().describe("Section title"),
+    nodeId: import_zod15.z.string().describe("Unique node identifier"),
+    startPage: import_zod15.z.number().int().min(1).describe("Starting page number"),
+    endPage: import_zod15.z.number().int().min(1).describe("Ending page number"),
+    summary: import_zod15.z.string().optional().describe("Section summary"),
+    keyPoints: import_zod15.z.array(import_zod15.z.string()).optional().describe("Key points extracted from section"),
+    tags: import_zod15.z.array(import_zod15.z.string()).optional().describe("Thematic tags for the section"),
+    entityCount: import_zod15.z.number().int().optional().describe("Number of entities mentioned in section"),
+    quoteCount: import_zod15.z.number().int().optional().describe("Number of notable quotes in section"),
+    importance: import_zod15.z.number().min(0).max(1).optional().describe("Importance score 0-1"),
+    relatedNodes: import_zod15.z.array(import_zod15.z.string()).optional().describe("nodeIds of related sections"),
+    children: import_zod15.z.array(DocumentIndexNodeSchema).optional().describe("Nested sections")
   })
 );
-var DocumentIndexPropsSchema = import_zod14.z.object({
-  title: import_zod14.z.string().describe("Document title"),
-  description: import_zod14.z.string().optional().describe("Document description"),
-  pageCount: import_zod14.z.number().int().min(1).describe("Total number of pages"),
-  nodes: import_zod14.z.array(DocumentIndexNodeSchema).describe("Top-level sections"),
-  accentColor: import_zod14.z.string().optional().describe("Accent color for styling"),
-  collapsed: import_zod14.z.boolean().optional().default(false).describe("Start collapsed")
+var DocumentIndexPropsSchema = import_zod15.z.object({
+  title: import_zod15.z.string().describe("Document title"),
+  description: import_zod15.z.string().optional().describe("Document description"),
+  pageCount: import_zod15.z.number().int().min(1).describe("Total number of pages"),
+  nodes: import_zod15.z.array(DocumentIndexNodeSchema).describe("Top-level sections"),
+  accentColor: import_zod15.z.string().optional().describe("Accent color for styling"),
+  collapsed: import_zod15.z.boolean().optional().default(false).describe("Start collapsed")
 });
 
 // src/domain/DocumentIndex/index.ts
@@ -7993,22 +8100,22 @@ var CompactCitation = (0, import_react84.memo)(function CompactCitation2({
 });
 
 // src/domain/SourceCitation/schema.ts
-var import_zod15 = require("zod");
-var CitationSchema = import_zod15.z.object({
-  id: import_zod15.z.string().describe("Unique citation identifier"),
-  nodeId: import_zod15.z.string().describe("Reference to the source node"),
-  text: import_zod15.z.string().describe("The cited text"),
-  pageNumber: import_zod15.z.number().int().min(1).describe("Page number of the citation"),
-  sectionTitle: import_zod15.z.string().describe("Section title containing the citation"),
-  confidence: import_zod15.z.enum(["high", "medium", "low"]).optional().describe("Confidence level")
+var import_zod16 = require("zod");
+var CitationSchema = import_zod16.z.object({
+  id: import_zod16.z.string().describe("Unique citation identifier"),
+  nodeId: import_zod16.z.string().describe("Reference to the source node"),
+  text: import_zod16.z.string().describe("The cited text"),
+  pageNumber: import_zod16.z.number().int().min(1).describe("Page number of the citation"),
+  sectionTitle: import_zod16.z.string().describe("Section title containing the citation"),
+  confidence: import_zod16.z.enum(["high", "medium", "low"]).optional().describe("Confidence level")
 });
-var SourceCitationPropsSchema = import_zod15.z.object({
-  title: import_zod15.z.string().describe("Document title"),
-  description: import_zod15.z.string().optional().describe("Brief description"),
-  citations: import_zod15.z.array(CitationSchema).describe("List of citations"),
-  showPageNumbers: import_zod15.z.boolean().optional().default(true),
-  collapsed: import_zod15.z.boolean().optional().default(false),
-  accentColor: import_zod15.z.string().optional().describe("Accent color for styling")
+var SourceCitationPropsSchema = import_zod16.z.object({
+  title: import_zod16.z.string().describe("Document title"),
+  description: import_zod16.z.string().optional().describe("Brief description"),
+  citations: import_zod16.z.array(CitationSchema).describe("List of citations"),
+  showPageNumbers: import_zod16.z.boolean().optional().default(true),
+  collapsed: import_zod16.z.boolean().optional().default(false),
+  accentColor: import_zod16.z.string().optional().describe("Accent color for styling")
   // Note: onCitationClick is a runtime callback, not part of schema validation
 });
 
@@ -8019,9 +8126,244 @@ var SourceCitationDefinition = {
   schema: SourceCitationPropsSchema
 };
 
-// src/visualization/charts/Chart/component.tsx
+// src/domain/document/DocumentReport.tsx
 var import_react85 = require("react");
-var import_react86 = require("@onegenui/react");
+var import_lucide_react45 = require("lucide-react");
+var import_jsx_runtime49 = require("react/jsx-runtime");
+var SectionItem = (0, import_react85.memo)(function SectionItem2({
+  section,
+  depth = 0
+}) {
+  const [expanded, setExpanded] = (0, import_react85.useState)(depth < 2);
+  const hasChildren = section.children && section.children.length > 0;
+  return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: `${depth > 0 ? "ml-3 sm:ml-4 border-l border-white/5 pl-3 sm:pl-4" : ""}`, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
+      "button",
+      {
+        onClick: () => setExpanded(!expanded),
+        className: "w-full text-left py-2 sm:py-3 flex items-start gap-2 hover:bg-white/5 rounded-lg px-2 -mx-2 transition-colors",
+        children: [
+          hasChildren ? expanded ? /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(import_lucide_react45.ChevronDown, { className: "w-4 h-4 mt-0.5 text-zinc-500" }) : /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(import_lucide_react45.ChevronRight, { className: "w-4 h-4 mt-0.5 text-zinc-500" }) : /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "w-4" }),
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex items-baseline gap-2 flex-wrap", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "font-medium text-white text-sm sm:text-base", children: section.title }),
+              /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "text-xs text-zinc-500", children: [
+                "p.",
+                section.pageStart,
+                "-",
+                section.pageEnd
+              ] })
+            ] }),
+            !expanded && section.summary && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("p", { className: "text-xs text-zinc-400 mt-1 line-clamp-2", children: section.summary })
+          ] })
+        ]
+      }
+    ),
+    expanded && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "pb-3 space-y-3", children: [
+      section.summary && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("p", { className: "text-xs sm:text-sm text-zinc-300 leading-relaxed pl-6", children: section.summary }),
+      section.keyPoints.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "pl-6", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "text-xs text-zinc-500 uppercase tracking-wider mb-1", children: "Key Points" }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("ul", { className: "space-y-1", children: section.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("li", { className: "text-xs sm:text-sm text-zinc-300 flex gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "text-sky-400", children: "-" }),
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { children: point })
+        ] }, i)) })
+      ] }),
+      section.entities.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "pl-6 flex flex-wrap gap-1.5", children: section.entities.slice(0, 8).map((e, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "px-2 py-0.5 text-xs bg-zinc-800 text-zinc-300 rounded-full border border-white/5", children: e.value }, i)) }),
+      section.quotes.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "pl-6 space-y-2", children: section.quotes.slice(0, 2).map((q, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("blockquote", { className: "text-xs italic text-zinc-400 border-l-2 border-amber-500/50 pl-3", children: [
+        '"',
+        q.text,
+        '"',
+        q.speaker && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "text-zinc-500 not-italic ml-2", children: [
+          "- ",
+          q.speaker
+        ] })
+      ] }, i)) }),
+      hasChildren && section.children.map((child) => /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(SectionItem2, { section: child, depth: depth + 1 }, child.id))
+    ] })
+  ] });
+});
+var SemanticPanel = (0, import_react85.memo)(function SemanticPanel2({ overlay }) {
+  const [tab, setTab] = (0, import_react85.useState)("entities");
+  return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "rounded-xl bg-zinc-900/40 border border-white/5 overflow-hidden", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "flex border-b border-white/5 overflow-x-auto", children: [
+      { key: "entities", icon: import_lucide_react45.Users, label: "Entities" },
+      { key: "insights", icon: import_lucide_react45.Lightbulb, label: "Insights" },
+      { key: "quotes", icon: import_lucide_react45.Quote, label: "Quotes" },
+      ...overlay.timeline?.length ? [{ key: "timeline", icon: import_lucide_react45.Clock, label: "Timeline" }] : []
+    ].map(({ key, icon: Icon, label }) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
+      "button",
+      {
+        onClick: () => setTab(key),
+        className: `flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm whitespace-nowrap transition-colors ${tab === key ? "text-sky-400 border-b-2 border-sky-400 bg-sky-400/5" : "text-zinc-400 hover:text-zinc-300"}`,
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(Icon, { className: "w-3.5 h-3.5" }),
+          label
+        ]
+      },
+      key
+    )) }),
+    /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "p-3 sm:p-4 max-h-64 overflow-y-auto", children: [
+      tab === "entities" && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "flex flex-wrap gap-2", children: (overlay.topEntities ?? []).slice(0, 20).map((e) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "px-2.5 py-1.5 bg-zinc-800/50 rounded-lg border border-white/5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "text-xs sm:text-sm text-white", children: e.value }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "text-[0.625rem] text-zinc-500 capitalize", children: [
+          e.type,
+          " - ",
+          e.occurrenceCount,
+          "x"
+        ] })
+      ] }, e.id)) }),
+      tab === "insights" && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("ul", { className: "space-y-2", children: (overlay.keyInsights ?? []).map((insight, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("li", { className: "flex gap-2 text-xs sm:text-sm text-zinc-300", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(import_lucide_react45.Lightbulb, { className: "w-4 h-4 text-amber-400 shrink-0 mt-0.5" }),
+        insight
+      ] }, i)) }),
+      tab === "quotes" && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "space-y-3", children: (overlay.globalQuotes ?? []).slice(0, 5).map((q, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("blockquote", { className: "text-xs sm:text-sm italic text-zinc-300 border-l-2 border-amber-500/50 pl-3", children: [
+        '"',
+        q.text,
+        '"',
+        q.speaker && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "text-zinc-500 not-italic ml-2", children: [
+          "- ",
+          q.speaker
+        ] })
+      ] }, i)) }),
+      tab === "timeline" && overlay.timeline && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "space-y-2", children: overlay.timeline.map((evt, i) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex gap-3 text-xs sm:text-sm", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "text-sky-400 font-mono shrink-0", children: evt.date }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "text-zinc-300", children: evt.event }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "text-zinc-500 ml-auto", children: [
+          "p.",
+          evt.pageRef
+        ] })
+      ] }, i)) })
+    ] })
+  ] });
+});
+var DocumentReport = (0, import_react85.memo)(function DocumentReport2({ element, children }) {
+  const props = element.props;
+  const { title, description, totalPages, filename, sections = [], semanticOverlay, sources = [] } = props;
+  if (!title && !description && sections.length === 0) {
+    return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "p-4 sm:p-8 text-center text-zinc-500", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(import_lucide_react45.FileText, { className: "w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50" }),
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("p", { className: "text-sm", children: "No document content" })
+    ] });
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "space-y-4 sm:space-y-6", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "rounded-xl sm:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-white/10 overflow-hidden", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "p-4 sm:p-6 border-b border-white/5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex items-start justify-between gap-4 mb-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("h2", { className: "text-lg sm:text-xl lg:text-2xl font-bold text-white", children: title }),
+          /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex items-center gap-2 text-xs text-zinc-500", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(import_lucide_react45.BookOpen, { className: "w-4 h-4" }),
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { children: [
+              totalPages,
+              " pages"
+            ] })
+          ] })
+        ] }),
+        filename && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("p", { className: "text-xs text-zinc-500 mb-3", children: filename }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("p", { className: "text-zinc-300 leading-relaxed text-xs sm:text-sm lg:text-[15px]", children: description })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "p-4 sm:p-6", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("h3", { className: "text-xs sm:text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4", children: "Document Structure" }),
+        /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "space-y-1", children: sections.map((section, idx) => /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(SectionItem, { section }, `${section.id}-${idx}`)) })
+      ] })
+    ] }),
+    semanticOverlay && ((semanticOverlay.topEntities?.length ?? 0) > 0 || (semanticOverlay.keyInsights?.length ?? 0) > 0) && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(SemanticPanel, { overlay: semanticOverlay }),
+    sources.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "rounded-xl bg-zinc-900/40 border border-white/5 p-3 sm:p-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("h4", { className: "text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2", children: [
+        sources.length,
+        " Sections"
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "flex flex-wrap gap-1.5", children: sources.slice(0, 15).map((s) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "px-2 py-1 text-xs text-zinc-400 bg-zinc-800/50 rounded", children: [
+        s.title,
+        " (p.",
+        s.pageNumber,
+        ")"
+      ] }, s.id)) })
+    ] }),
+    children
+  ] });
+});
+
+// src/domain/document/schema.ts
+var import_zod17 = require("zod");
+var DocSectionEntitySchema = import_zod17.z.object({
+  type: import_zod17.z.string().describe("Entity type (person, date, place, concept, etc.)"),
+  value: import_zod17.z.string().describe("Entity value"),
+  relevance: import_zod17.z.number().min(0).max(1).describe("Relevance to section")
+});
+var DocSectionQuoteSchema = import_zod17.z.object({
+  text: import_zod17.z.string().describe("Quote text"),
+  significance: import_zod17.z.enum(["key", "supporting", "notable"]).describe("Quote importance"),
+  speaker: import_zod17.z.string().optional().describe("Speaker if applicable")
+});
+var DocReportSectionSchema = import_zod17.z.lazy(
+  () => import_zod17.z.object({
+    id: import_zod17.z.string().describe("Section identifier"),
+    title: import_zod17.z.string().describe("Section title"),
+    level: import_zod17.z.number().int().min(0).max(10).default(0).describe("Depth in hierarchy"),
+    pageStart: import_zod17.z.number().int().min(1).describe("Starting page"),
+    pageEnd: import_zod17.z.number().int().min(1).describe("Ending page"),
+    summary: import_zod17.z.string().default("").describe("Detailed section summary"),
+    keyPoints: import_zod17.z.array(import_zod17.z.string()).default([]).describe("Key takeaways"),
+    entities: import_zod17.z.array(DocSectionEntitySchema).default([]).describe("Section entities"),
+    quotes: import_zod17.z.array(DocSectionQuoteSchema).default([]).describe("Notable quotes"),
+    children: import_zod17.z.array(DocReportSectionSchema).optional().describe("Child sections")
+  })
+);
+var AggregatedEntitySchema = import_zod17.z.object({
+  id: import_zod17.z.string().describe("Entity identifier"),
+  type: import_zod17.z.string().describe("Entity type"),
+  value: import_zod17.z.string().describe("Entity value"),
+  description: import_zod17.z.string().optional().describe("Entity description"),
+  occurrenceCount: import_zod17.z.number().int().min(1).describe("Total occurrences"),
+  importance: import_zod17.z.number().min(0).max(100).describe("Importance score")
+});
+var ReportRelationSchema = import_zod17.z.object({
+  id: import_zod17.z.string().describe("Relation identifier"),
+  sourceTitle: import_zod17.z.string().describe("Source section"),
+  targetTitle: import_zod17.z.string().describe("Target section"),
+  type: import_zod17.z.string().describe("Relation type"),
+  evidence: import_zod17.z.string().describe("Supporting evidence")
+});
+var TimelineEventSchema = import_zod17.z.object({
+  date: import_zod17.z.string().describe("Date or time reference"),
+  event: import_zod17.z.string().describe("Event description"),
+  pageRef: import_zod17.z.number().int().min(1).describe("Page reference")
+});
+var SemanticOverlaySchema = import_zod17.z.object({
+  topEntities: import_zod17.z.array(AggregatedEntitySchema).default([]).describe("Top entities"),
+  relations: import_zod17.z.array(ReportRelationSchema).default([]).describe("Section relations"),
+  keyInsights: import_zod17.z.array(import_zod17.z.string()).default([]).describe("Global insights"),
+  globalQuotes: import_zod17.z.array(DocSectionQuoteSchema).default([]).describe("Key quotes"),
+  timeline: import_zod17.z.array(TimelineEventSchema).default([]).describe("Event timeline")
+});
+var PageSourceSchema = import_zod17.z.object({
+  id: import_zod17.z.string().describe("Source identifier"),
+  title: import_zod17.z.string().describe("Section title"),
+  pageNumber: import_zod17.z.number().int().min(1).describe("Page number")
+});
+var DocumentReportPropsSchema = import_zod17.z.object({
+  title: import_zod17.z.string().describe("Document title"),
+  description: import_zod17.z.string().default("").describe("Document description/summary"),
+  totalPages: import_zod17.z.number().int().min(1).describe("Total pages"),
+  filename: import_zod17.z.string().optional().describe("Original filename"),
+  sections: import_zod17.z.array(DocReportSectionSchema).default([]).describe("Document sections"),
+  semanticOverlay: SemanticOverlaySchema.default({
+    topEntities: [],
+    relations: [],
+    keyInsights: [],
+    globalQuotes: [],
+    timeline: []
+  }).describe("Semantic analysis overlay"),
+  sources: import_zod17.z.array(PageSourceSchema).default([]).describe("Page references")
+});
+var DocumentReportDefinition = {
+  props: DocumentReportPropsSchema,
+  description: "Comprehensive document analysis report with hierarchical sections, entities, quotes, and semantic overlay. Streams progressively for real-time rendering."
+};
+
+// src/visualization/charts/Chart/component.tsx
+var import_react86 = require("react");
+var import_react87 = require("@onegenui/react");
 
 // src/visualization/utils/data-utils.ts
 var import_utils20 = require("@onegenui/utils");
@@ -8030,7 +8372,7 @@ var import_utils20 = require("@onegenui/utils");
 var import_utils21 = require("@onegenui/utils");
 
 // src/visualization/charts/Chart/component.tsx
-var import_jsx_runtime49 = require("react/jsx-runtime");
+var import_jsx_runtime50 = require("react/jsx-runtime");
 var DEFAULT_HEIGHT = 200;
 var MIN_HEIGHT = 120;
 var Y_AXIS_WIDTH = 40;
@@ -8092,13 +8434,13 @@ function hexToRgba(hex, alpha) {
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-var Chart = (0, import_react85.memo)(function Chart2({
+var Chart = (0, import_react86.memo)(function Chart2({
   element,
   children
 }) {
   const { title, data, dataPath, height, series, categories } = element.props;
-  const { data: globalData } = (0, import_react86.useData)();
-  const chartData = (0, import_react85.useMemo)(() => {
+  const { data: globalData } = (0, import_react87.useData)();
+  const chartData = (0, import_react86.useMemo)(() => {
     if (series && series.length > 0 && categories && categories.length > 0) {
       const firstSeries = series[0];
       return categories.map((label, i) => ({
@@ -8110,9 +8452,9 @@ var Chart = (0, import_react85.memo)(function Chart2({
     return (0, import_utils20.resolveArrayProp)(globalData, data, dataPath);
   }, [series, categories, globalData, data, dataPath]);
   const chartHeight = Math.max(height || DEFAULT_HEIGHT, MIN_HEIGHT);
-  const { selectedItems, isItemSelected } = (0, import_react86.useItemSelection)(element.key);
-  const [hoveredIndex, setHoveredIndex] = (0, import_react85.useState)(null);
-  const { ticks, normalizedData } = (0, import_react85.useMemo)(() => {
+  const { selectedItems, isItemSelected } = (0, import_react87.useItemSelection)(element.key);
+  const [hoveredIndex, setHoveredIndex] = (0, import_react86.useState)(null);
+  const { ticks, normalizedData } = (0, import_react86.useMemo)(() => {
     if (!chartData || chartData.length === 0) {
       return { maxValue: 0, minValue: 0, ticks: [], normalizedData: [] };
     }
@@ -8140,18 +8482,18 @@ var Chart = (0, import_react85.memo)(function Chart2({
     };
   }, [chartData]);
   if (!chartData || chartData.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "flex items-center justify-center p-4 sm:p-8 bg-card border border-border rounded-lg sm:rounded-xl text-muted-foreground text-sm", children: "No data available" });
+    return /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "flex items-center justify-center p-4 sm:p-8 bg-card border border-border rounded-lg sm:rounded-xl text-muted-foreground text-sm", children: "No data available" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex flex-col w-full h-full glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("h3", { className: "text-xs sm:text-sm font-semibold mb-3 sm:mb-4 text-foreground", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col w-full h-full glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("h3", { className: "text-xs sm:text-sm font-semibold mb-3 sm:mb-4 text-foreground", children: title }),
+    /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
       "div",
       {
         className: "relative w-full",
         style: { height: `${chartHeight}px` },
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "absolute inset-0 flex flex-col justify-between pointer-events-none", children: ticks.slice().reverse().map((tick) => /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "flex items-center w-full h-0 relative", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "absolute inset-0 flex flex-col justify-between pointer-events-none", children: ticks.slice().reverse().map((tick) => /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex items-center w-full h-0 relative", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
               "div",
               {
                 className: "border-t border-border border-dashed",
@@ -8161,9 +8503,9 @@ var Chart = (0, import_react85.memo)(function Chart2({
                 }
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("span", { className: "absolute left-0 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground text-right -translate-y-1/2 pr-1", style: { width: `${Y_AXIS_WIDTH}px` }, children: formatValue(tick) })
+            /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("span", { className: "absolute left-0 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground text-right -translate-y-1/2 pr-1", style: { width: `${Y_AXIS_WIDTH}px` }, children: formatValue(tick) })
           ] }, tick)) }),
-          /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
             "div",
             {
               className: "absolute inset-0 flex items-end justify-between pt-2 sm:pt-3 pb-5 sm:pb-6",
@@ -8176,7 +8518,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                 const isSelected = isItemSelected(itemId);
                 const isHovered = hoveredIndex === i;
                 const barHeight = `${d.percentage}%`;
-                return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
+                return /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
                   "div",
                   {
                     "data-selectable-item": true,
@@ -8189,7 +8531,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                     onTouchStart: () => setHoveredIndex(i),
                     onTouchEnd: () => setHoveredIndex(null),
                     children: [
-                      (isHovered || isSelected) && /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)(
+                      (isHovered || isSelected) && /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
                         "div",
                         {
                           className: (0, import_utils21.cn)(
@@ -8198,7 +8540,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                             "animate-in fade-in zoom-in-95 duration-200"
                           ),
                           children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("span", { className: "opacity-70 mr-0.5 sm:mr-1", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("span", { className: "opacity-70 mr-0.5 sm:mr-1", children: [
                               d.label,
                               ":"
                             ] }),
@@ -8206,7 +8548,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                           ]
                         }
                       ),
-                      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
+                      /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
                         "div",
                         {
                           className: (0, import_utils21.cn)(
@@ -8220,7 +8562,7 @@ var Chart = (0, import_react85.memo)(function Chart2({
                           }
                         }
                       ),
-                      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "absolute top-full mt-1 sm:mt-2 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground truncate w-full text-center max-w-full", children: d.label })
+                      /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "absolute top-full mt-1 sm:mt-2 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground truncate w-full text-center max-w-full", children: d.label })
                     ]
                   },
                   i
@@ -8236,25 +8578,25 @@ var Chart = (0, import_react85.memo)(function Chart2({
 });
 
 // src/visualization/charts/Chart/schema.ts
-var import_zod16 = require("zod");
+var import_zod18 = require("zod");
 
 // src/visualization/utils/shared-schemas.ts
 var import_schemas2 = require("@onegenui/schemas");
 
 // src/visualization/charts/Chart/schema.ts
-var seriesSchema = import_zod16.z.object({
-  name: import_zod16.z.string(),
-  data: import_zod16.z.array(import_zod16.z.number()),
-  color: import_zod16.z.string().nullable()
+var seriesSchema = import_zod18.z.object({
+  name: import_zod18.z.string(),
+  data: import_zod18.z.array(import_zod18.z.number()),
+  color: import_zod18.z.string().nullable()
 });
-var ChartPropsSchema = import_zod16.z.object({
-  title: import_zod16.z.string().nullable(),
-  data: import_zod16.z.array(import_schemas2.chartDatumSchema).nullable(),
-  dataPath: import_zod16.z.string().nullable(),
-  height: import_zod16.z.number().nullable(),
+var ChartPropsSchema = import_zod18.z.object({
+  title: import_zod18.z.string().nullable(),
+  data: import_zod18.z.array(import_schemas2.chartDatumSchema).nullable(),
+  dataPath: import_zod18.z.string().nullable(),
+  height: import_zod18.z.number().nullable(),
   // Multi-series support
-  series: import_zod16.z.array(seriesSchema).nullable(),
-  categories: import_zod16.z.array(import_zod16.z.string()).nullable()
+  series: import_zod18.z.array(seriesSchema).nullable(),
+  categories: import_zod18.z.array(import_zod18.z.string()).nullable()
 });
 var ChartDefinition = {
   name: "Chart",
@@ -8264,8 +8606,8 @@ var ChartDefinition = {
 };
 
 // src/visualization/charts/StockChart/component.tsx
-var import_react87 = require("react");
-var import_jsx_runtime50 = require("react/jsx-runtime");
+var import_react88 = require("react");
+var import_jsx_runtime51 = require("react/jsx-runtime");
 var chartsModule = null;
 var getTimeframeDays = (tf) => {
   switch (tf) {
@@ -8296,7 +8638,7 @@ var filterDataByTimeframe = (data, timeframe) => {
   if (!cutoffStr) return data;
   return data.filter((d) => d.time >= cutoffStr);
 };
-var StockChart = (0, import_react87.memo)(function StockChart2({
+var StockChart = (0, import_react88.memo)(function StockChart2({
   element
 }) {
   const props = element.props;
@@ -8306,14 +8648,14 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
   const height = props.height ?? 400;
   const upColor = "#22c55e";
   const downColor = "#ef4444";
-  const containerRef = (0, import_react87.useRef)(null);
-  const chartRef = (0, import_react87.useRef)(null);
-  const seriesRef = (0, import_react87.useRef)(null);
-  const [timeframe, setTimeframe] = (0, import_react87.useState)(
+  const containerRef = (0, import_react88.useRef)(null);
+  const chartRef = (0, import_react88.useRef)(null);
+  const seriesRef = (0, import_react88.useRef)(null);
+  const [timeframe, setTimeframe] = (0, import_react88.useState)(
     props.timeframe || "3M"
   );
   const filteredData = filterDataByTimeframe(initialData, timeframe);
-  (0, import_react87.useEffect)(() => {
+  (0, import_react88.useEffect)(() => {
     if (!chartsModule) {
       import("lightweight-charts").then((mod) => {
         chartsModule = mod;
@@ -8329,7 +8671,7 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
       }
     };
   }, []);
-  (0, import_react87.useEffect)(() => {
+  (0, import_react88.useEffect)(() => {
     if (seriesRef.current && filteredData.length > 0) {
       seriesRef.current.setData(filteredData);
       if (chartRef.current) {
@@ -8337,7 +8679,7 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
       }
     }
   }, [filteredData]);
-  (0, import_react87.useEffect)(() => {
+  (0, import_react88.useEffect)(() => {
     const handleResize = () => {
       if (chartRef.current && containerRef.current) {
         chartRef.current.applyOptions({
@@ -8400,13 +8742,13 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
     seriesRef.current = series;
   };
   const timeframes = ["1D", "1W", "1M", "3M", "1Y", "5Y", "ALL"];
-  return /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl shadow-lg", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("h3", { className: "m-0 text-xs sm:text-sm font-semibold text-foreground", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl shadow-lg", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("h3", { className: "m-0 text-xs sm:text-sm font-semibold text-foreground", children: [
         symbol,
         " Stock Price"
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "flex gap-0.5 sm:gap-1 bg-muted/20 p-0.5 sm:p-1 rounded-md overflow-x-auto touch-pan-x w-full sm:w-auto", children: timeframes.map((tf) => /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "flex gap-0.5 sm:gap-1 bg-muted/20 p-0.5 sm:p-1 rounded-md overflow-x-auto touch-pan-x w-full sm:w-auto", children: timeframes.map((tf) => /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
         "button",
         {
           onClick: () => setTimeframe(tf),
@@ -8419,14 +8761,14 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
         tf
       )) })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)(
+    /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)(
       "div",
       {
         className: "relative w-full overflow-hidden rounded bg-black/5",
         style: { height: `${Math.max(height * 0.7, 200)}px` },
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { ref: containerRef, className: "w-full h-full" }),
-          !filteredData.length && /* @__PURE__ */ (0, import_jsx_runtime50.jsx)("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground text-xs sm:text-sm", children: "No data available for this timeframe" })
+          /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { ref: containerRef, className: "w-full h-full" }),
+          !filteredData.length && /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground text-xs sm:text-sm", children: "No data available for this timeframe" })
         ]
       }
     )
@@ -8434,37 +8776,37 @@ var StockChart = (0, import_react87.memo)(function StockChart2({
 });
 
 // src/visualization/charts/StockChart/schema.ts
-var import_zod17 = require("zod");
-var ohlcSchema = import_zod17.z.object({
-  time: import_zod17.z.string().describe("Date in YYYY-MM-DD format"),
-  open: import_zod17.z.number().describe("Opening price"),
-  high: import_zod17.z.number().describe("Highest price"),
-  low: import_zod17.z.number().describe("Lowest price"),
-  close: import_zod17.z.number().describe("Closing price"),
-  volume: import_zod17.z.number().nullable().optional().describe("Trading volume")
+var import_zod19 = require("zod");
+var ohlcSchema = import_zod19.z.object({
+  time: import_zod19.z.string().describe("Date in YYYY-MM-DD format"),
+  open: import_zod19.z.number().describe("Opening price"),
+  high: import_zod19.z.number().describe("Highest price"),
+  low: import_zod19.z.number().describe("Lowest price"),
+  close: import_zod19.z.number().describe("Closing price"),
+  volume: import_zod19.z.number().nullable().optional().describe("Trading volume")
 });
-var stockSeriesSchema = import_zod17.z.object({
-  symbol: import_zod17.z.string().describe("Stock ticker symbol (e.g., AAPL, GOOGL)"),
-  name: import_zod17.z.string().describe("Full company/instrument name"),
-  color: import_zod17.z.string().describe("Hex color for the series line (e.g., #3b82f6)"),
-  data: import_zod17.z.array(ohlcSchema).describe("Array of OHLC data points")
+var stockSeriesSchema = import_zod19.z.object({
+  symbol: import_zod19.z.string().describe("Stock ticker symbol (e.g., AAPL, GOOGL)"),
+  name: import_zod19.z.string().describe("Full company/instrument name"),
+  color: import_zod19.z.string().describe("Hex color for the series line (e.g., #3b82f6)"),
+  data: import_zod19.z.array(ohlcSchema).describe("Array of OHLC data points")
 });
-var technicalLevelSchema = import_zod17.z.object({
-  price: import_zod17.z.number().describe("Price level"),
-  type: import_zod17.z.enum(["support", "resistance"]).describe("Type of technical level"),
-  strength: import_zod17.z.number().nullable().optional().describe("Strength indicator (0-1)"),
-  label: import_zod17.z.string().nullable().optional().describe("Custom label for the level")
+var technicalLevelSchema = import_zod19.z.object({
+  price: import_zod19.z.number().describe("Price level"),
+  type: import_zod19.z.enum(["support", "resistance"]).describe("Type of technical level"),
+  strength: import_zod19.z.number().nullable().optional().describe("Strength indicator (0-1)"),
+  label: import_zod19.z.string().nullable().optional().describe("Custom label for the level")
 });
-var timeframeSchema = import_zod17.z.enum(["1D", "1W", "1M", "3M", "1Y", "5Y", "10Y", "ALL"]).describe("Time period to display");
-var StockChartPropsSchema = import_zod17.z.object({
-  title: import_zod17.z.string().nullable().optional().describe("Chart title"),
-  series: import_zod17.z.array(stockSeriesSchema).nullable().optional().describe("Array of stock series to display"),
-  levels: import_zod17.z.array(technicalLevelSchema).nullable().optional().describe("Technical support/resistance levels"),
-  chartType: import_zod17.z.enum(["Line", "Candlestick"]).nullable().optional().describe("Chart visualization type"),
+var timeframeSchema = import_zod19.z.enum(["1D", "1W", "1M", "3M", "1Y", "5Y", "10Y", "ALL"]).describe("Time period to display");
+var StockChartPropsSchema = import_zod19.z.object({
+  title: import_zod19.z.string().nullable().optional().describe("Chart title"),
+  series: import_zod19.z.array(stockSeriesSchema).nullable().optional().describe("Array of stock series to display"),
+  levels: import_zod19.z.array(technicalLevelSchema).nullable().optional().describe("Technical support/resistance levels"),
+  chartType: import_zod19.z.enum(["Line", "Candlestick"]).nullable().optional().describe("Chart visualization type"),
   timeframe: timeframeSchema.nullable().optional().describe("Initial timeframe selection"),
-  height: import_zod17.z.number().nullable().optional().describe("Chart height in pixels (default: 400)"),
-  showLevels: import_zod17.z.boolean().nullable().optional().describe("Show support/resistance levels (default: true)"),
-  showVolume: import_zod17.z.boolean().nullable().optional().describe("Show volume bars (default: false)")
+  height: import_zod19.z.number().nullable().optional().describe("Chart height in pixels (default: 400)"),
+  showLevels: import_zod19.z.boolean().nullable().optional().describe("Show support/resistance levels (default: true)"),
+  showVolume: import_zod19.z.boolean().nullable().optional().describe("Show volume bars (default: false)")
 });
 var StockChartDefinition = {
   name: "StockChart",
@@ -8474,8 +8816,8 @@ var StockChartDefinition = {
 };
 
 // src/visualization/graphs/Graph/component.tsx
-var import_react90 = require("react");
-var import_react91 = require("@onegenui/react");
+var import_react91 = require("react");
+var import_react92 = require("@onegenui/react");
 
 // src/visualization/graphs/Graph/components/types.ts
 var MAG = (v) => Math.sqrt(v.x * v.x + v.y * v.y);
@@ -8526,19 +8868,19 @@ var DT = 0.1;
 var MAX_ITERATIONS = 300;
 
 // src/visualization/graphs/Graph/components/edges-renderer.tsx
-var import_react88 = require("react");
-var import_jsx_runtime51 = require("react/jsx-runtime");
-var EdgesRenderer = (0, import_react88.memo)(function EdgesRenderer2({
+var import_react89 = require("react");
+var import_jsx_runtime52 = require("react/jsx-runtime");
+var EdgesRenderer = (0, import_react89.memo)(function EdgesRenderer2({
   edges,
   nodeStates
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(import_jsx_runtime51.Fragment, { children: edges.map((e, i) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_jsx_runtime52.Fragment, { children: edges.map((e, i) => {
     const u = nodeStates.get(e.source);
     const v = nodeStates.get(e.target);
     if (!u || !v) return null;
     const targetRadius = v.size + 4;
     const end = getIntersection(u.pos, v.pos, targetRadius);
-    return /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("g", { children: /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("g", { children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
       "line",
       {
         x1: u.pos.x,
@@ -8555,9 +8897,9 @@ var EdgesRenderer = (0, import_react88.memo)(function EdgesRenderer2({
 });
 
 // src/visualization/graphs/Graph/components/nodes-renderer.tsx
-var import_react89 = require("react");
-var import_jsx_runtime52 = require("react/jsx-runtime");
-var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
+var import_react90 = require("react");
+var import_jsx_runtime53 = require("react/jsx-runtime");
+var NodesRenderer = (0, import_react90.memo)(function NodesRenderer2({
   nodes,
   nodeStates,
   elementKey,
@@ -8565,12 +8907,12 @@ var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
   toggleSelection,
   onNodeDragStart
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_jsx_runtime52.Fragment, { children: nodes.map((n) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(import_jsx_runtime53.Fragment, { children: nodes.map((n) => {
     const s = nodeStates.get(n.id);
     if (!s) return null;
     const selected = isSelected(elementKey, n.id);
     const color = n.color || colorForGroup(n.group);
-    return /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)(
+    return /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)(
       "g",
       {
         transform: `translate(${s.pos.x}, ${s.pos.y})`,
@@ -8584,7 +8926,7 @@ var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
         },
         className: "cursor-grab active:cursor-grabbing",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
             "circle",
             {
               r: s.size,
@@ -8594,8 +8936,8 @@ var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
               className: "transition-[stroke-width] duration-200"
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("circle", { r: s.size, fill: color, opacity: selected ? 0.2 : 0.1 }),
-          /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("circle", { r: s.size, fill: color, opacity: selected ? 0.2 : 0.1 }),
+          /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
             "foreignObject",
             {
               x: -s.size * 1.5,
@@ -8603,7 +8945,7 @@ var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
               width: s.size * 3,
               height: 30,
               className: "pointer-events-none overflow-visible",
-              children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "flex justify-center items-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("span", { className: "px-1.5 py-0.5 rounded-md text-xs font-medium text-black border border-black/10 whitespace-nowrap shadow-sm bg-white/85", children: n.label }) })
+              children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "flex justify-center items-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("span", { className: "px-1.5 py-0.5 rounded-md text-xs font-medium text-black border border-black/10 whitespace-nowrap shadow-sm bg-white/85", children: n.label }) })
             }
           )
         ]
@@ -8614,8 +8956,8 @@ var NodesRenderer = (0, import_react89.memo)(function NodesRenderer2({
 });
 
 // src/visualization/graphs/Graph/component.tsx
-var import_jsx_runtime53 = require("react/jsx-runtime");
-var Graph = (0, import_react90.memo)(function Graph2({
+var import_jsx_runtime54 = require("react/jsx-runtime");
+var Graph = (0, import_react91.memo)(function Graph2({
   element,
   children
 }) {
@@ -8625,27 +8967,27 @@ var Graph = (0, import_react90.memo)(function Graph2({
     edges: propsEdges,
     height
   } = element.props;
-  const nodes = (0, import_react90.useMemo)(
+  const nodes = (0, import_react91.useMemo)(
     () => (propsNodes || []).filter((n) => !!n?.id),
     [propsNodes]
   );
-  const edges = (0, import_react90.useMemo)(
+  const edges = (0, import_react91.useMemo)(
     () => (propsEdges || []).filter((e) => !!e.source && !!e.target),
     [propsEdges]
   );
-  const containerRef = (0, import_react90.useRef)(null);
-  const [dimensions, setDimensions] = (0, import_react90.useState)({ w: 800, h: DEFAULT_H });
-  const nodeStates = (0, import_react90.useRef)(/* @__PURE__ */ new Map());
-  const rafRef = (0, import_react90.useRef)(void 0);
-  const [bump, setBump] = (0, import_react90.useState)(0);
-  const iterationCount = (0, import_react90.useRef)(0);
-  const { isSelected, toggleSelection } = (0, import_react91.useSelection)();
-  const [pan, setPan] = (0, import_react90.useState)({ x: 0, y: 0 });
-  const [zoom, setZoom] = (0, import_react90.useState)(1);
-  const isDragging = (0, import_react90.useRef)(false);
-  const dragNodeId = (0, import_react90.useRef)(null);
-  const lastMousePos = (0, import_react90.useRef)({ x: 0, y: 0 });
-  (0, import_react90.useEffect)(() => {
+  const containerRef = (0, import_react91.useRef)(null);
+  const [dimensions, setDimensions] = (0, import_react91.useState)({ w: 800, h: DEFAULT_H });
+  const nodeStates = (0, import_react91.useRef)(/* @__PURE__ */ new Map());
+  const rafRef = (0, import_react91.useRef)(void 0);
+  const [bump, setBump] = (0, import_react91.useState)(0);
+  const iterationCount = (0, import_react91.useRef)(0);
+  const { isSelected, toggleSelection } = (0, import_react92.useSelection)();
+  const [pan, setPan] = (0, import_react91.useState)({ x: 0, y: 0 });
+  const [zoom, setZoom] = (0, import_react91.useState)(1);
+  const isDragging = (0, import_react91.useRef)(false);
+  const dragNodeId = (0, import_react91.useRef)(null);
+  const lastMousePos = (0, import_react91.useRef)({ x: 0, y: 0 });
+  (0, import_react91.useEffect)(() => {
     const w = containerRef.current?.clientWidth || 800;
     const h = Math.max(240, height ?? DEFAULT_H);
     setDimensions({ w, h });
@@ -8675,7 +9017,7 @@ var Graph = (0, import_react90.memo)(function Graph2({
     iterationCount.current = 0;
     setBump((b) => b + 1);
   }, [nodes, height]);
-  (0, import_react90.useEffect)(() => {
+  (0, import_react91.useEffect)(() => {
     const center = { x: dimensions.w / 2, y: dimensions.h / 2 };
     const step = () => {
       if (iterationCount.current > MAX_ITERATIONS && !isDragging.current) {
@@ -8740,18 +9082,18 @@ var Graph = (0, import_react90.memo)(function Graph2({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [edges, dimensions, nodes]);
-  const handleWheel = (0, import_react90.useCallback)((e) => {
+  const handleWheel = (0, import_react91.useCallback)((e) => {
     e.stopPropagation();
     const d = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom((z23) => Math.max(0.1, Math.min(5, z23 * d)));
+    setZoom((z25) => Math.max(0.1, Math.min(5, z25 * d)));
   }, []);
-  const handlePointerDown = (0, import_react90.useCallback)((e) => {
+  const handlePointerDown = (0, import_react91.useCallback)((e) => {
     e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDragging.current = true;
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   }, []);
-  const handlePointerMove = (0, import_react90.useCallback)(
+  const handlePointerMove = (0, import_react91.useCallback)(
     (e) => {
       if (!isDragging.current) return;
       e.stopPropagation();
@@ -8772,13 +9114,13 @@ var Graph = (0, import_react90.memo)(function Graph2({
     },
     [zoom]
   );
-  const handlePointerUp = (0, import_react90.useCallback)((e) => {
+  const handlePointerUp = (0, import_react91.useCallback)((e) => {
     e.stopPropagation();
     e.currentTarget.releasePointerCapture(e.pointerId);
     isDragging.current = false;
     dragNodeId.current = null;
   }, []);
-  const handleNodeDragStart = (0, import_react90.useCallback)(
+  const handleNodeDragStart = (0, import_react91.useCallback)(
     (nodeId, e) => {
       isDragging.current = true;
       dragNodeId.current = nodeId;
@@ -8786,12 +9128,12 @@ var Graph = (0, import_react90.memo)(function Graph2({
     },
     []
   );
-  const renderedEdges = (0, import_react90.useMemo)(
-    () => /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(EdgesRenderer, { edges, nodeStates: nodeStates.current }),
+  const renderedEdges = (0, import_react91.useMemo)(
+    () => /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(EdgesRenderer, { edges, nodeStates: nodeStates.current }),
     [edges, bump]
   );
-  const renderedNodes = (0, import_react90.useMemo)(
-    () => /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
+  const renderedNodes = (0, import_react91.useMemo)(
+    () => /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
       NodesRenderer,
       {
         nodes,
@@ -8811,7 +9153,7 @@ var Graph = (0, import_react90.memo)(function Graph2({
       handleNodeDragStart
     ]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
     "div",
     {
       ref: containerRef,
@@ -8827,13 +9169,13 @@ var Graph = (0, import_react90.memo)(function Graph2({
       onPointerUp: handlePointerUp,
       onPointerLeave: handlePointerUp,
       children: [
-        title && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "absolute top-2 sm:top-4 left-2 sm:left-4 z-10 bg-background px-1.5 sm:px-2 py-0.5 sm:py-1 rounded border border-border font-semibold text-xs sm:text-sm shadow-sm", children: title }),
-        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "absolute bottom-1.5 sm:bottom-2.5 right-1.5 sm:right-2.5 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground z-10", children: [
+        title && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "absolute top-2 sm:top-4 left-2 sm:left-4 z-10 bg-background px-1.5 sm:px-2 py-0.5 sm:py-1 rounded border border-border font-semibold text-xs sm:text-sm shadow-sm", children: title }),
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "absolute bottom-1.5 sm:bottom-2.5 right-1.5 sm:right-2.5 text-[0.5rem] sm:text-[0.625rem] text-muted-foreground z-10", children: [
           "Zoom: ",
           Math.round(zoom * 100),
           "%"
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
           "svg",
           {
             width: "100%",
@@ -8841,7 +9183,7 @@ var Graph = (0, import_react90.memo)(function Graph2({
             viewBox: `0 0 ${dimensions.w} ${dimensions.h}`,
             className: "block",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
                 "marker",
                 {
                   id: "arrow",
@@ -8851,10 +9193,10 @@ var Graph = (0, import_react90.memo)(function Graph2({
                   markerWidth: "6",
                   markerHeight: "6",
                   orient: "auto",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "var(--muted-foreground)" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "var(--muted-foreground)" })
                 }
               ) }),
-              /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("g", { transform: `translate(${pan.x}, ${pan.y}) scale(${zoom})`, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("g", { transform: `translate(${pan.x}, ${pan.y}) scale(${zoom})`, children: [
                 renderedEdges,
                 renderedNodes
               ] })
@@ -8868,18 +9210,18 @@ var Graph = (0, import_react90.memo)(function Graph2({
 });
 
 // src/visualization/graphs/Graph/schema.ts
-var import_zod18 = require("zod");
-var GraphPropsSchema = import_zod18.z.object({
-  title: import_zod18.z.string().nullable(),
-  nodes: import_zod18.z.array(import_schemas2.graphNodeSchema).nullable(),
-  edges: import_zod18.z.array(import_schemas2.graphEdgeSchema).nullable(),
-  layout: import_zod18.z.enum(["force", "radial", "grid"]).nullable(),
-  showLabels: import_zod18.z.boolean().nullable(),
-  showEdgeLabels: import_zod18.z.boolean().nullable(),
-  allowPanZoom: import_zod18.z.boolean().nullable(),
-  width: import_zod18.z.number().nullable(),
-  height: import_zod18.z.number().nullable(),
-  lock: import_zod18.z.boolean().nullable()
+var import_zod20 = require("zod");
+var GraphPropsSchema = import_zod20.z.object({
+  title: import_zod20.z.string().nullable(),
+  nodes: import_zod20.z.array(import_schemas2.graphNodeSchema).nullable(),
+  edges: import_zod20.z.array(import_schemas2.graphEdgeSchema).nullable(),
+  layout: import_zod20.z.enum(["force", "radial", "grid"]).nullable(),
+  showLabels: import_zod20.z.boolean().nullable(),
+  showEdgeLabels: import_zod20.z.boolean().nullable(),
+  allowPanZoom: import_zod20.z.boolean().nullable(),
+  width: import_zod20.z.number().nullable(),
+  height: import_zod20.z.number().nullable(),
+  lock: import_zod20.z.boolean().nullable()
 });
 var GraphDefinition = {
   name: "Graph",
@@ -8889,7 +9231,7 @@ var GraphDefinition = {
 };
 
 // src/visualization/graphs/MindMap/component.tsx
-var import_react93 = require("react");
+var import_react94 = require("react");
 
 // src/visualization/graphs/MindMap/components/types.ts
 var DEPTH_COLORS = [
@@ -8924,23 +9266,23 @@ function buildTreeFromFlat(nodes) {
 }
 
 // src/visualization/graphs/MindMap/components/node-renderer.tsx
-var import_react92 = require("react");
-var import_jsx_runtime54 = require("react/jsx-runtime");
-var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
+var import_react93 = require("react");
+var import_jsx_runtime55 = require("react/jsx-runtime");
+var NodeRenderer = (0, import_react93.memo)(function NodeRenderer2({
   node,
   depth,
   isHorizontal,
   expandedByDefault,
   elementKey
 }) {
-  const [expanded, setExpanded] = (0, import_react92.useState)(expandedByDefault);
+  const [expanded, setExpanded] = (0, import_react93.useState)(expandedByDefault);
   const hasChildren = node.children && node.children.length > 0;
   const defaultColors = getColorForDepth(depth);
   const colors = node.color ? { bg: `${node.color}15`, border: node.color, text: node.color } : defaultColors;
-  const nodeRef = (0, import_react92.useRef)(null);
-  const childrenRef = (0, import_react92.useRef)(null);
-  const [paths, setPaths] = (0, import_react92.useState)([]);
-  const updatePaths = (0, import_react92.useCallback)(() => {
+  const nodeRef = (0, import_react93.useRef)(null);
+  const childrenRef = (0, import_react93.useRef)(null);
+  const [paths, setPaths] = (0, import_react93.useState)([]);
+  const updatePaths = (0, import_react93.useCallback)(() => {
     if (!expanded || !hasChildren || !nodeRef.current || !childrenRef.current) {
       setPaths([]);
       return;
@@ -8968,7 +9310,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
     });
     setPaths(newPaths);
   }, [expanded, hasChildren]);
-  (0, import_react92.useLayoutEffect)(() => {
+  (0, import_react93.useLayoutEffect)(() => {
     updatePaths();
     window.addEventListener("resize", updatePaths);
     return () => window.removeEventListener("resize", updatePaths);
@@ -8978,7 +9320,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
     e.stopPropagation();
     setExpanded(!expanded);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
     "div",
     {
       className: (0, import_utils21.cn)(
@@ -8986,8 +9328,8 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
         isHorizontal ? "flex-row items-center" : "flex-col items-center"
       ),
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { ref: nodeRef, className: "relative group z-10 flex items-center", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { ref: nodeRef, className: "relative group z-10 flex items-center", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)(
             "div",
             {
               "data-node-anchor": true,
@@ -9005,9 +9347,9 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
                 backgroundColor: depth === 0 ? void 0 : colors.bg
               },
               children: [
-                node.icon && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("span", { className: "text-xl flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-background/50 border border-white/10", children: node.icon }),
-                /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "flex-1 min-w-0", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+                node.icon && /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("span", { className: "text-xl flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-background/50 border border-white/10", children: node.icon }),
+                /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "flex-1 min-w-0", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
                     "div",
                     {
                       className: (0, import_utils21.cn)(
@@ -9018,12 +9360,12 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
                       children: node.label
                     }
                   ),
-                  node.description && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "text-[11px] text-muted-foreground mt-1 leading-snug line-clamp-2", children: node.description })
+                  node.description && /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "text-[11px] text-muted-foreground mt-1 leading-snug line-clamp-2", children: node.description })
                 ] })
               ]
             }
           ),
-          hasChildren && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+          hasChildren && /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
             "button",
             {
               onClick: toggleExpand,
@@ -9042,8 +9384,8 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
             }
           )
         ] }),
-        hasChildren && expanded && /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { className: "flex flex-row items-stretch", children: [
-          isHorizontal && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { className: "w-16 relative shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("svg", { className: "absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none", children: paths.map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+        hasChildren && expanded && /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "flex flex-row items-stretch", children: [
+          isHorizontal && /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "w-16 relative shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("svg", { className: "absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none", children: paths.map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
             "path",
             {
               d,
@@ -9055,7 +9397,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
             },
             i
           )) }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
             "div",
             {
               ref: childrenRef,
@@ -9063,7 +9405,7 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
                 "flex",
                 isHorizontal ? "flex-col gap-4 py-2" : "flex-row gap-4"
               ),
-              children: node.children.map((child) => /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(
+              children: node.children.map((child) => /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
                 NodeRenderer2,
                 {
                   node: child,
@@ -9083,31 +9425,31 @@ var NodeRenderer = (0, import_react92.memo)(function NodeRenderer2({
 });
 
 // src/visualization/graphs/MindMap/component.tsx
-var import_jsx_runtime55 = require("react/jsx-runtime");
-var MindMap = (0, import_react93.memo)(function MindMap2({
+var import_jsx_runtime56 = require("react/jsx-runtime");
+var MindMap = (0, import_react94.memo)(function MindMap2({
   element,
   children
 }) {
   const { title, nodes, layout, expandedByDefault } = element.props;
   const isHorizontal = layout !== "vertical";
   const defaultExpanded = expandedByDefault !== false;
-  const rootNodes = (0, import_react93.useMemo)(() => {
+  const rootNodes = (0, import_react94.useMemo)(() => {
     if (!nodes || !Array.isArray(nodes)) return [];
     return buildTreeFromFlat(nodes);
   }, [nodes]);
   if (!rootNodes.length) {
-    return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { className: "p-4 sm:p-8 text-center text-muted-foreground bg-muted/20 rounded-lg sm:rounded-xl border border-dashed border-border text-sm", children: "No mind map data" });
+    return /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "p-4 sm:p-8 text-center text-muted-foreground bg-muted/20 rounded-lg sm:rounded-xl border border-dashed border-border text-sm", children: "No mind map data" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime55.jsxs)("div", { className: "w-full overflow-hidden", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("h3", { className: "mb-2 sm:mb-4 text-base sm:text-lg font-semibold text-foreground flex items-center gap-2", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "w-full overflow-hidden", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("h3", { className: "mb-2 sm:mb-4 text-base sm:text-lg font-semibold text-foreground flex items-center gap-2", children: title }),
+    /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
       "div",
       {
         className: (0, import_utils21.cn)(
           "flex p-4 sm:p-6 lg:p-8 gap-6 sm:gap-8 lg:gap-12 overflow-auto glass-subtle rounded-lg sm:rounded-2xl min-h-[250px] sm:min-h-[350px] lg:min-h-[400px] touch-pan-x touch-pan-y",
           isHorizontal ? "flex-col" : "flex-row"
         ),
-        children: rootNodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(
+        children: rootNodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
           NodeRenderer,
           {
             node,
@@ -9125,12 +9467,12 @@ var MindMap = (0, import_react93.memo)(function MindMap2({
 });
 
 // src/visualization/graphs/MindMap/schema.ts
-var import_zod19 = require("zod");
-var MindMapPropsSchema = import_zod19.z.object({
-  title: import_zod19.z.string().nullable(),
-  nodes: import_zod19.z.array(import_schemas2.mindMapNodeSchema),
-  layout: import_zod19.z.enum(["horizontal", "vertical"]).nullable(),
-  expandedByDefault: import_zod19.z.boolean().nullable()
+var import_zod21 = require("zod");
+var MindMapPropsSchema = import_zod21.z.object({
+  title: import_zod21.z.string().nullable(),
+  nodes: import_zod21.z.array(import_schemas2.mindMapNodeSchema),
+  layout: import_zod21.z.enum(["horizontal", "vertical"]).nullable(),
+  expandedByDefault: import_zod21.z.boolean().nullable()
 });
 var MindMapDefinition = {
   name: "MindMap",
@@ -9140,9 +9482,9 @@ var MindMapDefinition = {
 };
 
 // src/visualization/graphs/Gantt/component.tsx
-var import_react94 = require("react");
-var import_jsx_runtime56 = require("react/jsx-runtime");
-var Gantt = (0, import_react94.memo)(function Gantt2({
+var import_react95 = require("react");
+var import_jsx_runtime57 = require("react/jsx-runtime");
+var Gantt = (0, import_react95.memo)(function Gantt2({
   element,
   children
 }) {
@@ -9168,29 +9510,29 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
     month: "short",
     day: "numeric"
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 overflow-hidden shadow-lg", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("h3", { className: "mb-3 sm:mb-5 text-base sm:text-lg font-bold text-foreground", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "glass-panel bg-card/80 backdrop-blur-md border border-border/50 rounded-lg sm:rounded-xl p-3 sm:p-4 overflow-hidden shadow-lg", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("h3", { className: "mb-3 sm:mb-5 text-base sm:text-lg font-bold text-foreground", children: title }),
+    /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
       "div",
       {
         className: "relative",
         style: {
           minHeight: `${tasks.length * 36 + 40}px`
         },
-        children: /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "overflow-x-auto pb-2 sm:pb-3 touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "min-w-[400px] sm:min-w-[600px]", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("div", { className: "flex justify-between mb-2 sm:mb-3 border-b border-border pb-1.5 sm:pb-2 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("span", { children: tasks[0] ? formatDate3(tasks[0].start) : "" }),
-            /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("span", { children: (() => {
+        children: /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "overflow-x-auto pb-2 sm:pb-3 touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "min-w-[400px] sm:min-w-[600px]", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex justify-between mb-2 sm:mb-3 border-b border-border pb-1.5 sm:pb-2 text-[0.625rem] sm:text-xs text-muted-foreground", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { children: tasks[0] ? formatDate3(tasks[0].start) : "" }),
+            /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { children: (() => {
               const lastTask = tasks[tasks.length - 1];
               return lastTask ? formatDate3(lastTask.end) : "";
             })() })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: tasks.map((task, index) => {
+          /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: tasks.map((task, index) => {
             const paddingLeft = getLeft(task.start);
             const width = getWidth(task.start, task.end);
             const isMilestone = task.type === "milestone" || width === 0;
             const itemId = task.id || `task-${index}`;
-            return /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
+            return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
               "div",
               {
                 "data-selectable-item": true,
@@ -9198,15 +9540,15 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
                 "data-item-id": itemId,
                 className: "flex items-center h-6 sm:h-7 rounded px-0.5 sm:px-1 cursor-pointer hover:bg-muted/50 transition-colors touch-manipulation",
                 children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "w-1/4 sm:w-1/5 pr-1.5 sm:pr-3 text-[0.625rem] sm:text-[0.8125rem] font-medium overflow-hidden text-ellipsis whitespace-nowrap text-foreground", children: task.name }),
-                  /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "w-1/4 sm:w-1/5 pr-1.5 sm:pr-3 text-[0.625rem] sm:text-[0.8125rem] font-medium overflow-hidden text-ellipsis whitespace-nowrap text-foreground", children: task.name }),
+                  /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
                     "div",
                     {
                       className: (0, import_utils21.cn)(
                         "flex-1 relative h-full rounded",
                         isMilestone ? "bg-transparent" : "bg-muted/30"
                       ),
-                      children: isMilestone ? /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
+                      children: isMilestone ? /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
                         "div",
                         {
                           className: "absolute w-3 h-3 sm:w-4 sm:h-4 z-10 border-2 border-white shadow-sm rotate-45 -translate-x-1/2 origin-left",
@@ -9216,7 +9558,7 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
                           },
                           title: `Milestone: ${task.name}`
                         }
-                      ) : /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)(
+                      ) : /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
                         "div",
                         {
                           className: "absolute h-full rounded opacity-90 flex items-center pl-1.5 sm:pl-2 text-white text-[0.5rem] sm:text-[0.625rem] overflow-hidden",
@@ -9227,11 +9569,11 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
                           },
                           title: `${task.name}: ${task.progress}%`,
                           children: [
-                            width > 10 && /* @__PURE__ */ (0, import_jsx_runtime56.jsxs)("span", { className: "z-[2]", children: [
+                            width > 10 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("span", { className: "z-[2]", children: [
                               task.progress,
                               "%"
                             ] }),
-                            /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
+                            /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
                               "div",
                               {
                                 className: "absolute left-0 top-0 bottom-0 bg-white opacity-20",
@@ -9253,16 +9595,16 @@ var Gantt = (0, import_react94.memo)(function Gantt2({
         ] }) })
       }
     ),
-    children && /* @__PURE__ */ (0, import_jsx_runtime56.jsx)("div", { className: "mt-4 sm:mt-6 space-y-3 sm:space-y-4", children })
+    children && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "mt-4 sm:mt-6 space-y-3 sm:space-y-4", children })
   ] });
 });
 
 // src/visualization/graphs/Gantt/schema.ts
-var import_zod20 = require("zod");
-var GanttPropsSchema = import_zod20.z.object({
-  title: import_zod20.z.string().nullable(),
-  tasks: import_zod20.z.array(import_schemas2.ganttTaskSchema).min(1).describe("Tasks (REQUIRED, min 1)"),
-  lock: import_zod20.z.boolean().nullable()
+var import_zod22 = require("zod");
+var GanttPropsSchema = import_zod22.z.object({
+  title: import_zod22.z.string().nullable(),
+  tasks: import_zod22.z.array(import_schemas2.ganttTaskSchema).min(1).describe("Tasks (REQUIRED, min 1)"),
+  lock: import_zod22.z.boolean().nullable()
 });
 var GanttDefinition = {
   name: "Gantt",
@@ -9275,10 +9617,10 @@ var GanttDefinition = {
 var import_ui = require("@onegenui/ui");
 
 // src/communication/Message/component.tsx
-var import_react95 = require("react");
-var import_lucide_react45 = require("lucide-react");
-var import_jsx_runtime57 = require("react/jsx-runtime");
-var Message = (0, import_react95.memo)(function Message2({
+var import_react96 = require("react");
+var import_lucide_react46 = require("lucide-react");
+var import_jsx_runtime58 = require("react/jsx-runtime");
+var Message = (0, import_react96.memo)(function Message2({
   element,
   children
 }) {
@@ -9289,15 +9631,15 @@ var Message = (0, import_react95.memo)(function Message2({
     activeAgents = [],
     lock = false
   } = element.props;
-  const [messages, setMessages] = (0, import_react95.useState)(
+  const [messages, setMessages] = (0, import_react96.useState)(
     initialMessages || []
   );
-  (0, import_react95.useEffect)(() => {
+  (0, import_react96.useEffect)(() => {
     if (initialMessages) {
       setMessages(initialMessages);
     }
   }, [initialMessages]);
-  const [replyText, setReplyText] = (0, import_react95.useState)("");
+  const [replyText, setReplyText] = (0, import_react96.useState)("");
   const handleSendReply = () => {
     if (lock || !replyText.trim()) return;
     const newMessage = {
@@ -9312,11 +9654,11 @@ var Message = (0, import_react95.memo)(function Message2({
     setReplyText("");
   };
   const getParticipant = (id) => participants.find((p) => p.id === id);
-  return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex flex-col h-full max-h-[500px] sm:max-h-[600px] overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex items-center justify-between border-b border-border px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/20 gap-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "font-semibold text-sm sm:text-base truncate", children: title }),
-      participants.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex -space-x-1.5 sm:-space-x-2 shrink-0", children: [
-        participants.slice(0, 5).map((p) => /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex flex-col h-full max-h-[500px] sm:max-h-[600px] overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 glass-panel bg-card/80 backdrop-blur-md shadow-lg", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex items-center justify-between border-b border-border px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/20 gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "font-semibold text-sm sm:text-base truncate", children: title }),
+      participants.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex -space-x-1.5 sm:-space-x-2 shrink-0", children: [
+        participants.slice(0, 5).map((p) => /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
           "div",
           {
             className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm ring-1 ring-black/5 bg-[var(--avatar-bg,var(--primary))]",
@@ -9324,29 +9666,29 @@ var Message = (0, import_react95.memo)(function Message2({
               "--avatar-bg": p.color
             },
             title: `${p.name} (${p.role})`,
-            children: p.avatar ? /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+            children: p.avatar ? /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
               "img",
               {
                 src: p.avatar,
                 alt: p.name,
                 className: "h-full w-full rounded-full object-cover"
               }
-            ) : /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { children: p.name[0] })
+            ) : /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { children: p.name[0] })
           },
           p.id
         )),
-        participants.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm bg-zinc-600", children: [
+        participants.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "relative flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border-2 border-background text-[0.5rem] sm:text-[0.625rem] font-medium text-white shadow-sm bg-zinc-600", children: [
           "+",
           participants.length - 5
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex flex-1 flex-col gap-3 sm:gap-4 overflow-y-auto p-3 sm:p-4 bg-muted/5 min-h-0 touch-pan-y", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex flex-1 flex-col gap-3 sm:gap-4 overflow-y-auto p-3 sm:p-4 bg-muted/5 min-h-0 touch-pan-y", children: [
       messages.map((msg) => {
         const participant = getParticipant(msg.participantId);
         const senderName = participant ? participant.name : msg.sender;
         const role = participant?.role;
-        return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
+        return /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
           "div",
           {
             "data-selectable-item": true,
@@ -9357,7 +9699,7 @@ var Message = (0, import_react95.memo)(function Message2({
               msg.isOwn ? "self-end items-end" : "self-start items-start"
             ),
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
                 "div",
                 {
                   className: (0, import_utils.cn)(
@@ -9365,13 +9707,13 @@ var Message = (0, import_react95.memo)(function Message2({
                     msg.isOwn ? "flex-row-reverse" : "flex-row"
                   ),
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { className: "font-semibold text-foreground truncate max-w-[8rem] sm:max-w-none", children: senderName }),
-                    role && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { className: "px-1 sm:px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] bg-secondary text-secondary-foreground border border-border/50 hidden sm:inline", children: role }),
-                    /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("span", { className: "opacity-70 text-[0.5rem] sm:text-[0.625rem]", children: msg.timestamp })
+                    /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { className: "font-semibold text-foreground truncate max-w-[8rem] sm:max-w-none", children: senderName }),
+                    role && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { className: "px-1 sm:px-1.5 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] bg-secondary text-secondary-foreground border border-border/50 hidden sm:inline", children: role }),
+                    /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("span", { className: "opacity-70 text-[0.5rem] sm:text-[0.625rem]", children: msg.timestamp })
                   ]
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
                 "div",
                 {
                   className: (0, import_utils.cn)(
@@ -9390,15 +9732,15 @@ var Message = (0, import_react95.memo)(function Message2({
           msg.id
         );
       }),
-      activeAgents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "flex flex-wrap gap-2 sm:gap-3 mt-1 sm:mt-2 px-1 sm:px-2", children: activeAgents.map((agentId) => {
+      activeAgents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "flex flex-wrap gap-2 sm:gap-3 mt-1 sm:mt-2 px-1 sm:px-2", children: activeAgents.map((agentId) => {
         const p = getParticipant(agentId);
         if (!p) return null;
-        return /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)(
+        return /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)(
           "div",
           {
             className: "flex items-center gap-1.5 sm:gap-2 text-[0.625rem] sm:text-xs text-muted-foreground animate-pulse",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
                 "div",
                 {
                   className: "h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[var(--agent-color,currentColor)]",
@@ -9407,7 +9749,7 @@ var Message = (0, import_react95.memo)(function Message2({
                   }
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("span", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("span", { children: [
                 p.name,
                 " is typing..."
               ] })
@@ -9416,13 +9758,13 @@ var Message = (0, import_react95.memo)(function Message2({
           agentId
         );
       }) }),
-      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-1.5 sm:space-y-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("div", { className: "p-3 sm:p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(import_lucide_react45.User, { className: "h-6 w-6 sm:h-8 sm:w-8 opacity-50" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime57.jsx)("p", { className: "text-xs sm:text-sm", children: "No messages yet" })
+      messages.length === 0 && activeAgents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 space-y-1.5 sm:space-y-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "p-3 sm:p-4 rounded-full bg-muted/50", children: /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(import_lucide_react46.User, { className: "h-6 w-6 sm:h-8 sm:w-8 opacity-50" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("p", { className: "text-xs sm:text-sm", children: "No messages yet" })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "p-2.5 sm:p-4 border-t border-border bg-background flex gap-2 items-end safe-area-bottom", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime58.jsxs)("div", { className: "p-2.5 sm:p-4 border-t border-border bg-background flex gap-2 items-end safe-area-bottom", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
         "textarea",
         {
           "data-interactive": true,
@@ -9442,7 +9784,7 @@ var Message = (0, import_react95.memo)(function Message2({
           }
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(
         "button",
         {
           "data-interactive": true,
@@ -9452,7 +9794,7 @@ var Message = (0, import_react95.memo)(function Message2({
             "inline-flex items-center justify-center shrink-0 rounded-lg h-[2.75rem] w-[2.75rem] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 touch-manipulation",
             !replyText.trim() ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
           ),
-          children: /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(import_lucide_react45.Send, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(import_lucide_react46.Send, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       )
     ] }),
@@ -9461,13 +9803,13 @@ var Message = (0, import_react95.memo)(function Message2({
 });
 
 // src/communication/Message/schema.ts
-var import_zod21 = require("zod");
-var MessagePropsSchema = import_zod21.z.object({
-  title: import_zod21.z.string().nullable(),
-  messages: import_zod21.z.array(import_schemas.messageItemSchema),
-  participants: import_zod21.z.array(import_schemas.participantSchema).nullable(),
-  activeAgents: import_zod21.z.array(import_zod21.z.string()).nullable().describe("IDs of agents currently typing"),
-  lock: import_zod21.z.boolean().nullable()
+var import_zod23 = require("zod");
+var MessagePropsSchema = import_zod23.z.object({
+  title: import_zod23.z.string().nullable(),
+  messages: import_zod23.z.array(import_schemas.messageItemSchema),
+  participants: import_zod23.z.array(import_schemas.participantSchema).nullable(),
+  activeAgents: import_zod23.z.array(import_zod23.z.string()).nullable().describe("IDs of agents currently typing"),
+  lock: import_zod23.z.boolean().nullable()
 });
 var MessageDefinition = {
   name: "Message",
@@ -9477,19 +9819,19 @@ var MessageDefinition = {
 };
 
 // src/communication/Email/component.tsx
-var import_react99 = require("react");
+var import_react100 = require("react");
 var import_utils22 = require("@onegenui/utils");
-var import_lucide_react49 = require("lucide-react");
+var import_lucide_react50 = require("lucide-react");
 
 // src/communication/Email/components/unread-dot.tsx
-var import_jsx_runtime58 = require("react/jsx-runtime");
+var import_jsx_runtime59 = require("react/jsx-runtime");
 function UnreadDot() {
-  return /* @__PURE__ */ (0, import_jsx_runtime58.jsx)("div", { className: "w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(234,67,53,0.5)] bg-gradient-to-br from-red-500 to-red-700" });
+  return /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(234,67,53,0.5)] bg-gradient-to-br from-red-500 to-red-700" });
 }
 
 // src/communication/Email/components/compose-modal.tsx
-var import_react96 = require("react");
-var import_lucide_react46 = require("lucide-react");
+var import_react97 = require("react");
+var import_lucide_react47 = require("lucide-react");
 
 // src/communication/Email/components/types.ts
 function getPreview(body, maxLength = 120) {
@@ -9534,19 +9876,19 @@ function formatDate2(dateStr) {
 }
 
 // src/communication/Email/components/compose-modal.tsx
-var import_jsx_runtime59 = require("react/jsx-runtime");
+var import_jsx_runtime60 = require("react/jsx-runtime");
 function ComposeModal({
   mode,
   originalEmail,
   onClose,
   onSend
 }) {
-  const [to, setTo] = (0, import_react96.useState)("");
-  const [cc, setCc] = (0, import_react96.useState)("");
-  const [subject, setSubject] = (0, import_react96.useState)("");
-  const [body, setBody] = (0, import_react96.useState)("");
-  const [sending, setSending] = (0, import_react96.useState)(false);
-  (0, import_react96.useEffect)(() => {
+  const [to, setTo] = (0, import_react97.useState)("");
+  const [cc, setCc] = (0, import_react97.useState)("");
+  const [subject, setSubject] = (0, import_react97.useState)("");
+  const [body, setBody] = (0, import_react97.useState)("");
+  const [sending, setSending] = (0, import_react97.useState)(false);
+  (0, import_react97.useEffect)(() => {
     if (mode === "reply" && originalEmail) {
       setTo(extractEmailAddress(originalEmail.from));
       setSubject(`Re: ${originalEmail.subject.replace(/^Re:\s*/i, "")}`);
@@ -9616,27 +9958,27 @@ ${originalEmail.body}`
     forward: "Inoltra",
     none: ""
   }[mode];
-  return /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("div", { className: "absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4", children: /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4", children: /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)(
     "div",
     {
       className: "flex flex-col w-full sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-card border-t sm:border border-border rounded-t-2xl sm:rounded-xl shadow-2xl overflow-hidden",
       onClick: (e) => e.stopPropagation(),
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-border bg-muted/20", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("span", { className: "font-semibold text-sm sm:text-base", children: modeTitle }),
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-border bg-muted/20", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("span", { className: "font-semibold text-sm sm:text-base", children: modeTitle }),
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
             "button",
             {
               onClick: onClose,
               className: "p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
-              children: /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(import_lucide_react46.X, { className: "w-4 h-4" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(import_lucide_react47.X, { className: "w-4 h-4" })
             }
           )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-5 flex-1 overflow-y-auto touch-pan-y", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "A:" }),
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 p-3 sm:p-5 flex-1 overflow-y-auto touch-pan-y", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "A:" }),
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
               "input",
               {
                 type: "email",
@@ -9648,9 +9990,9 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Cc:" }),
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Cc:" }),
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
               "input",
               {
                 type: "email",
@@ -9661,9 +10003,9 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Ogg:" }),
-            /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("label", { className: "text-xs sm:text-sm text-muted-foreground sm:w-10", children: "Ogg:" }),
+            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
               "input",
               {
                 type: "text",
@@ -9674,7 +10016,7 @@ ${originalEmail.body}`
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
             "textarea",
             {
               value: body,
@@ -9684,16 +10026,16 @@ ${originalEmail.body}`
             }
           )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-5 py-3 sm:py-4 border-t border-border bg-muted/20 safe-area-bottom", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-5 py-3 sm:py-4 border-t border-border bg-muted/20 safe-area-bottom", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
             "button",
             {
               className: "p-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors opacity-50 cursor-pointer touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
               title: "Allega file",
-              children: /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(import_lucide_react46.Paperclip, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(import_lucide_react47.Paperclip, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(
+          /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)(
             "button",
             {
               onClick: handleSend,
@@ -9703,7 +10045,7 @@ ${originalEmail.body}`
                 !to.trim() || sending ? "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50" : "bg-blue-600 hover:bg-blue-500 text-white cursor-pointer hover:shadow-blue-500/30"
               ),
               children: [
-                /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(import_lucide_react46.Send, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
+                /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(import_lucide_react47.Send, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
                 sending ? "Invio..." : "Invia"
               ]
             }
@@ -9715,10 +10057,10 @@ ${originalEmail.body}`
 }
 
 // src/communication/Email/components/email-list.tsx
-var import_react97 = require("react");
-var import_lucide_react47 = require("lucide-react");
-var import_jsx_runtime60 = require("react/jsx-runtime");
-var EmailList = (0, import_react97.memo)(function EmailList2({
+var import_react98 = require("react");
+var import_lucide_react48 = require("lucide-react");
+var import_jsx_runtime61 = require("react/jsx-runtime");
+var EmailList = (0, import_react98.memo)(function EmailList2({
   emails,
   elementKey,
   hoveredId,
@@ -9727,13 +10069,13 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
   onHoverEmail
 }) {
   if (emails.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex flex-col items-center justify-center py-12 sm:py-16 text-foreground/60 text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "text-4xl sm:text-5xl mb-3 sm:mb-4 opacity-50", children: "\u{1F4ED}" }),
-      /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "text-base sm:text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
-      /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "text-xs sm:text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
+    return /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex flex-col items-center justify-center py-12 sm:py-16 text-foreground/60 text-center", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "text-4xl sm:text-5xl mb-3 sm:mb-4 opacity-50", children: "\u{1F4ED}" }),
+      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "text-base sm:text-lg font-semibold mb-1 text-foreground", children: "Nessuna email" }),
+      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "text-xs sm:text-sm text-foreground/50", children: "La tua inbox \xE8 vuota" })
     ] }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: emails.map((email) => /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-background/50 touch-pan-y", children: emails.map((email) => /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
     "div",
     {
       "data-selectable-item": true,
@@ -9746,12 +10088,12 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
         "group relative border border-border/50 p-3 sm:p-4 cursor-pointer transition-all duration-200 rounded-lg sm:rounded-xl mb-2 bg-card/80 shadow-sm touch-manipulation",
         hoveredId === email.id ? "bg-card border-primary/30 shadow-md" : !email.read ? "bg-card border-red-500/30" : "bg-card/60"
       ),
-      children: /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex items-start gap-2.5 sm:gap-3.5", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "w-2 sm:w-2.5 mt-2 flex justify-center shrink-0", children: !email.read && /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(UnreadDot, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center shrink-0 text-xs sm:text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
-        /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex justify-between items-center mb-0.5 sm:mb-1 gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
+      children: /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-start gap-2.5 sm:gap-3.5", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "w-2 sm:w-2.5 mt-2 flex justify-center shrink-0", children: !email.read && /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(UnreadDot, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center shrink-0 text-xs sm:text-sm font-semibold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm", children: getInitials(email.from) }),
+        /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex justify-between items-center mb-0.5 sm:mb-1 gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
               "span",
               {
                 className: (0, import_utils.cn)(
@@ -9761,8 +10103,8 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
                 children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto"
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 shrink-0", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 shrink-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
                 "button",
                 {
                   onClick: (e) => onToggleStar(email.id, e),
@@ -9770,8 +10112,8 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
                     "p-1.5 sm:p-1 rounded-full transition-colors sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 touch-manipulation min-h-[2rem] min-w-[2rem] sm:min-h-0 sm:min-w-0 flex items-center justify-center",
                     email.starred ? "text-yellow-400 opacity-100" : "text-muted-foreground hover:bg-muted"
                   ),
-                  children: /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
-                    import_lucide_react47.Star,
+                  children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+                    import_lucide_react48.Star,
                     {
                       className: "w-3.5 h-3.5 sm:w-3.5 sm:h-3.5",
                       fill: email.starred ? "currentColor" : "none"
@@ -9779,10 +10121,10 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
                   )
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
+              /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground whitespace-nowrap", children: formatDate2(email.date) })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
             "div",
             {
               className: (0, import_utils.cn)(
@@ -9792,10 +10134,10 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
               children: email.subject || "(Nessun oggetto)"
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
-          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime60.jsx)("div", { className: "flex items-center gap-1.5 mt-1.5 sm:mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("div", { className: "bg-muted/50 px-1.5 sm:px-2 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(import_lucide_react47.Paperclip, { className: "w-2.5 h-2.5 sm:w-2.5 sm:h-2.5" }),
-            /* @__PURE__ */ (0, import_jsx_runtime60.jsxs)("span", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-foreground/50 truncate leading-relaxed", children: getPreview(email.body) }),
+          email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "flex items-center gap-1.5 mt-1.5 sm:mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "bg-muted/50 px-1.5 sm:px-2 py-0.5 rounded text-[0.5rem] sm:text-[0.625rem] text-muted-foreground flex items-center gap-1 border border-border/50", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Paperclip, { className: "w-2.5 h-2.5 sm:w-2.5 sm:h-2.5" }),
+            /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("span", { children: [
               email.attachments.length,
               " allegat",
               email.attachments.length === 1 ? "o" : "i"
@@ -9809,10 +10151,10 @@ var EmailList = (0, import_react97.memo)(function EmailList2({
 });
 
 // src/communication/Email/components/email-detail.tsx
-var import_react98 = require("react");
-var import_lucide_react48 = require("lucide-react");
-var import_jsx_runtime61 = require("react/jsx-runtime");
-var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
+var import_react99 = require("react");
+var import_lucide_react49 = require("lucide-react");
+var import_jsx_runtime62 = require("react/jsx-runtime");
+var EmailDetail = (0, import_react99.memo)(function EmailDetail2({
   email,
   lock,
   onBack,
@@ -9821,50 +10163,50 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
   onDelete,
   onToggleStar
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex flex-col flex-1 bg-background/30 overflow-hidden", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 border-b border-border bg-muted/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex flex-col flex-1 bg-background/30 overflow-hidden", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 border-b border-border bg-muted/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
         "button",
         {
           onClick: onBack,
           className: "p-2 sm:p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
           title: "Torna alla lista",
-          children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.ArrowLeft, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.ArrowLeft, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "flex-1" }),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "flex-1" }),
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: () => onCompose("reply"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Rispondi",
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Reply, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Reply, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: () => onCompose("replyAll"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] hidden sm:flex items-center justify-center",
             title: "Rispondi a tutti",
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.ReplyAll, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.ReplyAll, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: () => onCompose("forward"),
             className: "p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center",
             title: "Inoltra",
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Forward, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Forward, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "w-px h-4 sm:h-5 bg-border mx-0.5 sm:mx-1" }),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "w-px h-4 sm:h-5 bg-border mx-0.5 sm:mx-1" }),
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-center gap-0.5 sm:gap-1", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: (e) => onArchive(email.id, e),
@@ -9874,10 +10216,10 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
             ),
             title: "Archivia",
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Archive, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Archive, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: (e) => onDelete(email.id, e),
@@ -9887,32 +10229,32 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
               lock ? "text-muted-foreground/30 cursor-not-allowed" : "text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
             ),
             title: "Elimina",
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Trash2, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Trash2, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]" })
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 touch-pan-y", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("h1", { className: "text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-border/60", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mb-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "font-semibold text-sm sm:text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
-            /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "text-xs sm:text-sm text-muted-foreground truncate", children: extractEmailAddress(email.from) })
+    /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 touch-pan-y", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("h1", { className: "text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-foreground leading-tight", children: email.subject || "(Nessun oggetto)" }),
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-border/60", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold text-red-500 bg-red-500/10 border border-red-500/20 shadow-sm shrink-0", children: getInitials(email.from) }),
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mb-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "font-semibold text-sm sm:text-base text-foreground truncate", children: email.from?.split("<")[0]?.trim() || "Mittente sconosciuto" }),
+            /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "text-xs sm:text-sm text-muted-foreground truncate", children: extractEmailAddress(email.from) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { children: email.date }),
-            email.to && /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)(import_jsx_runtime61.Fragment, { children: [
-              /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "w-1 h-1 rounded-full bg-border" }),
-              /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("span", { className: "truncate", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-1 items-center", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { children: email.date }),
+            email.to && /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)(import_jsx_runtime62.Fragment, { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "w-1 h-1 rounded-full bg-border" }),
+              /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("span", { className: "truncate", children: [
                 "A: ",
                 email.to
               ] })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
           "button",
           {
             onClick: (e) => onToggleStar(email.id, e),
@@ -9920,26 +10262,26 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
               "p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center shrink-0",
               email.starred ? "text-yellow-400" : "text-muted-foreground"
             ),
-            children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Star, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", fill: email.starred ? "currentColor" : "none" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Star, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem]", fill: email.starred ? "currentColor" : "none" })
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "text-sm sm:text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
-      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/60", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "text-[0.625rem] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "text-sm sm:text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans", children: email.body || "(Nessun contenuto)" }),
+      email.attachments && email.attachments.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/60", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "text-[0.625rem] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sm:mb-3", children: [
           email.attachments.length,
           " Allegat",
           email.attachments.length === 1 ? "o" : "i"
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "flex flex-wrap gap-2", children: email.attachments.map((att, i) => /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "flex flex-wrap gap-2", children: email.attachments.map((att, i) => /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)(
           "div",
           {
             className: "group flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-muted/30 border border-border hover:border-primary/30 rounded-lg cursor-pointer transition-all hover:bg-muted/60 touch-manipulation",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded bg-background flex items-center justify-center text-muted-foreground shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(import_lucide_react48.Paperclip, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)("div", { className: "flex flex-col min-w-0", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "text-[0.625rem] sm:text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate", children: att.name }),
-                att.size && /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: att.size })
+              /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "w-7 h-7 sm:w-8 sm:h-8 rounded bg-background flex items-center justify-center text-muted-foreground shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Paperclip, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex flex-col min-w-0", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "text-[0.625rem] sm:text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate", children: att.name }),
+                att.size && /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "text-[0.5rem] sm:text-[0.625rem] text-muted-foreground", children: att.size })
               ] })
             ]
           },
@@ -9947,14 +10289,14 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
         )) })
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime61.jsx)("div", { className: "p-3 sm:p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)(
+    /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "p-3 sm:p-4 border-t border-border bg-muted/10", children: /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)(
       "button",
       {
         onClick: () => onCompose("reply"),
         className: "w-full flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-border bg-background hover:bg-muted/50 transition-all text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 group touch-manipulation min-h-[2.75rem]",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(
-            import_lucide_react48.Reply,
+          /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
+            import_lucide_react49.Reply,
             {
               className: "w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:text-primary transition-colors"
             }
@@ -9967,9 +10309,9 @@ var EmailDetail = (0, import_react98.memo)(function EmailDetail2({
 });
 
 // src/communication/Email/component.tsx
-var import_jsx_runtime62 = require("react/jsx-runtime");
+var import_jsx_runtime63 = require("react/jsx-runtime");
 var log = (0, import_utils22.createLogger)({ prefix: "email" });
-var Email = (0, import_react99.memo)(function Email2({
+var Email = (0, import_react100.memo)(function Email2({
   element,
   children
 }) {
@@ -9980,13 +10322,13 @@ var Email = (0, import_react99.memo)(function Email2({
     lock = false,
     onSendEmail
   } = element.props;
-  const isInitialMount = (0, import_react99.useRef)(true);
-  const [localEmails, setLocalEmails] = (0, import_react99.useState)([]);
-  const [selectedEmailId, setSelectedEmailId] = (0, import_react99.useState)(null);
-  const [composeMode, setComposeMode] = (0, import_react99.useState)("none");
-  const [hoveredId, setHoveredId] = (0, import_react99.useState)(null);
+  const isInitialMount = (0, import_react100.useRef)(true);
+  const [localEmails, setLocalEmails] = (0, import_react100.useState)([]);
+  const [selectedEmailId, setSelectedEmailId] = (0, import_react100.useState)(null);
+  const [composeMode, setComposeMode] = (0, import_react100.useState)("none");
+  const [hoveredId, setHoveredId] = (0, import_react100.useState)(null);
   const emailsKey = JSON.stringify(initialEmails);
-  (0, import_react99.useEffect)(() => {
+  (0, import_react100.useEffect)(() => {
     const newEmails = initialEmails || [];
     setLocalEmails(newEmails);
     if (newEmails.length === 1 && isInitialMount.current) {
@@ -9996,7 +10338,7 @@ var Email = (0, import_react99.memo)(function Email2({
   }, [emailsKey]);
   const emails = localEmails;
   const selectedEmail = emails.find((e) => e.id === selectedEmailId);
-  const handleDelete = (0, import_react99.useCallback)(
+  const handleDelete = (0, import_react100.useCallback)(
     (id, e) => {
       e?.stopPropagation();
       if (lock) return;
@@ -10005,7 +10347,7 @@ var Email = (0, import_react99.memo)(function Email2({
     },
     [lock, selectedEmailId]
   );
-  const handleArchive = (0, import_react99.useCallback)(
+  const handleArchive = (0, import_react100.useCallback)(
     (id, e) => {
       e?.stopPropagation();
       if (lock) return;
@@ -10014,12 +10356,12 @@ var Email = (0, import_react99.memo)(function Email2({
     },
     [lock, selectedEmailId]
   );
-  const handleMarkAsRead = (0, import_react99.useCallback)((id) => {
+  const handleMarkAsRead = (0, import_react100.useCallback)((id) => {
     setLocalEmails(
       (prev) => prev.map((email) => email.id === id ? { ...email, read: true } : email)
     );
   }, []);
-  const handleToggleStar = (0, import_react99.useCallback)((id, e) => {
+  const handleToggleStar = (0, import_react100.useCallback)((id, e) => {
     e?.stopPropagation();
     setLocalEmails(
       (prev) => prev.map(
@@ -10027,14 +10369,14 @@ var Email = (0, import_react99.memo)(function Email2({
       )
     );
   }, []);
-  const handleSelectEmail = (0, import_react99.useCallback)(
+  const handleSelectEmail = (0, import_react100.useCallback)(
     (id) => {
       setSelectedEmailId(id);
       handleMarkAsRead(id);
     },
     [handleMarkAsRead]
   );
-  const handleSendEmail = (0, import_react99.useCallback)(
+  const handleSendEmail = (0, import_react100.useCallback)(
     async (draft) => {
       log.debug("[Email] Sending email:", draft);
       if (onSendEmail) {
@@ -10045,35 +10387,35 @@ var Email = (0, import_react99.memo)(function Email2({
     },
     [onSendEmail]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.Mail, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("h3", { className: "m-0 text-sm sm:text-base font-bold leading-tight truncate", children: title || "Gmail" }),
-          description && /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate", children: description })
+  return /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "glass-panel w-full min-h-[300px] sm:min-h-[400px] h-full flex flex-col rounded-xl sm:rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex justify-between items-center px-3 sm:px-4 lg:px-5 py-3 sm:py-4 border-b border-border/40 bg-black/20 gap-2", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/20 text-white shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(import_lucide_react50.Mail, { className: "w-4 h-4 sm:w-5 sm:h-5" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("h3", { className: "m-0 text-sm sm:text-base font-bold leading-tight truncate", children: title || "Gmail" }),
+          description && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground mt-0.5 truncate", children: description })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 shrink-0", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)("div", { className: "hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 shrink-0", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "hidden sm:block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-muted/30 text-[0.625rem] sm:text-xs font-medium text-muted-foreground border border-white/5", children: [
           emails.filter((e) => !e.read).length,
           " non lett",
           emails.filter((e) => !e.read).length === 1 ? "a" : "e"
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime62.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)(
           "button",
           {
             onClick: () => setComposeMode("new"),
             className: "flex items-center gap-1.5 sm:gap-2 pl-2 sm:pl-3 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-medium transition-all shadow-lg shadow-blue-500/20 touch-manipulation min-h-[2.5rem]",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(import_lucide_react49.PenSquare, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
-              /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("span", { className: "hidden sm:inline", children: "Scrivi" })
+              /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(import_lucide_react50.PenSquare, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" }),
+              /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("span", { className: "hidden sm:inline", children: "Scrivi" })
             ]
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime62.jsx)("div", { className: "flex flex-1 overflow-hidden relative", children: selectedEmail ? /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "flex flex-1 overflow-hidden relative", children: selectedEmail ? /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
       EmailDetail,
       {
         email: selectedEmail,
@@ -10084,7 +10426,7 @@ var Email = (0, import_react99.memo)(function Email2({
         onDelete: handleDelete,
         onToggleStar: handleToggleStar
       }
-    ) : /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
+    ) : /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
       EmailList,
       {
         emails,
@@ -10095,7 +10437,7 @@ var Email = (0, import_react99.memo)(function Email2({
         onHoverEmail: setHoveredId
       }
     ) }),
-    composeMode !== "none" && /* @__PURE__ */ (0, import_jsx_runtime62.jsx)(
+    composeMode !== "none" && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
       ComposeModal,
       {
         mode: composeMode,
@@ -10109,12 +10451,12 @@ var Email = (0, import_react99.memo)(function Email2({
 });
 
 // src/communication/Email/schema.ts
-var import_zod22 = require("zod");
-var EmailPropsSchema = import_zod22.z.object({
-  title: import_zod22.z.string().nullable().describe("Inbox title"),
-  description: import_zod22.z.string().nullable().describe("Inbox description"),
-  emails: import_zod22.z.array(import_schemas.emailItemSchema).describe("List of emails"),
-  lock: import_zod22.z.boolean().nullable().describe("Lock delete/archive actions")
+var import_zod24 = require("zod");
+var EmailPropsSchema = import_zod24.z.object({
+  title: import_zod24.z.string().nullable().describe("Inbox title"),
+  description: import_zod24.z.string().nullable().describe("Inbox description"),
+  emails: import_zod24.z.array(import_schemas.emailItemSchema).describe("List of emails"),
+  lock: import_zod24.z.boolean().nullable().describe("Lock delete/archive actions")
 });
 var EmailDefinition = {
   name: "Email",
@@ -10124,9 +10466,9 @@ var EmailDefinition = {
 };
 
 // src/document/DocumentExplorer.tsx
-var import_react100 = require("react");
-var import_jsx_runtime63 = require("react/jsx-runtime");
-var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
+var import_react101 = require("react");
+var import_jsx_runtime64 = require("react/jsx-runtime");
+var TreeNodeItem3 = (0, import_react101.memo)(function TreeNodeItem4({
   node,
   depth,
   onSelect,
@@ -10137,14 +10479,14 @@ var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
   const isExpanded = expanded.has(node.id);
   const isSelected = selectedId === node.id;
   const hasChildren = node.children && node.children.length > 0;
-  return /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { style: { marginLeft: `${depth * 0.75}rem` }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { style: { marginLeft: `${depth * 0.75}rem` }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)(
       "div",
       {
         onClick: () => onSelect(node),
         className: `flex items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 cursor-pointer rounded-md sm:rounded-lg touch-manipulation ${isSelected ? "bg-sky-500/10 border-l-2 sm:border-l-3 border-sky-500" : "border-l-2 sm:border-l-3 border-transparent hover:bg-white/5"}`,
         children: [
-          hasChildren && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
+          hasChildren && /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
             "button",
             {
               onClick: (e) => {
@@ -10155,10 +10497,10 @@ var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
               children: isExpanded ? "v" : ">"
             }
           ),
-          !hasChildren && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("span", { className: "w-3 sm:w-4" }),
-          /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: node.title }),
-            /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
+          !hasChildren && /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("span", { className: "w-3 sm:w-4" }),
+          /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: node.title }),
+            /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500", children: [
               "p",
               node.pageStart,
               "-",
@@ -10168,7 +10510,7 @@ var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
         ]
       }
     ),
-    hasChildren && isExpanded && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { children: node.children.map((child) => /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
+    hasChildren && isExpanded && /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { children: node.children.map((child) => /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
       TreeNodeItem4,
       {
         node: child,
@@ -10182,13 +10524,13 @@ var TreeNodeItem3 = (0, import_react100.memo)(function TreeNodeItem4({
     )) })
   ] });
 });
-var DocumentExplorer = (0, import_react100.memo)(function DocumentExplorer2({
+var DocumentExplorer = (0, import_react101.memo)(function DocumentExplorer2({
   tree,
   onNodeSelect,
   selectedNodeId,
   expandedByDefault = true
 }) {
-  const [expanded, setExpanded] = (0, import_react100.useState)(() => {
+  const [expanded, setExpanded] = (0, import_react101.useState)(() => {
     if (!expandedByDefault) return /* @__PURE__ */ new Set();
     const ids = /* @__PURE__ */ new Set();
     const collect = (node) => {
@@ -10198,7 +10540,7 @@ var DocumentExplorer = (0, import_react100.memo)(function DocumentExplorer2({
     collect(tree);
     return ids;
   });
-  const handleToggle = (0, import_react100.useCallback)((id) => {
+  const handleToggle = (0, import_react101.useCallback)((id) => {
     setExpanded((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -10209,15 +10551,15 @@ var DocumentExplorer = (0, import_react100.memo)(function DocumentExplorer2({
       return next;
     });
   }, []);
-  const handleSelect = (0, import_react100.useCallback)(
+  const handleSelect = (0, import_react101.useCallback)(
     (node) => {
       onNodeSelect?.(node);
     },
     [onNodeSelect]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Structure" }),
-    /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Structure" }),
+    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "p-1.5 sm:p-2 max-h-[350px] sm:max-h-[500px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
       TreeNodeItem3,
       {
         node: tree,
@@ -10232,16 +10574,16 @@ var DocumentExplorer = (0, import_react100.memo)(function DocumentExplorer2({
 });
 
 // src/document/KnowledgeGraph.tsx
-var import_react101 = require("react");
-var import_jsx_runtime64 = require("react/jsx-runtime");
-var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
+var import_react102 = require("react");
+var import_jsx_runtime65 = require("react/jsx-runtime");
+var KnowledgeGraph = (0, import_react102.memo)(function KnowledgeGraph2({
   entities,
   relations,
   width = 600,
   height = 400,
   onEntityClick
 }) {
-  const { nodes, edges } = (0, import_react101.useMemo)(() => {
+  const { nodes, edges } = (0, import_react102.useMemo)(() => {
     const topEntities = entities.slice(0, 30);
     const graphNodes = topEntities.map((entity, i) => {
       const angle = i / topEntities.length * 2 * Math.PI;
@@ -10273,11 +10615,11 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
     number: "#78716c",
     term: "#64748b"
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Knowledge Graph" }),
-    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "space-y-2", children: nodes.slice(0, 15).map((node) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Knowledge Graph" }),
+    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "space-y-2", children: nodes.slice(0, 15).map((node) => {
       const nodeEdges = edges.filter((e) => e.source === node.id || e.target === node.id);
-      return /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)(
+      return /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(
         "div",
         {
           className: "flex items-center gap-2 p-2 rounded-lg bg-zinc-800/30 cursor-pointer touch-manipulation",
@@ -10286,16 +10628,16 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
             if (entity) onEntityClick?.(entity);
           },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
               "div",
               {
                 className: "w-3 h-3 rounded-full shrink-0",
                 style: { backgroundColor: typeColors[node.type] || "#999" }
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "flex-1 min-w-0", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "text-xs text-white truncate", children: node.label }),
-              /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "text-[0.5rem] text-zinc-500", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "text-xs text-white truncate", children: node.label }),
+              /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "text-[0.5rem] text-zinc-500", children: [
                 node.type,
                 " \u2022 ",
                 nodeEdges.length,
@@ -10307,12 +10649,12 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
         node.id
       );
     }) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "hidden sm:block overflow-x-auto touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("svg", { width, height, className: "block min-w-full", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "hidden sm:block overflow-x-auto touch-pan-x", children: /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("svg", { width, height, className: "block min-w-full", children: [
       edges.map((edge, i) => {
         const sourceNode = nodes.find((n) => n.id === edge.source);
         const targetNode = nodes.find((n) => n.id === edge.target);
         if (!sourceNode || !targetNode) return null;
-        return /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
+        return /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
           "line",
           {
             x1: sourceNode.x,
@@ -10325,7 +10667,7 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
           i
         );
       }),
-      nodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)(
+      nodes.map((node) => /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(
         "g",
         {
           transform: `translate(${node.x}, ${node.y})`,
@@ -10335,7 +10677,7 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
             if (entity) onEntityClick?.(entity);
           },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
               "circle",
               {
                 r: 20,
@@ -10344,35 +10686,35 @@ var KnowledgeGraph = (0, import_react101.memo)(function KnowledgeGraph2({
                 strokeWidth: 2
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#a1a1aa", children: node.label })
+            /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("text", { y: 30, textAnchor: "middle", fontSize: 10, fill: "#a1a1aa", children: node.label })
           ]
         },
         node.id
       ))
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-t border-white/10 flex gap-2 sm:gap-4 flex-wrap text-[0.5rem] sm:text-xs", children: Object.entries(typeColors).map(([type, color]) => /* @__PURE__ */ (0, import_jsx_runtime64.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime64.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-t border-white/10 flex gap-2 sm:gap-4 flex-wrap text-[0.5rem] sm:text-xs", children: Object.entries(typeColors).map(([type, color]) => /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
         "div",
         {
           className: "w-2 h-2 sm:w-3 sm:h-3 rounded-full",
           style: { backgroundColor: color }
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime64.jsx)("span", { className: "text-zinc-400", children: type })
+      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("span", { className: "text-zinc-400", children: type })
     ] }, type)) })
   ] });
 });
 
 // src/document/DocumentTimeline.tsx
-var import_react102 = require("react");
-var import_jsx_runtime65 = require("react/jsx-runtime");
+var import_react103 = require("react");
+var import_jsx_runtime66 = require("react/jsx-runtime");
 function parseDate(value) {
   if (!value) return null;
   const yearMatch = value.match(/\b(1[0-9]{3}|2[0-9]{3})\b/);
   if (yearMatch?.[1]) return parseInt(yearMatch[1], 10);
   return null;
 }
-var DocumentTimeline = (0, import_react102.memo)(function DocumentTimeline2({
+var DocumentTimeline = (0, import_react103.memo)(function DocumentTimeline2({
   entities,
   onEntityClick
 }) {
@@ -10385,33 +10727,33 @@ var DocumentTimeline = (0, import_react102.memo)(function DocumentTimeline2({
     return { entity, year };
   }).filter((e) => e !== null).sort((a, b) => a.year - b.year);
   if (events.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No date entities found for timeline" });
+    return /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No date entities found for timeline" });
   }
   const firstEvent = events[0];
   const lastEvent = events[events.length - 1];
   const minYear = firstEvent?.year ?? 0;
   const maxYear = lastEvent?.year ?? 0;
   const yearRange = Math.max(1, maxYear - minYear);
-  return /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Timeline" }),
-    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "relative pl-6 border-l-2 border-sky-500/30", children: events.slice(0, 10).map((event) => /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: "Document Timeline" }),
+    /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "block sm:hidden p-3 max-h-[300px] overflow-y-auto touch-pan-y", children: /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "relative pl-6 border-l-2 border-sky-500/30", children: events.slice(0, 10).map((event) => /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)(
       "div",
       {
         className: "relative mb-4 last:mb-0 cursor-pointer touch-manipulation",
         onClick: () => onEntityClick?.(event.entity),
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" }),
-          /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "text-xs font-semibold text-white", children: event.year }),
-          /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "text-[0.625rem] text-zinc-400 truncate max-w-[12rem]", children: event.entity.value.slice(0, 30) })
+          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "absolute -left-[1.625rem] top-0.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-zinc-900 shadow" }),
+          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-xs font-semibold text-white", children: event.year }),
+          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.625rem] text-zinc-400 truncate max-w-[12rem]", children: event.entity.value.slice(0, 30) })
         ]
       },
       event.entity.id
     )) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "hidden sm:block p-4 relative min-h-[6.25rem]", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" }),
-      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "flex justify-between pt-[3.75rem]", children: events.slice(0, 10).map((event) => {
+    /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "hidden sm:block p-4 relative min-h-[6.25rem]", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "absolute top-[3.125rem] left-5 right-5 h-1 bg-zinc-700 rounded" }),
+      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "flex justify-between pt-[3.75rem]", children: events.slice(0, 10).map((event) => {
         const position = yearRange > 0 ? (event.year - minYear) / yearRange * 100 : 50;
-        return /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(
+        return /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)(
           "div",
           {
             style: {
@@ -10423,16 +10765,16 @@ var DocumentTimeline = (0, import_react102.memo)(function DocumentTimeline2({
             className: "text-center cursor-pointer touch-manipulation",
             onClick: () => onEntityClick?.(event.entity),
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" }),
-              /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "text-[0.625rem] sm:text-xs font-semibold text-white", children: event.year }),
-              /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap", children: event.entity.value.slice(0, 15) })
+              /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 sm:border-3 border-zinc-900 shadow-md" }),
+              /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.625rem] sm:text-xs font-semibold text-white", children: event.year }),
+              /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 max-w-[3.5rem] sm:max-w-[5rem] overflow-hidden text-ellipsis whitespace-nowrap", children: event.entity.value.slice(0, 15) })
             ]
           },
           event.entity.id
         );
       }) })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 border-t border-white/10 text-[0.625rem] sm:text-xs text-zinc-500", children: [
       events.length,
       " date/event entities found"
     ] })
@@ -10440,36 +10782,36 @@ var DocumentTimeline = (0, import_react102.memo)(function DocumentTimeline2({
 });
 
 // src/document/DeepAnalysisPanel.tsx
-var import_react103 = require("react");
-var import_jsx_runtime66 = require("react/jsx-runtime");
-var DeepAnalysisPanel = (0, import_react103.memo)(function DeepAnalysisPanel2({
+var import_react104 = require("react");
+var import_jsx_runtime67 = require("react/jsx-runtime");
+var DeepAnalysisPanel = (0, import_react104.memo)(function DeepAnalysisPanel2({
   node,
   quotes = [],
   onQuoteClick
 }) {
   const nodeQuotes = quotes.filter((q) => q.nodeId === node.id);
-  return /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h3", { className: "m-0 text-base sm:text-lg font-semibold text-white", children: node.title }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4 bg-zinc-800/50 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h3", { className: "m-0 text-base sm:text-lg font-semibold text-white", children: node.title }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1", children: [
         "Pages ",
         node.pageStart,
         "-",
         node.pageEnd
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Summary" }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("p", { className: "m-0 text-xs sm:text-sm leading-relaxed text-zinc-300", children: node.summary || "No summary available" }),
-      node.detailedSummary && /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("p", { className: "mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400", children: node.detailedSummary })
+    /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Summary" }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("p", { className: "m-0 text-xs sm:text-sm leading-relaxed text-zinc-300", children: node.summary || "No summary available" }),
+      node.detailedSummary && /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("p", { className: "mt-2 sm:mt-3 m-0 text-xs sm:text-sm leading-relaxed text-zinc-400", children: node.detailedSummary })
     ] }),
-    node.keyPoints.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Key Points" }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("ul", { className: "m-0 pl-4 sm:pl-5 space-y-1", children: node.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("li", { className: "text-xs sm:text-sm text-zinc-300", children: point }, i)) })
+    node.keyPoints.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Key Points" }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("ul", { className: "m-0 pl-4 sm:pl-5 space-y-1", children: node.keyPoints.map((point, i) => /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("li", { className: "text-xs sm:text-sm text-zinc-300", children: point }, i)) })
     ] }),
-    node.keywords.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Keywords" }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "flex gap-1.5 sm:gap-2 flex-wrap", children: node.keywords.map((keyword, i) => /* @__PURE__ */ (0, import_jsx_runtime66.jsx)(
+    node.keywords.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Keywords" }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "flex gap-1.5 sm:gap-2 flex-wrap", children: node.keywords.map((keyword, i) => /* @__PURE__ */ (0, import_jsx_runtime67.jsx)(
         "span",
         {
           className: "px-2 py-0.5 sm:py-1 bg-sky-500/10 rounded text-[0.625rem] sm:text-xs text-sky-300 border border-sky-500/20",
@@ -10478,20 +10820,20 @@ var DeepAnalysisPanel = (0, import_react103.memo)(function DeepAnalysisPanel2({
         i
       )) })
     ] }),
-    nodeQuotes.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Notable Quotes" }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "space-y-2", children: nodeQuotes.map((quote) => /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)(
+    nodeQuotes.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4 border-b border-white/10", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h4", { className: "m-0 mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Notable Quotes" }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "space-y-2", children: nodeQuotes.map((quote) => /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)(
         "div",
         {
           onClick: () => onQuoteClick?.(quote),
           className: `p-2.5 sm:p-3 bg-zinc-800/30 border-l-2 sm:border-l-3 border-sky-500 rounded-r ${onQuoteClick ? "cursor-pointer hover:bg-zinc-800/50 touch-manipulation" : ""}`,
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("p", { className: "m-0 text-xs sm:text-sm italic text-zinc-300", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("p", { className: "m-0 text-xs sm:text-sm italic text-zinc-300", children: [
               '"',
               quote.text,
               '"'
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1.5", children: [
               "Page ",
               quote.pageNumber,
               " - ",
@@ -10502,23 +10844,23 @@ var DeepAnalysisPanel = (0, import_react103.memo)(function DeepAnalysisPanel2({
         quote.id
       )) })
     ] }),
-    node.metrics && /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "p-3 sm:p-4", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("h4", { className: "m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Metrics" }),
-      /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "grid grid-cols-3 gap-2 sm:gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-base sm:text-xl font-semibold text-white", children: node.metrics.wordCount }),
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Words" })
+    node.metrics && /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "p-3 sm:p-4", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("h4", { className: "m-0 mb-2 text-xs sm:text-sm font-medium text-sky-400", children: "Metrics" }),
+      /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "grid grid-cols-3 gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-base sm:text-xl font-semibold text-white", children: node.metrics.wordCount }),
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Words" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-base sm:text-xl font-semibold text-white", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-base sm:text-xl font-semibold text-white", children: [
             node.metrics.readingTimeMinutes,
             "m"
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Reading Time" })
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Reading Time" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime66.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-base sm:text-xl font-semibold capitalize text-white", children: node.metrics.complexity }),
-          /* @__PURE__ */ (0, import_jsx_runtime66.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Complexity" })
+        /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-center p-2 sm:p-3 bg-zinc-800/30 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-base sm:text-xl font-semibold capitalize text-white", children: node.metrics.complexity }),
+          /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-500 uppercase", children: "Complexity" })
         ] })
       ] })
     ] })
@@ -10526,8 +10868,8 @@ var DeepAnalysisPanel = (0, import_react103.memo)(function DeepAnalysisPanel2({
 });
 
 // src/document/CitationViewer.tsx
-var import_react104 = require("react");
-var import_jsx_runtime67 = require("react/jsx-runtime");
+var import_react105 = require("react");
+var import_jsx_runtime68 = require("react/jsx-runtime");
 var typeIcons = {
   book: "B",
   article: "A",
@@ -10536,7 +10878,7 @@ var typeIcons = {
   thesis: "T",
   other: "O"
 };
-var CitationViewer = (0, import_react104.memo)(function CitationViewer2({
+var CitationViewer = (0, import_react105.memo)(function CitationViewer2({
   citations,
   onCitationClick
 }) {
@@ -10550,40 +10892,40 @@ var CitationViewer = (0, import_react104.memo)(function CitationViewer2({
     {}
   );
   if (citations.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No citations found in document" });
+    return /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center text-zinc-400 bg-zinc-900/60 backdrop-blur-sm", children: "No citations found in document" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("span", { className: "text-white", children: "Citations" }),
-      /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("span", { className: "text-zinc-400 font-normal text-xs sm:text-sm", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold flex justify-between items-center text-sm sm:text-base", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("span", { className: "text-white", children: "Citations" }),
+      /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("span", { className: "text-zinc-400 font-normal text-xs sm:text-sm", children: [
         citations.length,
         " total"
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "max-h-[300px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(byType).map(([type, typeCitations]) => /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 font-medium text-[0.625rem] sm:text-xs uppercase text-zinc-500 border-b border-white/5", children: [
         type,
         " (",
         typeCitations.length,
         ")"
       ] }),
-      typeCitations.map((citation) => /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)(
+      typeCitations.map((citation) => /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)(
         "div",
         {
           onClick: () => onCitationClick?.(citation),
           className: `p-3 sm:p-4 border-b border-white/5 flex gap-2.5 sm:gap-3 ${onCitationClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm", children: typeIcons[citation.type] || "?" }),
-            /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "flex-1 min-w-0", children: [
-              citation.title && /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white", children: citation.title }),
-              citation.authors && citation.authors.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5", children: citation.authors.join(", ") }),
-              citation.year && /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 ml-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "w-8 h-8 sm:w-9 sm:h-9 rounded bg-sky-500/10 flex items-center justify-center font-semibold text-sky-400 shrink-0 text-xs sm:text-sm", children: typeIcons[citation.type] || "?" }),
+            /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "flex-1 min-w-0", children: [
+              citation.title && /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white", children: citation.title }),
+              citation.authors && citation.authors.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-400 mt-0.5", children: citation.authors.join(", ") }),
+              citation.year && /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("span", { className: "text-[0.625rem] sm:text-xs text-zinc-500 ml-1", children: [
                 "(",
                 citation.year,
                 ")"
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime67.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap", children: citation.text }),
-              /* @__PURE__ */ (0, import_jsx_runtime67.jsxs)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 mt-1 overflow-hidden text-ellipsis whitespace-nowrap", children: citation.text }),
+              /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "text-[0.5rem] sm:text-[0.625rem] text-zinc-600 mt-1", children: [
                 "Page ",
                 citation.pageNumber
               ] })
@@ -10597,8 +10939,8 @@ var CitationViewer = (0, import_react104.memo)(function CitationViewer2({
 });
 
 // src/document/EntityExplorer.tsx
-var import_react105 = require("react");
-var import_jsx_runtime68 = require("react/jsx-runtime");
+var import_react106 = require("react");
+var import_jsx_runtime69 = require("react/jsx-runtime");
 var typeColorClasses = {
   person: { bg: "bg-emerald-500", text: "text-emerald-400", dot: "bg-emerald-500" },
   organization: { bg: "bg-sky-500", text: "text-sky-400", dot: "bg-sky-500" },
@@ -10609,18 +10951,18 @@ var typeColorClasses = {
   number: { bg: "bg-stone-500", text: "text-stone-400", dot: "bg-stone-500" },
   term: { bg: "bg-slate-500", text: "text-slate-400", dot: "bg-slate-500" }
 };
-var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
+var EntityExplorer = (0, import_react106.memo)(function EntityExplorer2({
   entities,
   onEntityClick,
   filterTypes
 }) {
-  const [selectedType, setSelectedType] = (0, import_react105.useState)(null);
-  const [searchQuery, setSearchQuery] = (0, import_react105.useState)("");
-  const types = (0, import_react105.useMemo)(() => {
+  const [selectedType, setSelectedType] = (0, import_react106.useState)(null);
+  const [searchQuery, setSearchQuery] = (0, import_react106.useState)("");
+  const types = (0, import_react106.useMemo)(() => {
     const typeSet = new Set(entities.map((e) => e.type));
     return Array.from(typeSet).sort();
   }, [entities]);
-  const filteredEntities = (0, import_react105.useMemo)(() => {
+  const filteredEntities = (0, import_react106.useMemo)(() => {
     let result = entities;
     if (filterTypes && filterTypes.length > 0) {
       result = result.filter((e) => filterTypes.includes(e.type));
@@ -10636,7 +10978,7 @@ var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
     }
     return result;
   }, [entities, filterTypes, selectedType, searchQuery]);
-  const groupedEntities = (0, import_react105.useMemo)(() => {
+  const groupedEntities = (0, import_react106.useMemo)(() => {
     const groups = {};
     for (const entity of filteredEntities) {
       const type = entity.type;
@@ -10645,14 +10987,14 @@ var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
     }
     return groups;
   }, [filteredEntities]);
-  return /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { className: "font-sans border border-white/10 rounded-lg sm:rounded-xl overflow-hidden bg-zinc-900/60 backdrop-blur-sm", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { className: "px-3 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/50 border-b border-white/10 font-semibold text-sm sm:text-base text-white", children: [
       "Entities (",
       filteredEntities.length,
       ")"
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime68.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { className: "p-2.5 sm:p-4 border-b border-white/10 flex flex-col sm:flex-row gap-2 sm:gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime69.jsx)(
         "input",
         {
           type: "text",
@@ -10662,29 +11004,29 @@ var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
           className: "flex-1 min-w-0 px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0"
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)(
+      /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)(
         "select",
         {
           value: selectedType || "",
           onChange: (e) => setSelectedType(e.target.value || null),
           className: "px-3 py-2 sm:py-1.5 border border-white/10 rounded-lg bg-zinc-800/50 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sky-500/50 min-h-[2.75rem] sm:min-h-0",
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("option", { value: "", children: "All types" }),
-            types.map((type) => /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("option", { value: type, children: type }, type))
+            /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("option", { value: "", children: "All types" }),
+            types.map((type) => /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("option", { value: type, children: type }, type))
           ]
         }
       )
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap", children: types.map((type) => {
+    /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("div", { className: "px-2.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 flex gap-1.5 sm:gap-2 flex-wrap", children: types.map((type) => {
       const count = entities.filter((e) => e.type === type).length;
       const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
-      return /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)(
+      return /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)(
         "button",
         {
           onClick: () => setSelectedType((prev) => prev === type ? null : type),
           className: `px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border-none text-[0.625rem] sm:text-xs cursor-pointer flex items-center gap-1 sm:gap-1.5 transition-colors touch-manipulation min-h-[1.75rem] ${selectedType === type ? `${colors.bg} text-white` : "bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700"}`,
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("span", { className: `w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}` }),
+            /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("span", { className: `w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot}` }),
             type,
             " (",
             count,
@@ -10694,21 +11036,21 @@ var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
         type
       );
     }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(groupedEntities).map(([type, typeEntities]) => {
+    /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("div", { className: "max-h-[280px] sm:max-h-[400px] overflow-y-auto touch-pan-y", children: Object.entries(groupedEntities).map(([type, typeEntities]) => {
       const colors = typeColorClasses[type] || { bg: "bg-zinc-500", text: "text-zinc-400", dot: "bg-zinc-500" };
-      return /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: `px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`, children: type }),
-        typeEntities.map((entity) => /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)(
+      return /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("div", { className: `px-3 sm:px-4 py-1.5 sm:py-2 bg-zinc-800/30 text-[0.625rem] sm:text-xs font-medium uppercase sticky top-0 ${colors.text}`, children: type }),
+        typeEntities.map((entity) => /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)(
           "div",
           {
             onClick: () => onEntityClick?.(entity),
             className: `px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5 flex justify-between items-center gap-2 ${onEntityClick ? "cursor-pointer hover:bg-white/5 touch-manipulation" : ""}`,
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: entity.value }),
-                entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ (0, import_jsx_runtime68.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 truncate", children: entity.normalized })
+              /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("div", { className: "font-medium text-xs sm:text-sm text-white truncate", children: entity.value }),
+                entity.normalized && entity.normalized !== entity.value && /* @__PURE__ */ (0, import_jsx_runtime69.jsx)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-500 truncate", children: entity.normalized })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-600 shrink-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime69.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-zinc-600 shrink-0", children: [
                 entity.occurrences.length,
                 " occ"
               ] })
@@ -10722,35 +11064,35 @@ var EntityExplorer = (0, import_react105.memo)(function EntityExplorer2({
 });
 
 // src/document/hooks/useKnowledgeBase.ts
-var import_react106 = require("react");
+var import_react107 = require("react");
 function useKnowledgeBase(options = {}) {
-  const [knowledgeBase, setKnowledgeBase] = (0, import_react106.useState)(
+  const [knowledgeBase, setKnowledgeBase] = (0, import_react107.useState)(
     options.initialKnowledgeBase ?? null
   );
-  const entities = (0, import_react106.useMemo)(
+  const entities = (0, import_react107.useMemo)(
     () => knowledgeBase?.entities ?? [],
     [knowledgeBase]
   );
-  const relations = (0, import_react106.useMemo)(
+  const relations = (0, import_react107.useMemo)(
     () => knowledgeBase?.relations ?? [],
     [knowledgeBase]
   );
-  const quotes = (0, import_react106.useMemo)(() => knowledgeBase?.quotes ?? [], [knowledgeBase]);
-  const getEntityById = (0, import_react106.useCallback)(
+  const quotes = (0, import_react107.useMemo)(() => knowledgeBase?.quotes ?? [], [knowledgeBase]);
+  const getEntityById = (0, import_react107.useCallback)(
     (id) => entities.find((e) => e.id === id),
     [entities]
   );
-  const getRelationsByNode = (0, import_react106.useCallback)(
+  const getRelationsByNode = (0, import_react107.useCallback)(
     (nodeId) => relations.filter(
       (r) => r.sourceNodeId === nodeId || r.targetNodeId === nodeId
     ),
     [relations]
   );
-  const getQuotesByNode = (0, import_react106.useCallback)(
+  const getQuotesByNode = (0, import_react107.useCallback)(
     (nodeId) => quotes.filter((q) => q.nodeId === nodeId),
     [quotes]
   );
-  const searchEntities = (0, import_react106.useCallback)(
+  const searchEntities = (0, import_react107.useCallback)(
     (query) => {
       const q = query.toLowerCase();
       return entities.filter(
@@ -10759,7 +11101,7 @@ function useKnowledgeBase(options = {}) {
     },
     [entities]
   );
-  const filterEntitiesByType = (0, import_react106.useCallback)(
+  const filterEntitiesByType = (0, import_react107.useCallback)(
     (type) => entities.filter((e) => e.type === type),
     [entities]
   );
@@ -10778,7 +11120,7 @@ function useKnowledgeBase(options = {}) {
 }
 
 // src/document/hooks/useDocumentExplorer.ts
-var import_react107 = require("react");
+var import_react108 = require("react");
 function collectAllNodeIds(node, ids) {
   ids.add(node.id);
   if (node.children) {
@@ -10811,19 +11153,19 @@ function searchTree(node, query, results = []) {
   return results;
 }
 function useDocumentExplorer(options = {}) {
-  const [tree, setTree] = (0, import_react107.useState)(
+  const [tree, setTree] = (0, import_react108.useState)(
     options.initialTree ?? null
   );
-  const [selectedNode, setSelectedNode] = (0, import_react107.useState)(null);
-  const [expandedNodes, setExpandedNodes] = (0, import_react107.useState)(/* @__PURE__ */ new Set());
-  const selectNode = (0, import_react107.useCallback)(
+  const [selectedNode, setSelectedNode] = (0, import_react108.useState)(null);
+  const [expandedNodes, setExpandedNodes] = (0, import_react108.useState)(/* @__PURE__ */ new Set());
+  const selectNode = (0, import_react108.useCallback)(
     (node) => {
       setSelectedNode(node);
       options.onNodeSelect?.(node);
     },
     [options]
   );
-  const toggleNode = (0, import_react107.useCallback)((nodeId) => {
+  const toggleNode = (0, import_react108.useCallback)((nodeId) => {
     setExpandedNodes((prev) => {
       const next = new Set(prev);
       if (next.has(nodeId)) {
@@ -10834,23 +11176,23 @@ function useDocumentExplorer(options = {}) {
       return next;
     });
   }, []);
-  const expandAll = (0, import_react107.useCallback)(() => {
+  const expandAll = (0, import_react108.useCallback)(() => {
     if (!tree) return;
     const ids = /* @__PURE__ */ new Set();
     collectAllNodeIds(tree, ids);
     setExpandedNodes(ids);
   }, [tree]);
-  const collapseAll = (0, import_react107.useCallback)(() => {
+  const collapseAll = (0, import_react108.useCallback)(() => {
     setExpandedNodes(/* @__PURE__ */ new Set());
   }, []);
-  const searchNodes = (0, import_react107.useCallback)(
+  const searchNodes = (0, import_react108.useCallback)(
     (query) => {
       if (!tree || !query) return [];
       return searchTree(tree, query);
     },
     [tree]
   );
-  const getNodePath = (0, import_react107.useCallback)(
+  const getNodePath = (0, import_react108.useCallback)(
     (nodeId) => {
       if (!tree) return [];
       return findPath(tree, nodeId) ?? [];
@@ -10872,14 +11214,14 @@ function useDocumentExplorer(options = {}) {
 }
 
 // src/document/hooks/useQuestionAnswer.ts
-var import_react108 = require("react");
+var import_react109 = require("react");
 function useQuestionAnswer(options = {}) {
-  const [question, setQuestion] = (0, import_react108.useState)("");
-  const [answer, setAnswer] = (0, import_react108.useState)(null);
-  const [isLoading, setIsLoading] = (0, import_react108.useState)(false);
-  const [error, setError] = (0, import_react108.useState)(null);
-  const [history, setHistory] = (0, import_react108.useState)([]);
-  const askQuestion = (0, import_react108.useCallback)(
+  const [question, setQuestion] = (0, import_react109.useState)("");
+  const [answer, setAnswer] = (0, import_react109.useState)(null);
+  const [isLoading, setIsLoading] = (0, import_react109.useState)(false);
+  const [error, setError] = (0, import_react109.useState)(null);
+  const [history, setHistory] = (0, import_react109.useState)([]);
+  const askQuestion = (0, import_react109.useCallback)(
     async (knowledgeBaseId, q) => {
       setIsLoading(true);
       setError(null);
@@ -10907,12 +11249,12 @@ function useQuestionAnswer(options = {}) {
     },
     [options]
   );
-  const clearAnswer = (0, import_react108.useCallback)(() => {
+  const clearAnswer = (0, import_react109.useCallback)(() => {
     setAnswer(null);
     setError(null);
     setQuestion("");
   }, []);
-  const clearHistory = (0, import_react108.useCallback)(() => {
+  const clearHistory = (0, import_react109.useCallback)(() => {
     setHistory([]);
   }, []);
   return {
@@ -10980,6 +11322,7 @@ var componentRegistry = {
   ResearchReport,
   DocumentIndex,
   SourceCitation,
+  DocumentReport,
   // Visualization
   Chart,
   StockChart,
@@ -11031,8 +11374,10 @@ var componentDefinitions = {
   SupplementTracker: SupplementTrackerDefinition,
   Calendar: CalendarDefinition,
   Diary: DiaryDefinition,
+  ResearchReport: ResearchReportDefinition,
   DocumentIndex: DocumentIndexDefinition,
   SourceCitation: SourceCitationDefinition,
+  DocumentReport: DocumentReportDefinition,
   // Visualization
   Chart: ChartDefinition,
   StockChart: StockChartDefinition,
@@ -11070,6 +11415,9 @@ var VERSION = "0.1.0";
   DocumentIndex,
   DocumentIndexDefinition,
   DocumentIndexPropsSchema,
+  DocumentReport,
+  DocumentReportDefinition,
+  DocumentReportPropsSchema,
   DocumentTimeline,
   Email,
   EmailDefinition,
@@ -11105,6 +11453,8 @@ var VERSION = "0.1.0";
   Pricing,
   ProfileCard,
   ResearchReport,
+  ResearchReportDefinition,
+  ResearchReportPropsSchema,
   RoutineScheduler,
   RoutineSchedulerDefinition,
   RoutineSchedulerPropsSchema,

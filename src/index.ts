@@ -120,6 +120,8 @@ export {
 
 export {
   ResearchReport,
+  ResearchReportPropsSchema,
+  ResearchReportDefinition,
   type ResearchReportProps,
   type Source as ResearchSource,
   type ReportSection,
@@ -139,6 +141,13 @@ export {
   SourceCitationDefinition,
   type SourceCitationProps,
 } from "./domain/SourceCitation";
+
+export {
+  DocumentReport,
+  DocumentReportPropsSchema,
+  DocumentReportDefinition,
+  type DocumentReportProps,
+} from "./domain/document";
 
 // ============================================================================
 // Visualization Components (formerly @onegenui/viz)
@@ -252,7 +261,7 @@ import {
 } from "./domain/SupplementTracker";
 import { Calendar, CalendarDefinition } from "./domain/Calendar";
 import { Diary, DiaryDefinition } from "./domain/Diary";
-import { ResearchReport } from "./domain/research";
+import { ResearchReport, ResearchReportDefinition } from "./domain/research";
 import { ProfileCard } from "./domain/social/profile-card";
 import { ActivityFeed } from "./domain/feed/activity-feed";
 import { Pricing } from "./domain/commerce/pricing";
@@ -262,6 +271,7 @@ import {
   SourceCitation,
   SourceCitationDefinition,
 } from "./domain/SourceCitation";
+import { DocumentReport, DocumentReportDefinition } from "./domain/document";
 
 // Visualization components
 import {
@@ -337,6 +347,7 @@ export const componentRegistry: ComponentRegistry = {
   ResearchReport,
   DocumentIndex,
   SourceCitation,
+  DocumentReport,
   // Visualization
   Chart,
   StockChart,
@@ -396,8 +407,10 @@ export const componentDefinitions = {
   SupplementTracker: SupplementTrackerDefinition,
   Calendar: CalendarDefinition,
   Diary: DiaryDefinition,
+  ResearchReport: ResearchReportDefinition,
   DocumentIndex: DocumentIndexDefinition,
   SourceCitation: SourceCitationDefinition,
+  DocumentReport: DocumentReportDefinition,
   // Visualization
   Chart: ChartDefinition,
   StockChart: StockChartDefinition,

@@ -96,6 +96,8 @@ export {
 
 export {
   ResearchReport,
+  ResearchReportPropsSchema,
+  ResearchReportDefinition,
   type ResearchReportProps,
   type Source,
   type ReportSection,
@@ -137,3 +139,10 @@ export {
   type DocumentResult,
   type CrossDocRelation,
 } from "./MultiDocumentExplorer";
+
+export {
+  DocumentReport,
+  DocumentReportPropsSchema,
+  DocumentReportDefinition,
+  type DocumentReportProps,
+} from "./document";
