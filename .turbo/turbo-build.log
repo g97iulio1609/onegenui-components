@@ -9,24 +9,24 @@ CLI Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/co
 CLI Target: es2022
 CJS Build start
 ESM Build start
-CJS dist/definitions.js     46.98 KB
-CJS dist/skills.js          4.32 KB
-CJS dist/index.js           520.29 KB
-CJS dist/skills.js.map      5.56 KB
-CJS dist/definitions.js.map 80.00 KB
-CJS dist/index.js.map       781.75 KB
-CJS ⚡️ Build success in 190ms
 ESM dist/index.mjs              431.08 KB
 ESM dist/chunk-JVSKUXOT.mjs     38.50 KB
 ESM dist/skills.mjs             3.21 KB
 ESM dist/definitions.mjs        2.41 KB
-ESM dist/definitions.mjs.map    3.34 KB
 ESM dist/skills.mjs.map         5.50 KB
+ESM dist/definitions.mjs.map    3.34 KB
 ESM dist/chunk-JVSKUXOT.mjs.map 77.98 KB
 ESM dist/index.mjs.map          721.10 KB
-ESM ⚡️ Build success in 190ms
+ESM ⚡️ Build success in 79ms
+CJS dist/definitions.js     46.98 KB
+CJS dist/skills.js          4.32 KB
+CJS dist/index.js           520.29 KB
+CJS dist/definitions.js.map 80.00 KB
+CJS dist/skills.js.map      5.56 KB
+CJS dist/index.js.map       781.75 KB
+CJS ⚡️ Build success in 86ms
 DTS Build start
-DTS ⚡️ Build success in 5339ms
+DTS ⚡️ Build success in 5051ms
 DTS dist/skills.d.ts                704.00 B
 DTS dist/index.d.ts                 81.09 KB
 DTS dist/definitions.d.ts           1.31 KB
