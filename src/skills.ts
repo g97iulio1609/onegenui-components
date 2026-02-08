@@ -1,12 +1,8 @@
 /**
  * Skills Module
  *
- * Provides utilities for loading skills and generating JSONL path patterns.
- * Uses safe definitions (no React) to ensure compatibility with build tools.
+ * Provides utilities for loading skills and generating patch path references.
  */
-
-// Use safe definitions (no React) via namespace import
-import * as ComponentDefinitions from "./definitions";
 
 // Re-export registry for use by consumers
 export const skillsRegistry: Record<string, string> = {};
@@ -26,8 +22,7 @@ export function getAllSkills(): Record<string, string> {
 }
 
 /**
- * Map of component names to their JSONL array prop path patterns.
- * Used to generate TREE_CONTEXT_APPENDIX for the AI prompt.
+ * Map of component names to append paths for array-like props.
  */
 const COMPONENT_ARRAY_PROPS: Record<string, string> = {
   // Data Display
@@ -54,32 +49,35 @@ const COMPONENT_ARRAY_PROPS: Record<string, string> = {
 };
 
 /**
- * Special nested paths for components with complex structures
+ * Special nested append paths for components with complex structures.
  */
 const NESTED_PATHS: Record<string, string[]> = {
   Kanban: [
-    '- Kanban (Column): {"op":"add","path":"/elements/KEY/props/columns/-","value":{...}}',
-    '- Kanban (Card in Column): {"op":"add","path":"/elements/KEY/props/columns/COL_INDEX/cards/-","value":{...}}',
+    "- Kanban column append: /elements/KEY/props/columns/-",
+    "- Kanban card append: /elements/KEY/props/columns/COL_INDEX/cards/-",
   ],
-  // Canvas uses standard JSON Patch to add nodes to document content array
+  // Canvas uses Tiptap node appends on the document content array
   Canvas: [
-    '- Canvas (Paragraph): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"paragraph","content":[{"type":"text","text":"..."}]}}',
-    '- Canvas (Heading): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"..."}]}}',
-    '- Canvas (Table): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"table","content":[{"type":"tableRow","content":[{"type":"tableHeader","content":[{"type":"paragraph","content":[{"type":"text","text":"Header"}]}]}]}]}}',
-    '- Canvas (CodeBlock): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"codeBlock","attrs":{"language":"typescript"},"content":[{"type":"text","text":"const x = 1;"}]}}',
-    '- Canvas (BulletList): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Item"}]}]}]}}',
-    '- Canvas (Diagram): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"diagram","attrs":{"code":"graph TD\\n  A-->B","diagramType":"flowchart"}}}',
-    '- Canvas (Math): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"mathBlock","attrs":{"latex":"E = mc^2"}}}',
-    '- Canvas (Callout): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"callout","attrs":{"variant":"info","title":"Note"},"content":[{"type":"paragraph","content":[{"type":"text","text":"..."}]}]}}',
+    "- Canvas node append: /elements/KEY/props/content/content/-",
+    "- Canvas table row append: /elements/KEY/props/content/content/TABLE_INDEX/content/-",
   ],
 };
 
 /**
- * Generate JSONL path patterns for component item updates.
- * This replaces the hardcoded TREE_CONTEXT_APPENDIX in route.ts.
+ * Generate patch path guidance for component item updates.
+ *
+ * Historical function name kept for compatibility with existing imports.
  */
 export function generateJSONLPaths(): string {
-  const lines: string[] = ["COMPONENT ITEM UPDATES:"];
+  const lines: string[] = [
+    "STRUCTURED UI PATCH PATHS (emit_ui_patch):",
+    "- Use emit_ui_patch tool; do not output raw JSONL patch lines.",
+    "- For /elements/<key> patches, patch.value must be a JSON object (never a stringified JSON string).",
+    "- Preserve existing UI: append child keys using /elements/<container>/children/- and avoid resetting children arrays.",
+    "- Use per-response unique element keys (e.g. suffix with timestamp/UUID) unless intentionally updating an existing element.",
+    "",
+    "ARRAY APPEND PATHS:",
+  ];
   const processedComponents = new Set<string>();
 
   for (const [componentName, propName] of Object.entries(
@@ -88,15 +86,14 @@ export function generateJSONLPaths(): string {
     // Skip if this component has nested paths (handled separately)
     if (NESTED_PATHS[componentName]) continue;
 
-    lines.push(
-      `- ${componentName}: {"op":"add","path":"/elements/KEY/props/${propName}/-","value":{...}}`,
-    );
+    lines.push(`- ${componentName} item append: /elements/KEY/props/${propName}/-`);
     processedComponents.add(componentName);
   }
 
-  // Add nested path patterns
+  lines.push("", "NESTED APPEND PATHS:");
   for (const [componentName, paths] of Object.entries(NESTED_PATHS)) {
-    lines.push(...paths);
+    lines.push(`- ${componentName}:`);
+    lines.push(...paths.map((path) => `  ${path}`));
     processedComponents.add(componentName);
   }
 

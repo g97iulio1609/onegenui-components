@@ -178,3 +178,9 @@ The structure depends on the `type` field (`exercise` | `cardio` | `superset` | 
   "notes": "Pyramid up then down"
 }
 ```
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

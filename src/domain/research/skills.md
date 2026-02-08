@@ -2,6 +2,13 @@
 
 Displays comprehensive research reports with sections, inline citations, images, videos, and source references. Designed for Perplexity/Google AI Mode style search results presentation.
 
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted JSON string).
+- If the current tree already has a container/root, do not recreate it with empty `children`.
+- Preserve existing UI by appending the new `ResearchReport` key to `/elements/<container>/children/-`.
+- For each new report turn, use a unique key (for example `research-report-<timestamp>`) to avoid overwriting previous turn components.
+
 ## Structure
 
 ```json

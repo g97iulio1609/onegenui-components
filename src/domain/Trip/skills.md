@@ -200,3 +200,9 @@ Trip planner component for displaying travel itineraries with multiple trips, de
 - Budget panel shows only when totalCost is provided
 - Background images are optional but enhance visual appeal
 - Touch-optimized with snap scrolling and larger targets
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

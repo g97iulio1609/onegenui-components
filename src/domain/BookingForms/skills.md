@@ -137,3 +137,9 @@ The hotel form includes:
 - Decorative gradient bar at top for visual appeal
 - Touch-optimized with larger input targets on mobile
 - Glass-panel styling with backdrop blur
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

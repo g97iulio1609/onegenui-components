@@ -199,3 +199,9 @@ Interactive task list component with checkable items, priority badges, time indi
 - Touch-optimized with larger tap targets on mobile
 - Animated transitions for item state changes
 - Reduced motion support for accessibility
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

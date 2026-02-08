@@ -2,6 +2,13 @@
 
 Use DocumentIndex to display the hierarchical structure of a document when Vectorless/smart parsing is enabled. This is the PRIMARY component for document analysis — always generate it FIRST.
 
+## Structured Emission Contract
+
+- When using `emit_ui_patch`, `patch.value` for `/elements/<key>` MUST be a JSON object, never a stringified JSON string.
+- If the UI tree already exists, do not reset existing containers with `children: []`.
+- To preserve previous turns, append new components with `/elements/<container>/children/-` instead of replacing the container node.
+- Use a unique key for each new DocumentIndex instance (for example `doc-index-<timestamp>`); do not reuse an old key for a new turn.
+
 ## When to use
 
 - ALWAYS when a PDF or document has been analyzed with smart parsing (Vectorless)

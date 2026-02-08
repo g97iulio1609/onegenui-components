@@ -2,6 +2,13 @@
 
 Use DocumentReport for comprehensive, deep-dive analysis of documents processed with Vectorless/smart parsing. This component renders the full semantic analysis with hierarchical sections, entities, quotes, and overlay.
 
+## Structured Emission Contract
+
+- When using `emit_ui_patch`, `patch.value` for `/elements/<key>` MUST be a JSON object, never a stringified JSON string.
+- If a root/container already exists in the current tree, do not replace it with `children: []`.
+- Add the new `DocumentReport` key to an existing container through `/elements/<container>/children/-` to keep prior content stable.
+- For new turns, generate a unique `DocumentReport` key (for example `doc-report-<timestamp>`) instead of reusing an old key.
+
 ## When to use
 
 - When the context includes `DOCUMENT DEEP ANALYSIS` data with sections, entities, timeline, relations

@@ -96,3 +96,9 @@ Map the `calendar_list_events` tool response to this component:
 - **Attendee list** - Shows attendees with RSVP status
 - **Color coding** - Respects event colors from Google Calendar
 - **Italian localization** - All labels in Italian
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

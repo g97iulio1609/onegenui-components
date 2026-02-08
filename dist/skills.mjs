@@ -28,35 +28,37 @@ var COMPONENT_ARRAY_PROPS = {
 };
 var NESTED_PATHS = {
   Kanban: [
-    '- Kanban (Column): {"op":"add","path":"/elements/KEY/props/columns/-","value":{...}}',
-    '- Kanban (Card in Column): {"op":"add","path":"/elements/KEY/props/columns/COL_INDEX/cards/-","value":{...}}'
+    "- Kanban column append: /elements/KEY/props/columns/-",
+    "- Kanban card append: /elements/KEY/props/columns/COL_INDEX/cards/-"
   ],
-  // Canvas uses standard JSON Patch to add nodes to document content array
+  // Canvas uses Tiptap node appends on the document content array
   Canvas: [
-    '- Canvas (Paragraph): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"paragraph","content":[{"type":"text","text":"..."}]}}',
-    '- Canvas (Heading): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"..."}]}}',
-    '- Canvas (Table): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"table","content":[{"type":"tableRow","content":[{"type":"tableHeader","content":[{"type":"paragraph","content":[{"type":"text","text":"Header"}]}]}]}]}}',
-    '- Canvas (CodeBlock): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"codeBlock","attrs":{"language":"typescript"},"content":[{"type":"text","text":"const x = 1;"}]}}',
-    '- Canvas (BulletList): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Item"}]}]}]}}',
-    '- Canvas (Diagram): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"diagram","attrs":{"code":"graph TD\\n  A-->B","diagramType":"flowchart"}}}',
-    '- Canvas (Math): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"mathBlock","attrs":{"latex":"E = mc^2"}}}',
-    '- Canvas (Callout): {"op":"add","path":"/elements/KEY/props/content/content/-","value":{"type":"callout","attrs":{"variant":"info","title":"Note"},"content":[{"type":"paragraph","content":[{"type":"text","text":"..."}]}]}}'
+    "- Canvas node append: /elements/KEY/props/content/content/-",
+    "- Canvas table row append: /elements/KEY/props/content/content/TABLE_INDEX/content/-"
   ]
 };
 function generateJSONLPaths() {
-  const lines = ["COMPONENT ITEM UPDATES:"];
+  const lines = [
+    "STRUCTURED UI PATCH PATHS (emit_ui_patch):",
+    "- Use emit_ui_patch tool; do not output raw JSONL patch lines.",
+    "- For /elements/<key> patches, patch.value must be a JSON object (never a stringified JSON string).",
+    "- Preserve existing UI: append child keys using /elements/<container>/children/- and avoid resetting children arrays.",
+    "- Use per-response unique element keys (e.g. suffix with timestamp/UUID) unless intentionally updating an existing element.",
+    "",
+    "ARRAY APPEND PATHS:"
+  ];
   const processedComponents = /* @__PURE__ */ new Set();
   for (const [componentName, propName] of Object.entries(
     COMPONENT_ARRAY_PROPS
   )) {
     if (NESTED_PATHS[componentName]) continue;
-    lines.push(
-      `- ${componentName}: {"op":"add","path":"/elements/KEY/props/${propName}/-","value":{...}}`
-    );
+    lines.push(`- ${componentName} item append: /elements/KEY/props/${propName}/-`);
     processedComponents.add(componentName);
   }
+  lines.push("", "NESTED APPEND PATHS:");
   for (const [componentName, paths] of Object.entries(NESTED_PATHS)) {
-    lines.push(...paths);
+    lines.push(`- ${componentName}:`);
+    lines.push(...paths.map((path) => `  ${path}`));
     processedComponents.add(componentName);
   }
   return lines.join("\n");

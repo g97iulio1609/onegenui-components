@@ -78,3 +78,9 @@ Use this component when the user wants to:
 4. Set priority only for important blocks
 5. Add descriptions for blocks that need context
 6. Use recurring patterns for consistent daily activities
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

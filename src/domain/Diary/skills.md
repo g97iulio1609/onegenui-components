@@ -87,3 +87,9 @@ Use this component when the user wants to:
 5. Use tags for searchability and categorization
 6. Keep content focused but meaningful
 7. Use gratitude section to promote positive reflection
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

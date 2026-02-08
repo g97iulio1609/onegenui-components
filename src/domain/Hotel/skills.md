@@ -124,3 +124,9 @@ Display hotel listings with rich information including images, ratings, prices, 
 - When using hotel search tools, extract and include both the booking URL and image URL from results
 - If no booking URL is available, the arrow button will not be clickable
 - If no image is available, a placeholder icon will be shown (but this should be avoided)
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.

@@ -181,3 +181,9 @@ ALL technical details MUST go in the Flight component props:
 {"op":"add","path":"/elements/flight1","value":{"key":"flight1","type":"Flight","props":{"title":"Flight Results","flights":[]},"children":[]}}
 {"op":"add","path":"/elements/flight1/props/flights/-","value":{"id":"f1","airline":"Ryanair","flightNumber":"FR 1234","departure":{"code":"FCO","city":"Rome","time":"08:30"},"arrival":{"code":"CDG","city":"Paris","time":"10:45"},"price":{"amount":49,"currency":"EUR"},"duration":"2h 15m","stops":0,"bookingUrl":"https://www.kiwi.com/deep/..."}}
 ```
+
+## Structured Emission Contract
+
+- For `/elements/<key>` patches, `patch.value` must be a raw JSON object (never a quoted/stringified JSON string).
+- If the current tree already has a container/root, do not recreate or reset it with `children: []`.
+- Preserve existing UI by appending new component keys via `/elements/<container>/children/-`.
