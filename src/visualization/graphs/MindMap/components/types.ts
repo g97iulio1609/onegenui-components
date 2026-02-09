@@ -50,7 +50,7 @@ export function buildTreeFromFlat(nodes: MindMapNode[]): MindMapNode[] {
 
   nodes.forEach((n) => {
     const node = nodeMap.get(n.id)!;
-    const parentId = n.parentId || (n as any).parent;
+    const parentId = n.parentId || (n as MindMapNode & { parent?: string }).parent;
 
     if (parentId && nodeMap.has(parentId)) {
       const parent = nodeMap.get(parentId)!;

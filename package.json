@@ -79,12 +79,12 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "clsx": "^2.0.0",
     "lightweight-charts": "^5.0.0",
-    "lucide-react": "^0.400.0",
+    "lucide-react": "^0.562.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.0.0",

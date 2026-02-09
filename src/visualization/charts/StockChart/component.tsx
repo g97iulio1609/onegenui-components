@@ -11,8 +11,19 @@ import type {
 import { cn } from "../../utils/cn";
 
 // Lazy import holder for lightweight-charts
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let chartsModule: any = null;
+let chartsModule: Record<string, unknown> | null = null;
+
+/** Minimal interface for chart instances from lightweight-charts */
+interface ChartInstance {
+  remove: () => void;
+  timeScale: () => { fitContent: () => void };
+  applyOptions: (options: Record<string, unknown>) => void;
+  addSeries: (type: unknown, options: Record<string, unknown>) => SeriesInstance;
+}
+
+interface SeriesInstance {
+  setData: (data: unknown[]) => void;
+}
 
 // --- Helper Functions ---
 
@@ -70,8 +81,8 @@ export const StockChart = memo(function StockChart({
   const downColor = "#ef4444";
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<any>(null);
-  const seriesRef = useRef<any>(null);
+  const chartRef = useRef<ChartInstance | null>(null);
+  const seriesRef = useRef<SeriesInstance | null>(null);
 
   const [timeframe, setTimeframe] = useState<Timeframe>(
     props.timeframe || "3M",
@@ -130,7 +141,11 @@ export const StockChart = memo(function StockChart({
       chartRef.current.remove();
     }
 
-    const { createChart, CandlestickSeries } = chartsModule;
+    const createChart = chartsModule.createChart as (
+      container: HTMLDivElement,
+      options: Record<string, unknown>,
+    ) => ChartInstance;
+    const CandlestickSeries = chartsModule.CandlestickSeries;
 
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
